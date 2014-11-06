@@ -130,7 +130,6 @@ $(function(){
 				var one = v[0][0],
 					two = v[1][0];
 				var radiu = Math.atan((two.y - one.y)/(two.x - one.x)) / Math.PI * 180;
-				console.log(radiu);
 				map.addOverlay(new Icon_Layer(new BMap.Point((two.x + one.x)/2,(two.y + one.y)/2),-radiu,code == 2?'cool':'warm'));
 			});
 		}
