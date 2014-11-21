@@ -1,18 +1,18 @@
 $(function(){
 	// 百度地图API功能
 	var map = new BMap.Map("allmap");
-	map.addEventListener('addtilelayer',function(){
-		console.log('addtilelayer',$('svg').length);
-	});
-	map.addEventListener('addoverlay',function(){
-		// console.log('addoverlay',$('svg').length);
-	});
+	// map.addEventListener('addtilelayer',function(){
+	// 	console.log('addtilelayer',$('svg').length);
+	// });
+	// map.addEventListener('addoverlay',function(){
+	// 	// console.log('addoverlay',$('svg').length);
+	// });
 	map.centerAndZoom(new BMap.Point(116.404, 39.915), 5);
 	map.enableScrollWheelZoom();
 	var isInitedDefs = false;
 
-	$.getJSON('../data/micaps/14/rr111308.024.json',function(data){
-		
+	$.getJSON('../data/micaps/14/rr112108.048.json',function(data){
+		console.log(data);
 		var areas = data.areas;
 		$.each(areas.items,function(i,v){
 			var point_arr = [];
@@ -31,9 +31,8 @@ $(function(){
 					// },v_i*200);
 				}
 			});
-			var polygon = new BMap.Polygon(point_arr, {strokeColor:"", fillColor: "url(#pattern_test)"||v.color || (v.precipitation == 1?'rgba(0,0,255,0.5)':'red'),strokeWeight: 1, strokeOpacity:1});
+			var polygon = new BMap.Polygon(point_arr, {strokeColor:"", fillColor: "url(#myClass)"||v.color || (v.precipitation == 1?'rgba(0,0,255,0.5)':'red'),strokeWeight: 1, strokeOpacity:1});
 			map.addOverlay(polygon);   //增加面
-			console.log(polygon);
 			var symbols = v.symbols;
 			if(symbols){
 				var text = symbols.text;
@@ -121,6 +120,9 @@ $(function(){
 			}else if('37' == type){
 				text = '台';
 				color = 'green';
+			}else{
+				text = type;
+				color = 'blue';
 			}
 			var label = new BMap.Label(text, {
 				position: new BMap.Point(v.x,v.y),
@@ -221,7 +223,7 @@ $(function(){
 			var polyline = new BMap.Polyline(point_arr, {strokeColor:v.color||"red", strokeWeight: 1, strokeOpacity:0.5});
 			map.addOverlay(polyline);   //增加折线
 		});
-		
+
 		// setTimeout(function(){
 
 		// 	if(!isInitedDefs){
