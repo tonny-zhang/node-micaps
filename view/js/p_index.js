@@ -11,27 +11,31 @@ $(function(){
 	map.enableScrollWheelZoom();
 	var isInitedDefs = false;
 
-	$.getJSON('../data/micaps/14/rr112108.048.json',function(data){
+	$.getJSON('../data/micaps/14/rr111308.024.json',function(data){
 		console.log(data);
 		var areas = data.areas;
 		$.each(areas.items,function(i,v){
 			var point_arr = [];
-			
+			// if(v.type != 'add'){
+			// 	return;
+			// }
 			$.each(v.items,function(v_i,v_v){
 				var point = new BMap.Point(v_v.x,v_v.y);
 				point_arr.push(point);
-				if(v.type == 1){
-					// setTimeout(function(){
-					// 	var marker = new BMap.Marker(point);
-					// 	marker.addEventListener("click",function(){
-					// 		var p = marker.getPosition();  //获取marker的位置
-					// 		alert(v_i+' flag = '+v_v.flag+" marker的位置是" + p.lng + "," + p.lat);    
-					// 	});
-					// 	map.addOverlay(marker);
-					// },v_i*200);
-				}
+				// if(v.type != 'add'){
+				// 	setTimeout(function(){
+				// 		var marker = new BMap.Marker(point);
+				// 		marker.addEventListener("click",function(){
+				// 			var p = marker.getPosition();  //获取marker的位置
+				// 			alert(v_i+' flag = '+v_v.flag+" marker的位置是" + p.lng + "," + p.lat);    
+				// 		});
+				// 		map.addOverlay(marker);
+				// 	},v_i*200);
+				// }
 			});
-			var polygon = new BMap.Polygon(point_arr, {strokeColor:"", fillColor: "url(#myClass)"||v.color || (v.precipitation == 1?'rgba(0,0,255,0.5)':'red'),strokeWeight: 1, strokeOpacity:1});
+			var Color = ['red','blue','green','#123','#f26','#ccc','#333'];
+			var radom_color = Color[Math.floor(Math.random()*Color.length)];
+			var polygon = new BMap.Polygon(point_arr, {strokeColor:"", fillColor: radom_color,strokeWeight: 1, strokeOpacity:1});
 			map.addOverlay(polygon);   //增加面
 			var symbols = v.symbols;
 			if(symbols){
@@ -105,7 +109,7 @@ $(function(){
 				var marker = new BMap.Marker(new BMap.Point(v.x,v.y));
 				marker.addEventListener("click",function(){
 					var p = marker.getPosition();  //获取marker的位置
-					alert(" marker的位置是" + p.lng + "," + p.lat);    
+					alert(v.flag+" "+" marker的位置是" + p.lng + "," + p.lat);    
 				});
 				map.addOverlay(marker);
 				return ;
@@ -220,7 +224,7 @@ $(function(){
 				// 	map.addOverlay(marker);
 				// },v_i*200);
 			});
-			var polyline = new BMap.Polyline(point_arr, {strokeColor:v.color||"red", strokeWeight: 1, strokeOpacity:0.5});
+			var polyline = new BMap.Polyline(point_arr, {strokeColor:v.code == 0 ?"blue":"red", strokeWeight: 1, strokeOpacity:0.5});
 			map.addOverlay(polyline);   //增加折线
 		});
 

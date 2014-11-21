@@ -1,2409 +1,5 @@
-1. LINES ->  37
-2. LINES(weight:2,pointLen:78)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 4 72
-3. LINES_POINT()
-3. -> 4 76
-3. LINES_POINT()
-3. -> 2 78
-4. LINES_FLAG(text:985,len:2)
-5. LINES_POINT()
-5. -> 2 2 112.495    80.028     0.000    87.893    79.932     0.000
-2. LINES(weight:2,pointLen:57)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 1 57
-4. LINES_FLAG(text:980,len:1)
-5. LINES_POINT()
-5. -> 1 1 65.314    72.993     0.000
-2. LINES(weight:2,pointLen:85)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 4 72
-3. LINES_POINT()
-3. -> 4 76
-3. LINES_POINT()
-3. -> 4 80
-3. LINES_POINT()
-3. -> 4 84
-3. LINES_POINT()
-3. -> 1 85
-4. LINES_FLAG(text:990,len:2)
-5. LINES_POINT()
-5. -> 2 2 120.095    80.019     0.000    79.777    79.920     0.000
-2. LINES(weight:2,pointLen:159)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 4 72
-3. LINES_POINT()
-3. -> 4 76
-3. LINES_POINT()
-3. -> 4 80
-3. LINES_POINT()
-3. -> 4 84
-3. LINES_POINT()
-3. -> 4 88
-3. LINES_POINT()
-3. -> 4 92
-3. LINES_POINT()
-3. -> 4 96
-3. LINES_POINT()
-3. -> 4 100
-3. LINES_POINT()
-3. -> 4 104
-3. LINES_POINT()
-3. -> 4 108
-3. LINES_POINT()
-3. -> 4 112
-3. LINES_POINT()
-3. -> 4 116
-3. LINES_POINT()
-3. -> 4 120
-3. LINES_POINT()
-3. -> 4 124
-3. LINES_POINT()
-3. -> 4 128
-3. LINES_POINT()
-3. -> 4 132
-3. LINES_POINT()
-3. -> 4 136
-3. LINES_POINT()
-3. -> 4 140
-3. LINES_POINT()
-3. -> 4 144
-3. LINES_POINT()
-3. -> 4 148
-3. LINES_POINT()
-3. -> 4 152
-3. LINES_POINT()
-3. -> 4 156
-3. LINES_POINT()
-3. -> 3 159
-4. LINES_FLAG(text:995,len:2)
-5. LINES_POINT()
-5. -> 2 2 126.127    79.877     0.000    71.253    79.969     0.000
-2. LINES(weight:2,pointLen:92)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 4 72
-3. LINES_POINT()
-3. -> 4 76
-3. LINES_POINT()
-3. -> 4 80
-3. LINES_POINT()
-3. -> 4 84
-3. LINES_POINT()
-3. -> 4 88
-3. LINES_POINT()
-3. -> 4 92
-4. LINES_FLAG(text:1000,len:2)
-5. LINES_POINT()
-5. -> 2 2 61.319    80.033     0.000     0.299    59.312     0.000
-2. LINES(weight:2,pointLen:99)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 4 72
-3. LINES_POINT()
-3. -> 4 76
-3. LINES_POINT()
-3. -> 4 80
-3. LINES_POINT()
-3. -> 4 84
-3. LINES_POINT()
-3. -> 4 88
-3. LINES_POINT()
-3. -> 4 92
-3. LINES_POINT()
-3. -> 4 96
-3. LINES_POINT()
-3. -> 3 99
-4. LINES_FLAG(text:1005,len:2)
-5. LINES_POINT()
-5. -> 2 2 -0.061    72.502     0.000     0.241    61.944     0.000
-2. LINES(weight:2,pointLen:207)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 4 72
-3. LINES_POINT()
-3. -> 4 76
-3. LINES_POINT()
-3. -> 4 80
-3. LINES_POINT()
-3. -> 4 84
-3. LINES_POINT()
-3. -> 4 88
-3. LINES_POINT()
-3. -> 4 92
-3. LINES_POINT()
-3. -> 4 96
-3. LINES_POINT()
-3. -> 4 100
-3. LINES_POINT()
-3. -> 4 104
-3. LINES_POINT()
-3. -> 4 108
-3. LINES_POINT()
-3. -> 4 112
-3. LINES_POINT()
-3. -> 4 116
-3. LINES_POINT()
-3. -> 4 120
-3. LINES_POINT()
-3. -> 4 124
-3. LINES_POINT()
-3. -> 4 128
-3. LINES_POINT()
-3. -> 4 132
-3. LINES_POINT()
-3. -> 4 136
-3. LINES_POINT()
-3. -> 4 140
-3. LINES_POINT()
-3. -> 4 144
-3. LINES_POINT()
-3. -> 4 148
-3. LINES_POINT()
-3. -> 4 152
-3. LINES_POINT()
-3. -> 4 156
-3. LINES_POINT()
-3. -> 4 160
-3. LINES_POINT()
-3. -> 4 164
-3. LINES_POINT()
-3. -> 4 168
-3. LINES_POINT()
-3. -> 4 172
-3. LINES_POINT()
-3. -> 4 176
-3. LINES_POINT()
-3. -> 4 180
-3. LINES_POINT()
-3. -> 4 184
-3. LINES_POINT()
-3. -> 4 188
-3. LINES_POINT()
-3. -> 4 192
-3. LINES_POINT()
-3. -> 4 196
-3. LINES_POINT()
-3. -> 4 200
-3. LINES_POINT()
-3. -> 4 204
-3. LINES_POINT()
-3. -> 3 207
-4. LINES_FLAG(text:1000,len:2)
-5. LINES_POINT()
-5. -> 2 2 133.249    79.957     0.000     0.217    47.818     0.000
-2. LINES(weight:2,pointLen:143)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 4 72
-3. LINES_POINT()
-3. -> 4 76
-3. LINES_POINT()
-3. -> 4 80
-3. LINES_POINT()
-3. -> 4 84
-3. LINES_POINT()
-3. -> 4 88
-3. LINES_POINT()
-3. -> 4 92
-3. LINES_POINT()
-3. -> 4 96
-3. LINES_POINT()
-3. -> 4 100
-3. LINES_POINT()
-3. -> 4 104
-3. LINES_POINT()
-3. -> 4 108
-3. LINES_POINT()
-3. -> 4 112
-3. LINES_POINT()
-3. -> 4 116
-3. LINES_POINT()
-3. -> 4 120
-3. LINES_POINT()
-3. -> 4 124
-3. LINES_POINT()
-3. -> 4 128
-3. LINES_POINT()
-3. -> 4 132
-3. LINES_POINT()
-3. -> 4 136
-3. LINES_POINT()
-3. -> 4 140
-3. LINES_POINT()
-3. -> 3 143
-4. LINES_FLAG(text:1005,len:2)
-5. LINES_POINT()
-5. -> 2 2 140.327    79.981     0.000    -0.114    38.377     0.000
-2. LINES(weight:2,pointLen:134)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 4 72
-3. LINES_POINT()
-3. -> 4 76
-3. LINES_POINT()
-3. -> 4 80
-3. LINES_POINT()
-3. -> 4 84
-3. LINES_POINT()
-3. -> 4 88
-3. LINES_POINT()
-3. -> 4 92
-3. LINES_POINT()
-3. -> 4 96
-3. LINES_POINT()
-3. -> 4 100
-3. LINES_POINT()
-3. -> 4 104
-3. LINES_POINT()
-3. -> 4 108
-3. LINES_POINT()
-3. -> 4 112
-3. LINES_POINT()
-3. -> 4 116
-3. LINES_POINT()
-3. -> 4 120
-3. LINES_POINT()
-3. -> 4 124
-3. LINES_POINT()
-3. -> 4 128
-3. LINES_POINT()
-3. -> 4 132
-3. LINES_POINT()
-3. -> 2 134
-4. LINES_FLAG(text:1010,len:2)
-5. LINES_POINT()
-5. -> 2 2 147.703    80.010     0.000     2.634    32.481     0.000
-2. LINES(weight:2,pointLen:191)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 4 72
-3. LINES_POINT()
-3. -> 4 76
-3. LINES_POINT()
-3. -> 4 80
-3. LINES_POINT()
-3. -> 4 84
-3. LINES_POINT()
-3. -> 4 88
-3. LINES_POINT()
-3. -> 4 92
-3. LINES_POINT()
-3. -> 4 96
-3. LINES_POINT()
-3. -> 4 100
-3. LINES_POINT()
-3. -> 4 104
-3. LINES_POINT()
-3. -> 4 108
-3. LINES_POINT()
-3. -> 4 112
-3. LINES_POINT()
-3. -> 4 116
-3. LINES_POINT()
-3. -> 4 120
-3. LINES_POINT()
-3. -> 4 124
-3. LINES_POINT()
-3. -> 4 128
-3. LINES_POINT()
-3. -> 4 132
-3. LINES_POINT()
-3. -> 4 136
-3. LINES_POINT()
-3. -> 4 140
-3. LINES_POINT()
-3. -> 4 144
-3. LINES_POINT()
-3. -> 4 148
-3. LINES_POINT()
-3. -> 4 152
-3. LINES_POINT()
-3. -> 4 156
-3. LINES_POINT()
-3. -> 4 160
-3. LINES_POINT()
-3. -> 4 164
-3. LINES_POINT()
-3. -> 4 168
-3. LINES_POINT()
-3. -> 4 172
-3. LINES_POINT()
-3. -> 4 176
-3. LINES_POINT()
-3. -> 4 180
-3. LINES_POINT()
-3. -> 4 184
-3. LINES_POINT()
-3. -> 4 188
-3. LINES_POINT()
-3. -> 3 191
-4. LINES_FLAG(text:1010,len:2)
-5. LINES_POINT()
-5. -> 2 2 160.729    74.925     0.000   159.715    45.910     0.000
-2. LINES(weight:2,pointLen:64)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-4. LINES_FLAG(text:1005,len:2)
-5. LINES_POINT()
-5. -> 2 2 159.881    47.346     0.000   160.300    72.846     0.000
-2. LINES(weight:2,pointLen:64)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-4. LINES_FLAG(text:1000,len:2)
-5. LINES_POINT()
-5. -> 2 2 160.213    71.273     0.000   159.934    48.524     0.000
-2. LINES(weight:2,pointLen:81)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 4 72
-3. LINES_POINT()
-3. -> 4 76
-3. LINES_POINT()
-3. -> 4 80
-3. LINES_POINT()
-3. -> 1 81
-4. LINES_FLAG(text:995,len:2)
-5. LINES_POINT()
-5. -> 2 2 159.859    49.984     0.000   160.077    69.542     0.000
-2. LINES(weight:2,pointLen:69)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 1 69
-4. LINES_FLAG(text:990,len:2)
-5. LINES_POINT()
-5. -> 2 2 160.108    65.723     0.000   159.580    51.374     0.000
-2. LINES(weight:2,pointLen:62)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 2 62
-4. LINES_FLAG(text:985,len:2)
-5. LINES_POINT()
-5. -> 2 2 159.858    52.485     0.000   159.931    64.126     0.000
-2. LINES(weight:2,pointLen:52)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-4. LINES_FLAG(text:980,len:2)
-5. LINES_POINT()
-5. -> 2 2 160.027    62.710     0.000   159.865    54.115     0.000
-2. LINES(weight:2,pointLen:347)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 4 72
-3. LINES_POINT()
-3. -> 4 76
-3. LINES_POINT()
-3. -> 4 80
-3. LINES_POINT()
-3. -> 4 84
-3. LINES_POINT()
-3. -> 4 88
-3. LINES_POINT()
-3. -> 4 92
-3. LINES_POINT()
-3. -> 4 96
-3. LINES_POINT()
-3. -> 4 100
-3. LINES_POINT()
-3. -> 4 104
-3. LINES_POINT()
-3. -> 4 108
-3. LINES_POINT()
-3. -> 4 112
-3. LINES_POINT()
-3. -> 4 116
-3. LINES_POINT()
-3. -> 4 120
-3. LINES_POINT()
-3. -> 4 124
-3. LINES_POINT()
-3. -> 4 128
-3. LINES_POINT()
-3. -> 4 132
-3. LINES_POINT()
-3. -> 4 136
-3. LINES_POINT()
-3. -> 4 140
-3. LINES_POINT()
-3. -> 4 144
-3. LINES_POINT()
-3. -> 4 148
-3. LINES_POINT()
-3. -> 4 152
-3. LINES_POINT()
-3. -> 4 156
-3. LINES_POINT()
-3. -> 4 160
-3. LINES_POINT()
-3. -> 4 164
-3. LINES_POINT()
-3. -> 4 168
-3. LINES_POINT()
-3. -> 4 172
-3. LINES_POINT()
-3. -> 4 176
-3. LINES_POINT()
-3. -> 4 180
-3. LINES_POINT()
-3. -> 4 184
-3. LINES_POINT()
-3. -> 4 188
-3. LINES_POINT()
-3. -> 4 192
-3. LINES_POINT()
-3. -> 4 196
-3. LINES_POINT()
-3. -> 4 200
-3. LINES_POINT()
-3. -> 4 204
-3. LINES_POINT()
-3. -> 4 208
-3. LINES_POINT()
-3. -> 4 212
-3. LINES_POINT()
-3. -> 4 216
-3. LINES_POINT()
-3. -> 4 220
-3. LINES_POINT()
-3. -> 4 224
-3. LINES_POINT()
-3. -> 4 228
-3. LINES_POINT()
-3. -> 4 232
-3. LINES_POINT()
-3. -> 4 236
-3. LINES_POINT()
-3. -> 4 240
-3. LINES_POINT()
-3. -> 4 244
-3. LINES_POINT()
-3. -> 4 248
-3. LINES_POINT()
-3. -> 4 252
-3. LINES_POINT()
-3. -> 4 256
-3. LINES_POINT()
-3. -> 4 260
-3. LINES_POINT()
-3. -> 4 264
-3. LINES_POINT()
-3. -> 4 268
-3. LINES_POINT()
-3. -> 4 272
-3. LINES_POINT()
-3. -> 4 276
-3. LINES_POINT()
-3. -> 4 280
-3. LINES_POINT()
-3. -> 4 284
-3. LINES_POINT()
-3. -> 4 288
-3. LINES_POINT()
-3. -> 4 292
-3. LINES_POINT()
-3. -> 4 296
-3. LINES_POINT()
-3. -> 4 300
-3. LINES_POINT()
-3. -> 4 304
-3. LINES_POINT()
-3. -> 4 308
-3. LINES_POINT()
-3. -> 4 312
-3. LINES_POINT()
-3. -> 4 316
-3. LINES_POINT()
-3. -> 4 320
-3. LINES_POINT()
-3. -> 4 324
-3. LINES_POINT()
-3. -> 4 328
-3. LINES_POINT()
-3. -> 4 332
-3. LINES_POINT()
-3. -> 4 336
-3. LINES_POINT()
-3. -> 4 340
-3. LINES_POINT()
-3. -> 4 344
-3. LINES_POINT()
-3. -> 3 347
-4. LINES_FLAG(text:1015,len:2)
-5. LINES_POINT()
-5. -> 2 2 159.610    44.341     0.000     9.255    25.665     0.000
-2. LINES(weight:2,pointLen:850)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 4 72
-3. LINES_POINT()
-3. -> 4 76
-3. LINES_POINT()
-3. -> 4 80
-3. LINES_POINT()
-3. -> 4 84
-3. LINES_POINT()
-3. -> 4 88
-3. LINES_POINT()
-3. -> 4 92
-3. LINES_POINT()
-3. -> 4 96
-3. LINES_POINT()
-3. -> 4 100
-3. LINES_POINT()
-3. -> 4 104
-3. LINES_POINT()
-3. -> 4 108
-3. LINES_POINT()
-3. -> 4 112
-3. LINES_POINT()
-3. -> 4 116
-3. LINES_POINT()
-3. -> 4 120
-3. LINES_POINT()
-3. -> 4 124
-3. LINES_POINT()
-3. -> 4 128
-3. LINES_POINT()
-3. -> 4 132
-3. LINES_POINT()
-3. -> 4 136
-3. LINES_POINT()
-3. -> 4 140
-3. LINES_POINT()
-3. -> 4 144
-3. LINES_POINT()
-3. -> 4 148
-3. LINES_POINT()
-3. -> 4 152
-3. LINES_POINT()
-3. -> 4 156
-3. LINES_POINT()
-3. -> 4 160
-3. LINES_POINT()
-3. -> 4 164
-3. LINES_POINT()
-3. -> 4 168
-3. LINES_POINT()
-3. -> 4 172
-3. LINES_POINT()
-3. -> 4 176
-3. LINES_POINT()
-3. -> 4 180
-3. LINES_POINT()
-3. -> 4 184
-3. LINES_POINT()
-3. -> 4 188
-3. LINES_POINT()
-3. -> 4 192
-3. LINES_POINT()
-3. -> 4 196
-3. LINES_POINT()
-3. -> 4 200
-3. LINES_POINT()
-3. -> 4 204
-3. LINES_POINT()
-3. -> 4 208
-3. LINES_POINT()
-3. -> 4 212
-3. LINES_POINT()
-3. -> 4 216
-3. LINES_POINT()
-3. -> 4 220
-3. LINES_POINT()
-3. -> 4 224
-3. LINES_POINT()
-3. -> 4 228
-3. LINES_POINT()
-3. -> 4 232
-3. LINES_POINT()
-3. -> 4 236
-3. LINES_POINT()
-3. -> 4 240
-3. LINES_POINT()
-3. -> 4 244
-3. LINES_POINT()
-3. -> 4 248
-3. LINES_POINT()
-3. -> 4 252
-3. LINES_POINT()
-3. -> 4 256
-3. LINES_POINT()
-3. -> 4 260
-3. LINES_POINT()
-3. -> 4 264
-3. LINES_POINT()
-3. -> 4 268
-3. LINES_POINT()
-3. -> 4 272
-3. LINES_POINT()
-3. -> 4 276
-3. LINES_POINT()
-3. -> 4 280
-3. LINES_POINT()
-3. -> 4 284
-3. LINES_POINT()
-3. -> 4 288
-3. LINES_POINT()
-3. -> 4 292
-3. LINES_POINT()
-3. -> 4 296
-3. LINES_POINT()
-3. -> 4 300
-3. LINES_POINT()
-3. -> 4 304
-3. LINES_POINT()
-3. -> 4 308
-3. LINES_POINT()
-3. -> 4 312
-3. LINES_POINT()
-3. -> 4 316
-3. LINES_POINT()
-3. -> 4 320
-3. LINES_POINT()
-3. -> 4 324
-3. LINES_POINT()
-3. -> 4 328
-3. LINES_POINT()
-3. -> 4 332
-3. LINES_POINT()
-3. -> 4 336
-3. LINES_POINT()
-3. -> 4 340
-3. LINES_POINT()
-3. -> 4 344
-3. LINES_POINT()
-3. -> 4 348
-3. LINES_POINT()
-3. -> 4 352
-3. LINES_POINT()
-3. -> 4 356
-3. LINES_POINT()
-3. -> 4 360
-3. LINES_POINT()
-3. -> 4 364
-3. LINES_POINT()
-3. -> 4 368
-3. LINES_POINT()
-3. -> 4 372
-3. LINES_POINT()
-3. -> 4 376
-3. LINES_POINT()
-3. -> 4 380
-3. LINES_POINT()
-3. -> 4 384
-3. LINES_POINT()
-3. -> 4 388
-3. LINES_POINT()
-3. -> 4 392
-3. LINES_POINT()
-3. -> 4 396
-3. LINES_POINT()
-3. -> 4 400
-3. LINES_POINT()
-3. -> 4 404
-3. LINES_POINT()
-3. -> 4 408
-3. LINES_POINT()
-3. -> 4 412
-3. LINES_POINT()
-3. -> 4 416
-3. LINES_POINT()
-3. -> 4 420
-3. LINES_POINT()
-3. -> 4 424
-3. LINES_POINT()
-3. -> 4 428
-3. LINES_POINT()
-3. -> 4 432
-3. LINES_POINT()
-3. -> 4 436
-3. LINES_POINT()
-3. -> 4 440
-3. LINES_POINT()
-3. -> 4 444
-3. LINES_POINT()
-3. -> 4 448
-3. LINES_POINT()
-3. -> 4 452
-3. LINES_POINT()
-3. -> 4 456
-3. LINES_POINT()
-3. -> 4 460
-3. LINES_POINT()
-3. -> 4 464
-3. LINES_POINT()
-3. -> 4 468
-3. LINES_POINT()
-3. -> 4 472
-3. LINES_POINT()
-3. -> 4 476
-3. LINES_POINT()
-3. -> 4 480
-3. LINES_POINT()
-3. -> 4 484
-3. LINES_POINT()
-3. -> 4 488
-3. LINES_POINT()
-3. -> 4 492
-3. LINES_POINT()
-3. -> 4 496
-3. LINES_POINT()
-3. -> 4 500
-3. LINES_POINT()
-3. -> 4 504
-3. LINES_POINT()
-3. -> 4 508
-3. LINES_POINT()
-3. -> 4 512
-3. LINES_POINT()
-3. -> 4 516
-3. LINES_POINT()
-3. -> 4 520
-3. LINES_POINT()
-3. -> 4 524
-3. LINES_POINT()
-3. -> 4 528
-3. LINES_POINT()
-3. -> 4 532
-3. LINES_POINT()
-3. -> 4 536
-3. LINES_POINT()
-3. -> 4 540
-3. LINES_POINT()
-3. -> 4 544
-3. LINES_POINT()
-3. -> 4 548
-3. LINES_POINT()
-3. -> 4 552
-3. LINES_POINT()
-3. -> 4 556
-3. LINES_POINT()
-3. -> 4 560
-3. LINES_POINT()
-3. -> 4 564
-3. LINES_POINT()
-3. -> 4 568
-3. LINES_POINT()
-3. -> 4 572
-3. LINES_POINT()
-3. -> 4 576
-3. LINES_POINT()
-3. -> 4 580
-3. LINES_POINT()
-3. -> 4 584
-3. LINES_POINT()
-3. -> 4 588
-3. LINES_POINT()
-3. -> 4 592
-3. LINES_POINT()
-3. -> 4 596
-3. LINES_POINT()
-3. -> 4 600
-3. LINES_POINT()
-3. -> 4 604
-3. LINES_POINT()
-3. -> 4 608
-3. LINES_POINT()
-3. -> 4 612
-3. LINES_POINT()
-3. -> 4 616
-3. LINES_POINT()
-3. -> 4 620
-3. LINES_POINT()
-3. -> 4 624
-3. LINES_POINT()
-3. -> 4 628
-3. LINES_POINT()
-3. -> 4 632
-3. LINES_POINT()
-3. -> 4 636
-3. LINES_POINT()
-3. -> 4 640
-3. LINES_POINT()
-3. -> 4 644
-3. LINES_POINT()
-3. -> 4 648
-3. LINES_POINT()
-3. -> 4 652
-3. LINES_POINT()
-3. -> 4 656
-3. LINES_POINT()
-3. -> 4 660
-3. LINES_POINT()
-3. -> 4 664
-3. LINES_POINT()
-3. -> 4 668
-3. LINES_POINT()
-3. -> 4 672
-3. LINES_POINT()
-3. -> 4 676
-3. LINES_POINT()
-3. -> 4 680
-3. LINES_POINT()
-3. -> 4 684
-3. LINES_POINT()
-3. -> 4 688
-3. LINES_POINT()
-3. -> 4 692
-3. LINES_POINT()
-3. -> 4 696
-3. LINES_POINT()
-3. -> 4 700
-3. LINES_POINT()
-3. -> 4 704
-3. LINES_POINT()
-3. -> 4 708
-3. LINES_POINT()
-3. -> 4 712
-3. LINES_POINT()
-3. -> 4 716
-3. LINES_POINT()
-3. -> 4 720
-3. LINES_POINT()
-3. -> 4 724
-3. LINES_POINT()
-3. -> 4 728
-3. LINES_POINT()
-3. -> 4 732
-3. LINES_POINT()
-3. -> 4 736
-3. LINES_POINT()
-3. -> 4 740
-3. LINES_POINT()
-3. -> 4 744
-3. LINES_POINT()
-3. -> 4 748
-3. LINES_POINT()
-3. -> 4 752
-3. LINES_POINT()
-3. -> 4 756
-3. LINES_POINT()
-3. -> 4 760
-3. LINES_POINT()
-3. -> 4 764
-3. LINES_POINT()
-3. -> 4 768
-3. LINES_POINT()
-3. -> 4 772
-3. LINES_POINT()
-3. -> 4 776
-3. LINES_POINT()
-3. -> 4 780
-3. LINES_POINT()
-3. -> 4 784
-3. LINES_POINT()
-3. -> 4 788
-3. LINES_POINT()
-3. -> 4 792
-3. LINES_POINT()
-3. -> 4 796
-3. LINES_POINT()
-3. -> 4 800
-3. LINES_POINT()
-3. -> 4 804
-3. LINES_POINT()
-3. -> 4 808
-3. LINES_POINT()
-3. -> 4 812
-3. LINES_POINT()
-3. -> 4 816
-3. LINES_POINT()
-3. -> 4 820
-3. LINES_POINT()
-3. -> 4 824
-3. LINES_POINT()
-3. -> 4 828
-3. LINES_POINT()
-3. -> 4 832
-3. LINES_POINT()
-3. -> 4 836
-3. LINES_POINT()
-3. -> 4 840
-3. LINES_POINT()
-3. -> 4 844
-3. LINES_POINT()
-3. -> 4 848
-3. LINES_POINT()
-3. -> 2 850
-4. LINES_FLAG(text:1020,len:2)
-5. LINES_POINT()
-5. -> 2 2 159.655    42.045     0.000   159.546    26.327     0.000
-2. LINES(weight:2,pointLen:71)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 3 71
-4. LINES_FLAG(text:1025,len:2)
-5. LINES_POINT()
-5. -> 2 2 159.414    32.152     0.000   159.801    39.174     0.000
-2. LINES(weight:2,pointLen:336)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 4 72
-3. LINES_POINT()
-3. -> 4 76
-3. LINES_POINT()
-3. -> 4 80
-3. LINES_POINT()
-3. -> 4 84
-3. LINES_POINT()
-3. -> 4 88
-3. LINES_POINT()
-3. -> 4 92
-3. LINES_POINT()
-3. -> 4 96
-3. LINES_POINT()
-3. -> 4 100
-3. LINES_POINT()
-3. -> 4 104
-3. LINES_POINT()
-3. -> 4 108
-3. LINES_POINT()
-3. -> 4 112
-3. LINES_POINT()
-3. -> 4 116
-3. LINES_POINT()
-3. -> 4 120
-3. LINES_POINT()
-3. -> 4 124
-3. LINES_POINT()
-3. -> 4 128
-3. LINES_POINT()
-3. -> 4 132
-3. LINES_POINT()
-3. -> 4 136
-3. LINES_POINT()
-3. -> 4 140
-3. LINES_POINT()
-3. -> 4 144
-3. LINES_POINT()
-3. -> 4 148
-3. LINES_POINT()
-3. -> 4 152
-3. LINES_POINT()
-3. -> 4 156
-3. LINES_POINT()
-3. -> 4 160
-3. LINES_POINT()
-3. -> 4 164
-3. LINES_POINT()
-3. -> 4 168
-3. LINES_POINT()
-3. -> 4 172
-3. LINES_POINT()
-3. -> 4 176
-3. LINES_POINT()
-3. -> 4 180
-3. LINES_POINT()
-3. -> 4 184
-3. LINES_POINT()
-3. -> 4 188
-3. LINES_POINT()
-3. -> 4 192
-3. LINES_POINT()
-3. -> 4 196
-3. LINES_POINT()
-3. -> 4 200
-3. LINES_POINT()
-3. -> 4 204
-3. LINES_POINT()
-3. -> 4 208
-3. LINES_POINT()
-3. -> 4 212
-3. LINES_POINT()
-3. -> 4 216
-3. LINES_POINT()
-3. -> 4 220
-3. LINES_POINT()
-3. -> 4 224
-3. LINES_POINT()
-3. -> 4 228
-3. LINES_POINT()
-3. -> 4 232
-3. LINES_POINT()
-3. -> 4 236
-3. LINES_POINT()
-3. -> 4 240
-3. LINES_POINT()
-3. -> 4 244
-3. LINES_POINT()
-3. -> 4 248
-3. LINES_POINT()
-3. -> 4 252
-3. LINES_POINT()
-3. -> 4 256
-3. LINES_POINT()
-3. -> 4 260
-3. LINES_POINT()
-3. -> 4 264
-3. LINES_POINT()
-3. -> 4 268
-3. LINES_POINT()
-3. -> 4 272
-3. LINES_POINT()
-3. -> 4 276
-3. LINES_POINT()
-3. -> 4 280
-3. LINES_POINT()
-3. -> 4 284
-3. LINES_POINT()
-3. -> 4 288
-3. LINES_POINT()
-3. -> 4 292
-3. LINES_POINT()
-3. -> 4 296
-3. LINES_POINT()
-3. -> 4 300
-3. LINES_POINT()
-3. -> 4 304
-3. LINES_POINT()
-3. -> 4 308
-3. LINES_POINT()
-3. -> 4 312
-3. LINES_POINT()
-3. -> 4 316
-3. LINES_POINT()
-3. -> 4 320
-3. LINES_POINT()
-3. -> 4 324
-3. LINES_POINT()
-3. -> 4 328
-3. LINES_POINT()
-3. -> 4 332
-3. LINES_POINT()
-3. -> 4 336
-4. LINES_FLAG(text:1025,len:1)
-5. LINES_POINT()
-5. -> 1 1 105.126    62.125     0.000
-2. LINES(weight:2,pointLen:127)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 4 72
-3. LINES_POINT()
-3. -> 4 76
-3. LINES_POINT()
-3. -> 4 80
-3. LINES_POINT()
-3. -> 4 84
-3. LINES_POINT()
-3. -> 4 88
-3. LINES_POINT()
-3. -> 4 92
-3. LINES_POINT()
-3. -> 4 96
-3. LINES_POINT()
-3. -> 4 100
-3. LINES_POINT()
-3. -> 4 104
-3. LINES_POINT()
-3. -> 4 108
-3. LINES_POINT()
-3. -> 4 112
-3. LINES_POINT()
-3. -> 4 116
-3. LINES_POINT()
-3. -> 4 120
-3. LINES_POINT()
-3. -> 4 124
-3. LINES_POINT()
-3. -> 3 127
-4. LINES_FLAG(text:1030,len:1)
-5. LINES_POINT()
-5. -> 1 1 102.620    60.973     0.000
-2. LINES(weight:2,pointLen:43)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 3 43
-4. LINES_FLAG(text:1035,len:1)
-5. LINES_POINT()
-5. -> 1 1 98.823    53.652     0.000
-2. LINES(weight:2,pointLen:50)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 2 50
-4. LINES_FLAG(text:1015,len:1)
-5. LINES_POINT()
-5. -> 1 1 54.734    50.345     0.000
-2. LINES(weight:2,pointLen:134)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 4 72
-3. LINES_POINT()
-3. -> 4 76
-3. LINES_POINT()
-3. -> 4 80
-3. LINES_POINT()
-3. -> 4 84
-3. LINES_POINT()
-3. -> 4 88
-3. LINES_POINT()
-3. -> 4 92
-3. LINES_POINT()
-3. -> 4 96
-3. LINES_POINT()
-3. -> 4 100
-3. LINES_POINT()
-3. -> 4 104
-3. LINES_POINT()
-3. -> 4 108
-3. LINES_POINT()
-3. -> 4 112
-3. LINES_POINT()
-3. -> 4 116
-3. LINES_POINT()
-3. -> 4 120
-3. LINES_POINT()
-3. -> 4 124
-3. LINES_POINT()
-3. -> 4 128
-3. LINES_POINT()
-3. -> 4 132
-3. LINES_POINT()
-3. -> 2 134
-4. LINES_FLAG(text:1025,len:1)
-5. LINES_POINT()
-5. -> 1 1 40.517    51.514     0.000
-2. LINES(weight:2,pointLen:43)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 3 43
-4. LINES_FLAG(text:1030,len:1)
-5. LINES_POINT()
-5. -> 1 1 42.749    44.662     0.000
-2. LINES(weight:2,pointLen:263)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 4 72
-3. LINES_POINT()
-3. -> 4 76
-3. LINES_POINT()
-3. -> 4 80
-3. LINES_POINT()
-3. -> 4 84
-3. LINES_POINT()
-3. -> 4 88
-3. LINES_POINT()
-3. -> 4 92
-3. LINES_POINT()
-3. -> 4 96
-3. LINES_POINT()
-3. -> 4 100
-3. LINES_POINT()
-3. -> 4 104
-3. LINES_POINT()
-3. -> 4 108
-3. LINES_POINT()
-3. -> 4 112
-3. LINES_POINT()
-3. -> 4 116
-3. LINES_POINT()
-3. -> 4 120
-3. LINES_POINT()
-3. -> 4 124
-3. LINES_POINT()
-3. -> 4 128
-3. LINES_POINT()
-3. -> 4 132
-3. LINES_POINT()
-3. -> 4 136
-3. LINES_POINT()
-3. -> 4 140
-3. LINES_POINT()
-3. -> 4 144
-3. LINES_POINT()
-3. -> 4 148
-3. LINES_POINT()
-3. -> 4 152
-3. LINES_POINT()
-3. -> 4 156
-3. LINES_POINT()
-3. -> 4 160
-3. LINES_POINT()
-3. -> 4 164
-3. LINES_POINT()
-3. -> 4 168
-3. LINES_POINT()
-3. -> 4 172
-3. LINES_POINT()
-3. -> 4 176
-3. LINES_POINT()
-3. -> 4 180
-3. LINES_POINT()
-3. -> 4 184
-3. LINES_POINT()
-3. -> 4 188
-3. LINES_POINT()
-3. -> 4 192
-3. LINES_POINT()
-3. -> 4 196
-3. LINES_POINT()
-3. -> 4 200
-3. LINES_POINT()
-3. -> 4 204
-3. LINES_POINT()
-3. -> 4 208
-3. LINES_POINT()
-3. -> 4 212
-3. LINES_POINT()
-3. -> 4 216
-3. LINES_POINT()
-3. -> 4 220
-3. LINES_POINT()
-3. -> 4 224
-3. LINES_POINT()
-3. -> 4 228
-3. LINES_POINT()
-3. -> 4 232
-3. LINES_POINT()
-3. -> 4 236
-3. LINES_POINT()
-3. -> 4 240
-3. LINES_POINT()
-3. -> 4 244
-3. LINES_POINT()
-3. -> 4 248
-3. LINES_POINT()
-3. -> 4 252
-3. LINES_POINT()
-3. -> 4 256
-3. LINES_POINT()
-3. -> 4 260
-3. LINES_POINT()
-3. -> 3 263
-4. LINES_FLAG(text:1015,len:2)
-5. LINES_POINT()
-5. -> 2 2 159.510    20.914     0.000    22.506    14.358     0.000
-2. LINES(weight:2,pointLen:57)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 1 57
-4. LINES_FLAG(text:1010,len:1)
-5. LINES_POINT()
-5. -> 1 1 56.738    35.092     0.000
-2. LINES(weight:2,pointLen:55)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 3 55
-4. LINES_FLAG(text:1010,len:2)
-5. LINES_POINT()
-5. -> 2 2 83.453     9.831     0.000    91.312     4.634     0.000
-2. LINES(weight:2,pointLen:43)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 3 43
-4. LINES_FLAG(text:1015,len:1)
-5. LINES_POINT()
-5. -> 1 1 140.424    13.277     0.000
-2. LINES(weight:2,pointLen:91)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 4 60
-3. LINES_POINT()
-3. -> 4 64
-3. LINES_POINT()
-3. -> 4 68
-3. LINES_POINT()
-3. -> 4 72
-3. LINES_POINT()
-3. -> 4 76
-3. LINES_POINT()
-3. -> 4 80
-3. LINES_POINT()
-3. -> 4 84
-3. LINES_POINT()
-3. -> 4 88
-3. LINES_POINT()
-3. -> 3 91
-4. LINES_FLAG(text:1010,len:1)
-5. LINES_POINT()
-5. -> 1 1 136.872    28.611     0.000
-2. LINES(weight:2,pointLen:43)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 3 43
-4. LINES_FLAG(text:1005,len:1)
-5. LINES_POINT()
-5. -> 1 1 136.964    27.976     0.000
-2. LINES(weight:2,pointLen:43)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 3 43
-4. LINES_FLAG(text:1000,len:1)
-5. LINES_POINT()
-5. -> 1 1 136.946    26.945     0.000
-2. LINES(weight:2,pointLen:43)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 3 43
-4. LINES_FLAG(text:995,len:1)
-5. LINES_POINT()
-5. -> 1 1 137.123    26.416     0.000
-2. LINES(weight:2,pointLen:43)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 3 43
-4. LINES_FLAG(text:990,len:1)
-5. LINES_POINT()
-5. -> 1 1 136.987    25.945     0.000
-2. LINES(weight:2,pointLen:43)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 3 43
-4. LINES_FLAG(text:985,len:1)
-5. LINES_POINT()
-5. -> 1 1 137.168    25.437     0.000
-2. LINES(weight:2,pointLen:57)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 4 44
-3. LINES_POINT()
-3. -> 4 48
-3. LINES_POINT()
-3. -> 4 52
-3. LINES_POINT()
-3. -> 4 56
-3. LINES_POINT()
-3. -> 1 57
-4. LINES_FLAG(text:990,len:1)
-5. LINES_POINT()
-5. -> 1 1 29.444    64.730     0.000
-2. LINES(weight:2,pointLen:43)
-3. LINES_POINT()
-3. -> 4 4
-3. LINES_POINT()
-3. -> 4 8
-3. LINES_POINT()
-3. -> 4 12
-3. LINES_POINT()
-3. -> 4 16
-3. LINES_POINT()
-3. -> 4 20
-3. LINES_POINT()
-3. -> 4 24
-3. LINES_POINT()
-3. -> 4 28
-3. LINES_POINT()
-3. -> 4 32
-3. LINES_POINT()
-3. -> 4 36
-3. LINES_POINT()
-3. -> 4 40
-3. LINES_POINT()
-3. -> 3 43
-4. LINES_FLAG(text:995,len:1)
-5. LINES_POINT()
-5. -> 1 1 11.341    48.750     0.000
-6. LINES_SYMBOLE(code:2,weight:2,len:64)
+1. LINES ->  0
+6. LINES_SYMBOLE(code:38,weight:2,len:218)
 7. LINES_POINT()
 7. LINES_POINT()
 7. LINES_POINT()
@@ -2420,14 +16,114 @@
 7. LINES_POINT()
 7. LINES_POINT()
 7. LINES_POINT()
-6. LINES_SYMBOLE(code:2,weight:2,len:22)
 7. LINES_POINT()
 7. LINES_POINT()
 7. LINES_POINT()
 7. LINES_POINT()
 7. LINES_POINT()
 7. LINES_POINT()
-8. SYMBOLE(len:22)
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+6. LINES_SYMBOLE(code:0,weight:4,len:29)
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+6. LINES_SYMBOLE(code:0,weight:4,len:43)
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+6. LINES_SYMBOLE(code:0,weight:4,len:134)
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+6. LINES_SYMBOLE(code:0,weight:4,len:43)
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+7. LINES_POINT()
+8. SYMBOLE(len:20)
 9. symbols
 9. symbols
 9. symbols
@@ -2448,7 +144,517 @@
 9. symbols
 9. symbols
 9. symbols
-9. symbols
-9. symbols
-9. CLOSED_CONTOURS(len:0)
-..\data\micaps\14\14110508.000.json save successfully!
+9. CLOSED_CONTOURS(len:12)
+10. area_FLAG(weight:5,len:99)
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+10. area_FLAG(weight:5,len:86)
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+10. area_FLAG(weight:5,len:556)
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+10. area_FLAG(weight:5,len:168)
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+10. area_FLAG(weight:5,len:92)
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+10. area_FLAG(weight:2,len:363)
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+10. area_FLAG(weight:2,len:118)
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+10. area_FLAG(weight:2,len:75)
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+10. area_FLAG(weight:5,len:134)
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+10. area_FLAG(weight:4,len:50)
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+10. area_FLAG(weight:4,len:85)
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+10. area_FLAG(weight:2,len:50)
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+11. AREA_POINT()
+[ [ 1, 3 ], [ 2, 0 ], [ 2, 2 ], [ 3, 1 ] ]
+
+tmp_include_relation 1 3
+=== 86 43
+start_index,end_index 68 38
+len -- 86 31 28 15
+no
+areas 1 2
+
+tmp_include_relation 2 0
+=== 556 29
+start_index,end_index 514 361
+len -- 556 154 24 5
+no
+areas 2 2
+
+tmp_include_relation 2 2
+cache_area[2] 2
+false 0 2 2
+false 1 2 2
+
+tmp_include_relation 3 1
+=== 168 43
+start_index,end_index 51 1
+len -- 168 51 27 16
+no
+areas 3 2
+..\data\micaps\14\rr112108.048.json save successfully!
