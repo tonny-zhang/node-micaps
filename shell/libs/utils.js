@@ -163,6 +163,20 @@ var _isInsidePolygon = (function(){
         return inside;
     };
 })();
+/*多边形是否在另一个多边形里*/
+var _polygonIsInsidePolygon = function(polygon_items,sub_polygon_items){
+    var inside_num = 0;
+    sub_polygon_items.forEach(function(v){
+        var flag = _isInsidePolygon(polygon_items,v.x,v.y);
+        if(flag){
+            inside_num++;
+        }
+    });
+    if(inside_num == sub_polygon_items.length){
+        return true;
+    }
+    return false;
+}
 /*线是否在多边形中*/
 var _lineIsInsidePolygon = function(polygon_items,line_items){
     var inside_num = 0;
@@ -239,3 +253,4 @@ function _isInLeftTopLine(line, x, y) {
 exports.isInsidePolygon = _isInsidePolygon;
 exports.isInLeftTopLine = _isInLeftTopLine;
 exports.lineIsInsidePolygon = _lineIsInsidePolygon;
+exports.polygonIsInsidePolygon = _polygonIsInsidePolygon;

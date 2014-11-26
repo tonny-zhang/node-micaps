@@ -47,27 +47,31 @@ ul{
     border-radius: 16px;
     background-color: green;
 }
-.myClass {
-  fill: url(#pattern_test_red);
-  stroke: #009900;
-  stroke-width: 1;
+.frost_line{
+    position: absolute;
+    left: 50%;
+    top: 10px;
+}
+.frost_line div{
+    position: absolute;
+    top: -10px;
+    left: -1px;
+    width: 2px;
+    height: 10px;
+    transform-origin: 0 100%;
+    -webkit-transform-origin: 0 100%;
+    -moz-transform-origin: 0 100%;
+    -o-transform-origin: 0 100%;
 }
 </style>
 <title>micas14类数据展示</title>
 </head>
 <body>
-    <svg id='pattern' xmlns="http://www.w3.org/2000/svg" version="1.1" width=0 height=0>
-        <defs>
-            <pattern id="pattern_test_red" x="12" y="12" width="10000" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
-                <rect x="0" y="0" width="10000" height="1" style="stroke: #009900;fill: #33ff33;"/>
-            </pattern>
-        </defs>
-    </svg>
+    <div class="frost_line"><div></div></div>
     <div id="allmap">
-        <svg></svg>
     </div>
     <script type="text/javascript" src="http://i.tq121.com.cn/j/jquery-1.8.2.js"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=E8MDMS4BVFEMeAxVP3YddQ6X"></script>
-    <script type="text/javascript" src="./js/p_index.js"></script>
+    <script type="text/javascript" src="./p_index.js"></script>
 </body>
 </html>
