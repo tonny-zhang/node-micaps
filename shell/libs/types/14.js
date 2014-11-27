@@ -731,9 +731,10 @@ function _add_area_code(content_info){
 }
 /*对数据进行格式化(数据精简)*/
 function _format(content_info){
-	var items = content_info.line_symbols.items.filter(function(v){
-		return v.code != 0;
-	});
+	var items = content_info.line_symbols.items;
+	// .filter(function(v){
+	// 	return v.code != 0;
+	// });
 	var len = items.length;
 	if(len > 0){
 		content_info.line_symbols.items = items;
@@ -741,5 +742,28 @@ function _format(content_info){
 	}else{
 		delete content_info.line_symbols;
 	}
+	var areas_items = content_info.areas.items;
+	areas_items.forEach(function(v){
+		delete v.len;
+		var _symbols = v.symbols;
+		if(_symbols){
+			delete _symbols.len;
+		}
+	});
+	content_info.areas = areas_items;
+	if(content_info.line_symbols){
+		var line_symbols_items = content_info.line_symbols.items;
+		line_symbols_items.forEach(function(v){
+			delete v.len;
+		});
+		content_info.line_symbols = line_symbols_items;
+	}
+	var line_items = content_info.lines.items;
+	line_items.forEach(function(v){
+		delete v.flags.len;
+		v.point = v.point.items;
+	});
+	content_info.lines = line_items;
+	content_info.symbols = content_info.symbols.items;
 }
 exports.parse = _parse_file;

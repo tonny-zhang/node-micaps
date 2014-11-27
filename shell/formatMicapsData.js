@@ -50,11 +50,13 @@ var format = (function(){
 		});
 	}
 	function formatFile(file_path,format_path_fn){
-		fs.readFile(file_path,function(err,data){
+		fs.readFile(file_path,{encoding: 'utf8'},function(err,data){
 			if(err){
 				console.log(err);
 			}else{
-				var line_arr = data.toString().split(/[\r\n]+/);
+				var line_arr = data.toString().split(/[\r\n]+/).filter(function(v){
+					return !!v.trim()
+				});
 				if(line_arr.length > 0){
 					var m = /diamond\s+(\d+)/.exec(line_arr[0]);
 					var type;
@@ -88,9 +90,10 @@ var format = (function(){
 })();
 
 var file_path = '../data/micaps_source/14/';
-file_path = '../data/micaps_source/14/14110508.000';// 气压线
+// file_path = '../data/micaps_source/14/14110508.000';// 气压线
 // file_path = '../data/micaps_source/14/rr111308.024';
 // file_path = '../data/micaps_source/14/rr112108.048';
+file_path = '../data/micaps_source/14/rrr112708.006';
 
 format(file_path,function(source_path){
 	return source_path.replace('micaps_source','micaps')+'.json';

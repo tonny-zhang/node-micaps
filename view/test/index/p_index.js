@@ -9,6 +9,56 @@ $(function(){
 		console.log(data);
 		// 百度地图API功能
 		map = new BMap.Map("allmap");
+		map.setMapStyle({
+		  styleJson:[
+          {
+                    "featureType": "water",
+                    "elementType": "all",
+                    "stylers": {
+                              "color": "#72b8fe"
+                    }
+          },
+          {
+                    "featureType": "road",
+                    "elementType": "geometry.fill",
+                    "stylers": {
+                              "color": "#ffffff"
+                    }
+          },
+          {
+                    "featureType": "road",
+                    "elementType": "geometry.stroke",
+                    "stylers": {
+                              "color": "#bababa"
+                    }
+          },
+          {
+                    "featureType": "road",
+                    "elementType": "labels.text.fill",
+                    "stylers": {
+                              "color": "#767676"
+                    }
+          },
+          {
+                    "featureType": "road",
+                    "elementType": "labels.text.stroke",
+                    "stylers": {
+                              "color": "#ffffff"
+                    }
+          },
+          {
+                    "featureType": "boundary",
+                    "elementType": "geometry.fill",
+                    "stylers": {
+                              "color": "#b8cb93"
+                    }
+          },
+          {
+                    "featureType": "water",
+                    "elementType": "all",
+                    "stylers": {}
+          }]
+		});
 		// map.addEventListener('addtilelayer',function(){
 		// 	console.log('addtilelayer',$('svg').length);
 		// });
@@ -16,9 +66,10 @@ $(function(){
 		// 	// console.log('addoverlay',$('svg').length);
 		// });
 		map.centerAndZoom(new BMap.Point(116.404, 39.915), 5);
+		// map.centerAndZoom(new BMap.Point(69.772, 46.886), 8);
 		map.enableScrollWheelZoom();
 		var areas = data.areas;
-		$.each(areas.items,function(i_outer,v_outer){
+		$.each(areas,function(i_outer,v_outer){
 			(function(i,v){
 				// setTimeout(function(){
 					var point_arr = [];
@@ -73,9 +124,9 @@ $(function(){
 			})(i_outer,v_outer);
 		});
 		var lines = data.lines;		
-		$.each(lines.items,function(i,v){
+		$.each(lines,function(i,v){
 			var point_arr = [];
-			var points = v.point.items;
+			var points = v.point;
 			if(points.length >= 2){
 				$.each(points,function(p_i,p_v){
 					var point = new BMap.Point(p_v.x, p_v.y);
@@ -94,7 +145,7 @@ $(function(){
 				map.addOverlay(polyline);   //增加折线
 			}
 			var flags = v.flags;
-			if(flags.len > 0){
+			if(flags && flags.items && flags.items.length > 0){
 				var text = flags.text;
 				$.each(flags.items,function(i,v){
 					var label = new BMap.Label(text, {
@@ -118,10 +169,9 @@ $(function(){
 		});
 
 		var symbols = data.symbols;
-		$.each(symbols.items,function(i,v){
+		$.each(symbols,function(i,v){
 			var type = v.type;
 			if(type == 3 || type == 4){
-
 				var marker = new BMap.Marker(new BMap.Point(v.x,v.y));
 				marker.addEventListener("click",function(){
 					var p = marker.getPosition();  //获取marker的位置
@@ -170,24 +220,26 @@ $(function(){
 		});
 
 		var line_symbols = data.line_symbols;
-		$.each(line_symbols.items,function(i,v){
-			var point_arr = [];
-			draw_line_symbols_flag(v.code,v.items);
-			$.each(v.items,function(v_i,v_v){
-				var point = new BMap.Point(v_v.x, v_v.y);
-				point_arr.push(point);
-				// setTimeout(function(){
-				// 	var marker = new BMap.Marker(point);
-				// 	marker.addEventListener("click",function(){
-				// 		var p = marker.getPosition();  //获取marker的位置
-				// 		alert(" marker的位置是" + p.lng + "," + p.lat);    
-				// 	});
-				// 	map.addOverlay(marker);
-				// },v_i*200);
+		if(line_symbols){
+			$.each(line_symbols,function(i,v){
+				var point_arr = [];
+				draw_line_symbols_flag(v.code,v.items,i);
+				$.each(v.items,function(v_i,v_v){
+					var point = new BMap.Point(v_v.x, v_v.y);
+					point_arr.push(point);
+					// setTimeout(function(){
+					// 	var marker = new BMap.Marker(point);
+					// 	marker.addEventListener("click",function(){
+					// 		var p = marker.getPosition();  //获取marker的位置
+					// 		alert(" marker的位置是" + p.lng + "," + p.lat);    
+					// 	});
+					// 	map.addOverlay(marker);
+					// },v_i*200);
+				});
+				var polyline = new BMap.Polyline(point_arr, {strokeColor: getLineColor(v.code), strokeWeight: v.weight || 1, strokeOpacity: 1});
+				map.addOverlay(polyline);   //增加折线
 			});
-			var polyline = new BMap.Polyline(point_arr, {strokeColor: getLineColor(v.code), strokeWeight: v.weight || 1, strokeOpacity:0.5});
-			map.addOverlay(polyline);   //增加折线
-		});
+		}
 	};
 
 	function Icon_Layer(point,radiu,cName){
@@ -214,32 +266,144 @@ $(function(){
 	Icon_Layer.prototype.getDiv = function(){
 		return this._div;
 	}
-	Icon_Layer.prototype.draw = function(){consol
+	Icon_Layer.prototype.draw = function(){
 		var map = this._map;
 		var pixel = map.pointToOverlayPixel(this.point);
 		this._div.style.left = pixel.x + "px";
 		this._div.style.top  = pixel.y + "px";
 	}
 
-	function draw_line_symbols_flag(code,items){
+	var NUM_SPAN_SYMBOL = 6,
+		NUM_SYMBOL_ENDPOINT = 5,
+		NUM_SYMBOL_OF_TWO_SYMBOL = 20;
+	function draw_line_symbols_flag(code,items,index){
 		if(code == 2 || code == 3){
-			var points = [];
-			var i = 5;
-			while(i < items.length){
-				var one = items.slice(i,i+1);
-				i+=10;
-				var two = items.slice(i,i+1);
-				i+= 30;
-				if(one.length == 1 && two.length == 1){
-					points.push([one,two]);
+			var len_condition = items.length-NUM_SYMBOL_ENDPOINT;
+			for(var i_o = NUM_SYMBOL_ENDPOINT;i_o<len_condition;i_o+=NUM_SYMBOL_OF_TWO_SYMBOL){
+				var items_span = items.slice(i_o,i_o+NUM_SPAN_SYMBOL);
+				// console.log(index,i_o,items.length,items_span.length);
+				if(items_span.length == NUM_SPAN_SYMBOL){
+					var point_arr = [];
+					var a =  items_span[0],
+						b = items_span[items_span.length - 1];
+					var x1 = a.x,y1 = a.y,
+						x2 = b.x,y2 = b.y;
+					var dist = Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2,2));
+					var x,y;
+					var max_x = Math.max(x1,x2),
+						max_y = Math.max(y1,y2);
+					if(code == 2){
+						if(x1 == x2){
+							// console.log(11);
+							x = max_x + Math.abs(dist * Math.cos(Math.PI/4));
+							y = max_y - Math.abs((y1-y2)/Math.sin(Math.PI/4));
+						}else if(y1 == y2){
+							// console.log(12);
+							x = max_x + Math.abs((x1 - x2)/Math.sin(Math.PI/4));
+							y = max_y - Math.abs(dist * Math.cos(Math.PI/4));
+						}else{
+							dist *= Math.sin(Math.PI/4);
+							var radiu = 3/4 * Math.PI - Math.atan((y1-y2)/(x1-x2));
+							var cha_x = Math.abs(dist * Math.cos(radiu));
+							
+							// x = 135-radiu/Math.PI*180 < 0? max_x + cha_x: max_x - cha_x; 
+							x = max_x + cha_x; 
+							y = max_y - Math.abs(dist * Math.sin(radiu));
+						}
+						items_span.push({
+							x: x,
+							y: y
+						});
+					}else if(code == 3){
+						var middle_x = x2+(x1-x2)/2,
+							middle_y = y2+(y1-y2)/2;
+						// setTimeout(function(){
+							var marker = new BMap.Marker(new BMap.Point(middle_x, middle_y));
+							marker.addEventListener("click",function(){
+								var p = marker.getPosition();  //获取marker的位置
+								alert(i+" marker的位置是" + p.lng + "," + p.lat);    
+							});
+							map.addOverlay(marker);
+						// },400);
+						var r = dist / 2;
+						var start_radiu = 0;
+						if(x1 == x2){
+							start_radiu = 90;
+						}else if(y1 == y2){
+							start_radiu = 0;
+						}else{
+							start_radiu = Math.atan((y1-y2)/(x1-x2))/Math.PI*180;
+						}
+						var arr = [];
+						
+						if(start_radiu > 0){
+							start_radiu = 180 + start_radiu;
+						}
+						var len = 180-start_radiu;
+						// console.log(index,'start_radiu',start_radiu,len);
+						// if(index == 0){
+						// 	continue;
+						// }
+						var _index = 0;
+						for(var i = -start_radiu;i<len;i++){
+							var radiu = i * Math.PI/180;
+							// console.log(_index++,index,i,len,radiu);
+							var cha_x = r * Math.cos(radiu);
+							var x =  middle_x + cha_x;
+							var y = middle_y - r * Math.sin(radiu);
+							// console.log(r,Math.sqrt(Math.pow(x-middle_x,2)+Math.pow(y-middle_y,2)));
+							arr.push({
+								x: x,
+								y: y
+							});
+						}
+						var circle_a = arr[0],
+							circle_b = arr[arr.length-1];
+						var circle_x1 = circle_a.x,circle_y1 = circle_a.y,
+							circle_x2 = circle_b.x,circle_y2 = circle_b.y;
+						if(Math.pow(circle_x1-x1,2)+Math.pow(circle_y1-y1,2) < Math.pow(circle_x2-x2,2)+Math.pow(circle_y2-y2,2)){
+							arr.reverse();
+						}
+						items_span = items_span.concat(arr);
+						// console.log(items_span);
+					}
+					// console.log(items_span.length);
+					$.each(items_span,function(i,v){
+						var point = new BMap.Point(v.x, v.y);
+						point_arr.push(point);
+						// setTimeout(function(){
+						// 	var marker = new BMap.Marker(point);
+						// 	marker.addEventListener("click",function(){
+						// 		var p = marker.getPosition();  //获取marker的位置
+						// 		alert(i+" marker的位置是" + p.lng + "," + p.lat);    
+						// 	});
+						// 	map.addOverlay(marker);
+						// },i*400);
+					});
+					var color = getLineColor(code);
+					var polygon = new BMap.Polygon(point_arr, {strokeColor: color, fillColor: color,fillOpacity: 1, strokeWeight: 1, strokeOpacity:1});
+					map.addOverlay(polygon);
+					
 				}
 			}
-			$.each(points,function(i,v){
-				var one = v[0][0],
-					two = v[1][0];
-				var radiu = Math.atan((two.y - one.y)/(two.x - one.x)) / Math.PI * 180;
-				map.addOverlay(new Icon_Layer(new BMap.Point((two.x + one.x)/2,(two.y + one.y)/2),-radiu,code == 2?'cool':'warm'));
-			});
+			
+			// var points = [];
+			// var i = 5;
+			// while(i < items.length){
+			// 	var one = items.slice(i,i+1);
+			// 	i+=10;
+			// 	var two = items.slice(i,i+1);
+			// 	i+= 30;
+			// 	if(one.length == 1 && two.length == 1){
+			// 		points.push([one,two]);
+			// 	}
+			// }
+			// $.each(points,function(i,v){
+			// 	var one = v[0][0],
+			// 		two = v[1][0];
+			// 	var radiu = Math.atan((two.y - one.y)/(two.x - one.x)) / Math.PI * 180;
+			// 	map.addOverlay(new Icon_Layer(new BMap.Point((two.x + one.x)/2,(two.y + one.y)/2),-radiu,code == 2?'cool':'warm'));
+			// });
 		}else if(code == 38){
 			var SPACE_NUM = 6;
 			var color = getLineColor(38);
@@ -261,11 +425,12 @@ $(function(){
 			});
 		}
 	}
+	/*处理降水的颜色*/
 	var getPrecipitationColor = (function(){
 		var index = 0;
 		return function (code,val){
 			// code 默认处理成降雨（如台湾地区就得到具体code值）
-			var colors = COLOR_PRECIPITATION[code||CONSTANT.AREA.RAIN];
+			var colors = COLOR_PRECIPITATION[code||CONSTANT.AREA.RAIN].colors;
 			if(colors){
 				for(var i = 0,j=colors.length;i<j;i++){
 					var color = colors[i];
@@ -281,14 +446,18 @@ $(function(){
 			}
 		}
 	})();
-	
+	/*处理特殊线的颜色*/
 	function getLineColor(code){
-		console.log(COLOR_LINE,code);
-		return COLOR_LINE[code]
+		var conf = COLOR_LINE[code];
+		return conf?conf.color:'blue';
 	}
 	var data_url = '../../../data/micaps/14/rr111308.024.json';
-	var data_url = '../../../data/micaps/14/rr112108.048.json';
-	var data_url = '../../../data/micaps/14/14110508.000.json';
+	var data_url = '../../../data/micaps/14/rr111314.024.json';
+	// var data_url = '../../../data/micaps/14/rr112108.048.json';
+	// var data_url = '../../../data/micaps/14/14110508.000.json';
+	// var data_url = '../../../data/micaps/14/14110514.000.json';
+	// var data_url = '../../../data/micaps/14/14110520.000.json';
+	var data_url = '../../../data/micaps/14/rrr112708.006.json';
 	var ajax_data = $.getJSON(data_url),
 		ajax_constant = $.getJSON('../../../config/constant.json'),
 		ajax_color_precipitation = $.getJSON('../../../config/precipitation.json'),
@@ -296,14 +465,12 @@ $(function(){
 
 
 	var _flag_is_added_svg_pattern = false;
-	function _add_svg_pattern(){
-
-	}
+	function _add_svg_pattern(){}
 	$.when(ajax_data,ajax_constant,ajax_color_precipitation,ajax_color_line).done(function(a,b,c,d){
 		CONSTANT = b[0];
 		COLOR_PRECIPITATION = c[0];
 		for(var i in COLOR_PRECIPITATION){
-			var val = COLOR_PRECIPITATION[i];
+			var val = COLOR_PRECIPITATION[i].colors;
 			$.each(val,function(i,v){
 				var condition = v[0];
 				if(isNaN(condition[0])){
@@ -315,7 +482,7 @@ $(function(){
 			});
 		}
 		COLOR_LINE = d[0];
-		var rain_snow_color = COLOR_PRECIPITATION[24];
+		var rain_snow_color = COLOR_PRECIPITATION[24].colors;
 		if(rain_snow_color){
 			_add_svg_pattern = function(){
 				if(_flag_is_added_svg_pattern){
