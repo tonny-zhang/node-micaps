@@ -249,7 +249,7 @@ function _parseArea(content_info){
 	content_info.areas.items.forEach(function(v,i){
 		var items = v.items;
 		line_symbols.forEach(function(v_line,i_line){
-			if(lineIsInsidePolygon(items,v_line.items)){
+			if(lineIsInsidePolygon(items,v_line.items,true)){
 				include_relation.push([i,i_line]);
 			}
 		});
@@ -267,7 +267,7 @@ function _parseArea(content_info){
 			}
 		}]
 	};
-	// include_relation = [[2,2]]
+	// include_relation = [[3,1],[14,1]]
 	var cha_index = 0,
 		tmp_include_relation;
 
@@ -284,7 +284,7 @@ function _parseArea(content_info){
 			var flag = false;
 			for(var i = 0,j=cache_items.length;i<j;i++){
 				var _items = cache_items[i].items;
-				var _flag = lineIsInsidePolygon(_items,line_items);
+				var _flag = lineIsInsidePolygon(_items,line_items,true);
 				if(_flag){
 					var areas = _split_area(_items,line_items,content_info,line_index);
 					var arr = [];
@@ -319,6 +319,7 @@ function _parseArea(content_info){
 		});
 		
 	}
+	
 	var items_arr = [];
 	content_info.areas.items.forEach(function(v,items_index){
 		var in_include = false;
@@ -330,9 +331,23 @@ function _parseArea(content_info){
 			}
 		}
 		if(in_include){
-			var v = cache_area[items_index];
-			if(v){
-				items_arr = items_arr.concat(v);
+			var val_cache = cache_area[items_index];
+			if(val_cache){
+				// 重置被切割的面的其它属性
+				var weight = v.weight;
+				var symbols = v.symbols;
+				if(weight || symbols){
+					val_cache.forEach(function(val){
+						if(weight){
+							val.weight = weight;
+						}
+						if(symbols){
+							val.symbols = symbols;
+						}
+					});
+				}
+				
+				items_arr = items_arr.concat(val_cache);
 				delete cache_area[items_index];
 			}
 			
@@ -725,6 +740,19 @@ function _add_area_code(content_info){
 			if(flag){
 				sub_area.code = p_area.code;
 				continue;				
+			}
+		}
+	});
+	
+	areas.forEach(function(v,i_no_code){
+		if(!('code' in v)){
+			for(var i = i_no_code - 1;i>= 0;i--){
+				var p_area = areas[i];
+				var flag = polygonIsInsidePolygon(p_area.items,v.items,true);
+				if(flag){
+					v.code = p_area.code;
+					break;				
+				}
 			}
 		}
 	});

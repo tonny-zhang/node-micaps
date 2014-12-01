@@ -154,9 +154,12 @@ var _isInsidePolygon = (function(){
         for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
             var xi = vs[i].x, yi = vs[i].y;
             var xj = vs[j].x, yj = vs[j].y;
-            
+            if(x == xi && y == yi || x == xj && y == yj){
+                return true;
+            }
             var intersect = ((yi > y) != (yj > y))
                 && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+            
             if (intersect) inside = !inside;
         }
         
@@ -172,13 +175,14 @@ var _polygonIsInsidePolygon = function(polygon_items,sub_polygon_items){
             inside_num++;
         }
     });
-    if(inside_num == sub_polygon_items.length){
+    /*线切割面时由于计算得到的两交点可能稍有误差,所以判断是否在多边形中时去除两交点的检测*/
+    if(inside_num >= sub_polygon_items.length-2){
         return true;
     }
     return false;
 }
 /*线是否在多边形中*/
-var _lineIsInsidePolygon = function(polygon_items,line_items){
+var _lineIsInsidePolygon = function(polygon_items,line_items,is_through){
     var inside_num = 0;
     var len = line_items.length;
     line_items.forEach(function(v_line_item){
@@ -188,6 +192,9 @@ var _lineIsInsidePolygon = function(polygon_items,line_items){
             inside_num++;
         }
     });
+    if(is_through){
+        return inside_num > 2;
+    }
     if(inside_num/len > 0.5){
         return true;
     }

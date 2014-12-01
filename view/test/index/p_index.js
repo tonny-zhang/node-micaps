@@ -59,6 +59,12 @@ $(function(){
                     "stylers": {}
           }]
 		});
+		// var marker = new BMap.Marker(new BMap.Point(98.12259704499621, 29.007856950974716));
+		// marker.addEventListener("click",function(){
+		// 	var p = marker.getPosition();  //获取marker的位置
+		// 	alert(v_i+' flag = '+v_v.flag+" marker的位置是" + p.lng + "," + p.lat);    
+		// });
+		// map.addOverlay(marker);
 		// map.addEventListener('addtilelayer',function(){
 		// 	console.log('addtilelayer',$('svg').length);
 		// });
@@ -77,7 +83,7 @@ $(function(){
 
 						var point = new BMap.Point(v_v.x,v_v.y);
 						point_arr.push(point);
-						// if(v.type != 'add'){
+						// if(i == 0){
 						// 	setTimeout(function(){
 						// 		var marker = new BMap.Marker(point);
 						// 		marker.addEventListener("click",function(){
@@ -92,7 +98,7 @@ $(function(){
 					// var Color = ['red','blue','green','#123','#f26','#ccc','#333'];
 					// var radom_color = Color[Math.floor(Math.random()*Color.length)];
 					var color = getPrecipitationColor(v.code,symbols?symbols.text:0);
-					var polygon = new BMap.Polygon(point_arr, {strokeColor: color, fillColor: color,fillOpacity: 0.8, strokeWeight: 1, strokeOpacity:1});
+					var polygon = new BMap.Polygon(point_arr, {strokeColor: color, fillColor: color,fillOpacity: 0.9, strokeWeight: 1, strokeOpacity:1});
 					map.addOverlay(polygon);   //增加面
 					setTimeout(_add_svg_pattern,10);
 					// if(symbols){
@@ -171,6 +177,7 @@ $(function(){
 		var symbols = data.symbols;
 		$.each(symbols,function(i,v){
 			var type = v.type;
+			console.log(type);
 			if(type == 3 || type == 4){
 				var marker = new BMap.Marker(new BMap.Point(v.x,v.y));
 				marker.addEventListener("click",function(){
@@ -201,7 +208,8 @@ $(function(){
 			}else if('37' == type){
 				text = '台';
 				color = 'green';
-			}else if(23 == type || 24 == type || 26 == type || 48 == type){// 处理雨雪的极值
+			}
+			else if(23 == type || 24 == type || 26 == type || 48 == type){// 处理雨雪的极值
 				text = v.text;
 				if(text == 0){
 					return;
@@ -210,6 +218,10 @@ $(function(){
 				style.fontShadow = '0 0 3px white';
 				color = 'black';
 			}
+			// else{//测试特殊点标识
+			// 	color = 'black';
+			// 	text = type;
+			// }
 			style.color = color;
 			var label = new BMap.Label(text, {
 				position: new BMap.Point(v.x,v.y),
@@ -429,6 +441,7 @@ $(function(){
 	var getPrecipitationColor = (function(){
 		var index = 0;
 		return function (code,val){
+
 			// code 默认处理成降雨（如台湾地区就得到具体code值）
 			var colors = COLOR_PRECIPITATION[code||CONSTANT.AREA.RAIN].colors;
 			if(colors){
@@ -436,7 +449,7 @@ $(function(){
 					var color = colors[i];
 					var condition = color[0];
 					if(val >= condition[0] && val < condition[1]){
-						var c = color[1];
+						var c = color[1];console.log(code,val,c);
 						if(code == 24){
 							c = 'url(#rain_snow_'+(index++)+')';
 						}
@@ -456,7 +469,7 @@ $(function(){
 	// var data_url = '../../../data/micaps/14/rr112108.048.json';
 	// var data_url = '../../../data/micaps/14/14110508.000.json';
 	// var data_url = '../../../data/micaps/14/14110514.000.json';
-	var data_url = '../../../data/micaps/14/14110520.000.json';
+	// var data_url = '../../../data/micaps/14/14110520.000.json';
 	// var data_url = '../../../data/micaps/14/rrr112708.006.json';
 	var ajax_data = $.getJSON(data_url),
 		ajax_constant = $.getJSON('../../../config/constant.json'),

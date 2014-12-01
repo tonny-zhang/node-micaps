@@ -92,8 +92,9 @@ var format = (function(){
 var file_path = '../data/micaps_source/14/';
 // file_path = '../data/micaps_source/14/14110508.000';// 气压线
 // file_path = '../data/micaps_source/14/rr111308.024';
+file_path = '../data/micaps_source/14/rr111314.024';
 // file_path = '../data/micaps_source/14/rr112108.048';
-file_path = '../data/micaps_source/14/rrr112708.006';
+// file_path = '../data/micaps_source/14/rrr112708.006';
 
 format(file_path,function(source_path){
 	return source_path.replace('micaps_source','micaps')+'.json';

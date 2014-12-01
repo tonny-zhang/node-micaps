@@ -1,0 +1,12 @@
+{
+  "name": "MiniCodeEdit",
+  "version": "0.1.11",
+  "description": "A very small code editor.",
+  "main": "index.html",
+  "window": {
+    "width": 400,
+    "height": 520,
+    "title": "Mini Code Editor",
+    "toolbar": false
+  }
+}
