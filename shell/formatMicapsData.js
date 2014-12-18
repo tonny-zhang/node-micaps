@@ -95,7 +95,8 @@ var file_path = '../data/micaps_source/14/';
 file_path = '../data/micaps_source/14/rr111314.024';
 // file_path = '../data/micaps_source/14/rr112108.048';
 // file_path = '../data/micaps_source/14/rrr112708.006';
-
+file_path = '../data/micaps_source/14/kw14121808.024';
+file_path = '../data/micaps_source/14/wt121808.024';
 format(file_path,function(source_path){
 	return source_path.replace('micaps_source','micaps')+'.json';
 });

@@ -472,6 +472,8 @@ $(function(){
 	// var data_url = '../../../data/micaps/14/14110514.000.json';
 	// var data_url = '../../../data/micaps/14/14110520.000.json';
 	// var data_url = '../../../data/micaps/14/rrr112708.006.json';
+	var data_url = '../../../data/micaps/14/kw14121808.024.json';
+	var data_url = '../../../data/micaps/14/wt121808.024.json';
 	var ajax_data = $.getJSON(data_url),
 		ajax_constant = $.getJSON('../../../config/constant.json'),
 		ajax_color_precipitation = $.getJSON('../../../config/precipitation.json'),
