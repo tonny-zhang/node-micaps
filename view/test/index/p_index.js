@@ -6,6 +6,7 @@ $(function(){
 	var map;
 
 	var callback_data = function(data){
+		window.data = data;
 		console.log(data);
 		// 百度地图API功能
 		map = new BMap.Map("allmap");
