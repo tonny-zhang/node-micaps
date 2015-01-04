@@ -62,6 +62,7 @@ var format = (function(){
 					var type;
 					if(m && (type = m[1])){
 						var data = require('./libs/types/'+type+'.js').parse(line_arr);
+						data.type = type;
 						saveData(data,format_path_fn(file_path));
 						return ;
 					}else{
@@ -105,7 +106,15 @@ var args = [].slice.call(process.argv);
 //命令行进行指定文件压缩
 if(args.length > 2){
 	var fileIn = args[2];
-	format(fileIn,function(source_path){
-		return source_path.replace('data','data_stream')+'.json';
-	});
+	if(fileIn == '-local'){
+		var file_path = '../data/micaps_source/14/';
+		format(file_path,function(source_path){
+			return source_path.replace('micaps_source','micaps')+'.json';
+		});
+	}else{
+		format(fileIn,function(source_path){
+			return source_path.replace('data','data_stream')+'.json';
+		});
+	}
+	
 }
