@@ -61,8 +61,28 @@ var format = (function(){
 					var m = /diamond\s+(\d+)/.exec(line_arr[0]);
 					var type;
 					if(m && (type = m[1])){
-						var data = require('./libs/types/'+type+'.js').parse(line_arr);
+						var data = require('./libs/types/'+type+'.js').parse(line_arr.slice(2));
+
 						data.type = type;
+						var stat = fs.statSync(file_path);
+						var file_time = new Date(stat.mtime);
+						data.mtime = file_time.getTime(); // 可以做为数据的制作时间
+
+
+						m = /^(([12]\d)?\d{2})\s+(\d{1,2})\s+(\d{1,2})\s+(\d{1,2})/.exec(line_arr[1]);
+						
+						if(m){
+							var year = file_time.getFullYear(),// 暂时以文件的修改时间里的年数据代替
+								month = m[3],
+								day = m[4],
+								hour = m[5];
+							var str_hour = path.basename(file_path).replace(/\..+/g,'').replace(/\D+$/,'').substr(-2);
+							if(str_hour.length == 2 && !isNaN(str_hour)){
+								hour = parseInt(str_hour);
+							}
+							data.time = new Date(year+'-'+month+'-'+day+' '+hour+':00').getTime();
+						}
+
 						saveData(data,format_path_fn(file_path));
 						return ;
 					}else{
@@ -108,6 +128,7 @@ if(args.length > 2){
 	var fileIn = args[2];
 	if(fileIn == '-local'){
 		var file_path = '../data/micaps_source/14/';
+		// file_path = '../data/micaps_source/14/14110508.000';
 		format(file_path,function(source_path){
 			return source_path.replace('micaps_source','micaps')+'.json';
 		});
