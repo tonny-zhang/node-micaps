@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;}
+ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+</style>
+<title>micas14类数据展示</title>
+</head>
+<body>
+    <div id="allmap">
+    </div>
+    <script type="text/javascript" src="http://i.tq121.com.cn/j/jquery-1.8.2.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=E8MDMS4BVFEMeAxVP3YddQ6X"></script>
+    <script type="text/javascript">
+    !function(){
+        var REG_RGB = /rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/i;
+        var REG_HTML = /#([\da-f]{2})([\da-f]{2})([\da-f]{2})/i;
+        function color_normal2rgb(color_html,isReturnArray){
+            if(color_html){
+                var m = REG_HTML.exec(color_html);
+                if(m){
+                    var arr = [parseInt(m[1],16),parseInt(m[2],16),parseInt(m[3],16)];
+
+                    if(isReturnArray){
+                        return arr;
+                    }
+                    return 'rgb('+(arr.join(','))+')';
+                }else{
+                    var m = REG_RGB.exec(color_html);
+                    if(m){
+                        if(isReturnArray){
+                            m.shift();
+                            return m;
+                        }else{
+                            return color_html;
+                        }
+                    }
+                }
+            }
+        }
+        function _getColor(v){
+            var color = '#ffffff';
+            if(v <= 0.9){
+                color = '#66FF00';
+            }else if(v <= 1.9){
+                color = '#666633';
+            }else if(v <= 3.9){
+                color = '#663300';
+            }else if(v <= 5.9){
+                color = '#003399';
+            }else if(v < 7.9){
+                color = '#CC0033';
+            }else{
+                color = '#000000'
+            }
+            return color;
+        }
+        map = new BMap.Map("allmap");
+        map.centerAndZoom(new BMap.Point(116.404, 39.915), 5);
+        // map.centerAndZoom(new BMap.Point(69.772, 46.886), 8);
+        map.enableScrollWheelZoom();
+        $.getJSON('../../../data/micaps/3/15012108.000.json', function(data){
+            $.each(data, function(i, v){
+                // var marker = new BMap.Marker(new BMap.Point(v.x, v.y));
+                // marker.addEventListener("click",function(){
+                //     console.log(v.v);
+                // });
+                // map.addOverlay(marker);
+
+                var point = new BMap.Point(v.x, v.y);
+                var v = v.v;
+                if(v > 0){
+                    var color = _getColor(v);
+                    var circle = new BMap.Circle(point,35000,{
+                        strokeColor: color, 
+                        fillColor: color,
+                        fillOpacity: 0.9, 
+                        strokeWeight: 1, 
+                        strokeOpacity:1
+                    }); //创建圆
+                    map.addOverlay(circle);
+                }
+                
+            });
+        });
+        $.getJSON('../../../shell/test/micaps_3.json', function(data){
+            var bounds = map.getBounds(),
+                sw_point = bounds.getSouthWest(),
+                ne_point = bounds.getNorthEast(),
+                sw = map.pointToPixel(sw_point),
+                ne = map.pointToPixel(ne_point);
+            var x = sw.x,
+                y = ne.y,
+                size = map.getSize(),
+                width = size.width,
+                height = size.height;
+
+            var canvas = $('<canvas width='+width+' height='+height+' class="layer_vector">').css({
+                left: 0,
+                top: 0
+            }).appendTo($('#allmap .BMap_mask')).get(0);
+            var ctx = canvas.getContext('2d');
+            // ctx.fillRect(100,100,200,150);
+            // ctx.arc(300,300, 100, 0, Math.PI*2);
+            // ctx.fill();
+            var imagedata = ctx.createImageData(width, height),
+                _data = imagedata.data;
+            var x0 = 73.5,y0 = 18.16, x1 = 135.09, y1 = 53.56, x_space = y_space = 0.5;
+            function getV(x, y){
+                try{
+                    var v = data[y][x].v;
+                    if(v != 999999){
+                        return v;
+                    }
+                }catch(e){}
+                return 0;
+            }
+            var point_left_top = map.pointToPixel(new BMap.Point(x0, y1)),
+                point_right_bottom = map.pointToPixel(new BMap.Point(x1, y0));
+            for(var i = point_left_top.x; i< point_right_bottom.x; i+=3){
+                for(var j = point_left_top.y; j< point_right_bottom.y; j+=3){
+
+                    var point = map.pixelToPoint({x: i, y: j});
+                    var x = (point.lng - x0) / x_space, 
+                        y = (point.lat - y0) / y_space;
+                    if(x > 0 && y > 0){
+                        var x00 = Math.floor(x),
+                            x01 = Math.ceil(x),
+                            y00 = Math.floor(y),
+                            y01 = Math.ceil(y);
+                        var sum = getV(y00, x00) + 
+                                  getV(y00, x01) + 
+                                  getV(y01, x00) + 
+                                  getV(y01, x01);
+                        sum /= 4;
+                        if(sum > 0 && sum != 999999){
+                            var index = (j*width + i)*4;
+                            var c = _getColor(sum);
+                            var color = color_normal2rgb(c, true);
+                            console.log(color, c, sum, index,i,j);
+                            _data[index] = color[0];
+                            _data[index + 1] = color[1];
+                            _data[index + 2] = color[2];
+                            _data[index + 3] = 1;
+                        }
+                    }
+                }
+            }
+            ctx.putImageData(imagedata, 0, 0);
+            window.test_data = imagedata;
+            console.log(imagedata);
+            // var max = Number.MIN_VALUE;
+            // $.each(data, function(i, v){
+            //     if(v.v > 0 && v.v != 999999){
+            //         console.log(v);
+            //         setTimeout(function(){
+            //             var color = _getColor(v.v);
+            //             var point = new BMap.Point(v.x, v.y);
+            //             var pixel = map.pointToPixel(point);
+            //             ctx.save();
+            //             ctx.fillStyle = color;
+            //             ctx.beginPath();
+            //             ctx.arc(pixel.x, pixel.y, 2, 0, Math.PI*2);
+            //             ctx.closePath();
+            //             ctx.fill();
+            //             ctx.restore();
+            //             console.log(color, v,pixel.x, pixel.y);
+            //         }, 0);
+            //     }
+            // });
+        });
+    }()
+    </script>
+</body>
+</html>
