@@ -21,6 +21,7 @@ ul{
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=E8MDMS4BVFEMeAxVP3YddQ6X"></script>
     <script type="text/javascript">
     !function(){
+        var DEFAULT_VAL = 999999;
         var REG_RGB = /rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/i;
         var REG_HTML = /#([\da-f]{2})([\da-f]{2})([\da-f]{2})/i;
         function color_normal2rgb(color_html,isReturnArray){
@@ -64,33 +65,33 @@ ul{
             return color;
         }
         map = new BMap.Map("allmap");
-        map.centerAndZoom(new BMap.Point(116.404, 39.915), 5);
+        map.centerAndZoom(new BMap.Point(116.404, 39.915), 8);
         // map.centerAndZoom(new BMap.Point(69.772, 46.886), 8);
         map.enableScrollWheelZoom();
-        $.getJSON('../../../data/micaps/3/15012108.000.json', function(data){
-            $.each(data, function(i, v){
-                // var marker = new BMap.Marker(new BMap.Point(v.x, v.y));
-                // marker.addEventListener("click",function(){
-                //     console.log(v.v);
-                // });
-                // map.addOverlay(marker);
+        // $.getJSON('../../../data/micaps/3/15012108.000.json', function(data){
+        //     $.each(data, function(i, v){
+        //         // var marker = new BMap.Marker(new BMap.Point(v.x, v.y));
+        //         // marker.addEventListener("click",function(){
+        //         //     console.log(v.v);
+        //         // });
+        //         // map.addOverlay(marker);
 
-                var point = new BMap.Point(v.x, v.y);
-                var v = v.v;
-                if(v > 0){
-                    var color = _getColor(v);
-                    var circle = new BMap.Circle(point,35000,{
-                        strokeColor: color, 
-                        fillColor: color,
-                        fillOpacity: 0.9, 
-                        strokeWeight: 1, 
-                        strokeOpacity:1
-                    }); //创建圆
-                    map.addOverlay(circle);
-                }
+        //         var point = new BMap.Point(v.x, v.y);
+        //         var v = v.v;
+        //         if(v > 0){
+        //             var color = _getColor(v);
+        //             var circle = new BMap.Circle(point,35000,{
+        //                 strokeColor: color, 
+        //                 fillColor: color,
+        //                 fillOpacity: 0.9, 
+        //                 strokeWeight: 1, 
+        //                 strokeOpacity:1
+        //             }); //创建圆
+        //             map.addOverlay(circle);
+        //         }
                 
-            });
-        });
+        //     });
+        // });
         $.getJSON('../../../shell/test/micaps_3.json', function(data){
             var bounds = map.getBounds(),
                 sw_point = bounds.getSouthWest(),
@@ -111,52 +112,214 @@ ul{
             // ctx.fillRect(100,100,200,150);
             // ctx.arc(300,300, 100, 0, Math.PI*2);
             // ctx.fill();
+
             var imagedata = ctx.createImageData(width, height),
                 _data = imagedata.data;
             var x0 = 73.5,y0 = 18.16, x1 = 135.09, y1 = 53.56, x_space = y_space = 0.5;
             function getV(x, y){
                 try{
                     var v = data[y][x].v;
-                    if(v != 999999){
+                    if(v != DEFAULT_VAL){
                         return v;
                     }
                 }catch(e){}
                 return 0;
             }
-            var point_left_top = map.pointToPixel(new BMap.Point(x0, y1)),
-                point_right_bottom = map.pointToPixel(new BMap.Point(x1, y0));
-            for(var i = point_left_top.x; i< point_right_bottom.x; i+=3){
-                for(var j = point_left_top.y; j< point_right_bottom.y; j+=3){
+            // for (var i=0;i<_data.length;i+=4){
+            //   _data[i+0]=255;
+            //   _data[i+1]=255;
+            //   _data[i+2]=0;
+            //   _data[i+3]=255;
+            // }
+            /*基于像素点的画法*/
+            function _draw_grid(){
+                var point_left_top = map.pointToPixel(new BMap.Point(x0, y1)),
+                    point_right_bottom = map.pointToPixel(new BMap.Point(x1, y0));
+                for(var i = point_left_top.x; i< point_right_bottom.x; i+=1){
+                    for(var j = point_left_top.y; j< point_right_bottom.y; j+=1){
 
-                    var point = map.pixelToPoint({x: i, y: j});
-                    var x = (point.lng - x0) / x_space, 
-                        y = (point.lat - y0) / y_space;
-                    if(x > 0 && y > 0){
-                        var x00 = Math.floor(x),
-                            x01 = Math.ceil(x),
-                            y00 = Math.floor(y),
-                            y01 = Math.ceil(y);
-                        var sum = getV(y00, x00) + 
-                                  getV(y00, x01) + 
-                                  getV(y01, x00) + 
-                                  getV(y01, x01);
-                        sum /= 4;
-                        if(sum > 0 && sum != 999999){
-                            var index = (j*width + i)*4;
-                            var c = _getColor(sum);
-                            var color = color_normal2rgb(c, true);
-                            console.log(color, c, sum, index,i,j);
-                            _data[index] = color[0];
-                            _data[index + 1] = color[1];
-                            _data[index + 2] = color[2];
-                            _data[index + 3] = 1;
+                        var point = map.pixelToPoint({x: i, y: j});
+                        var x = (point.lng - x0) / x_space, 
+                            y = (point.lat - y0) / y_space;
+                        if(x > 0 && y > 0){
+                            var x00 = Math.floor(x),
+                                x01 = Math.ceil(x),
+                                y00 = Math.floor(y),
+                                y01 = Math.ceil(y);
+                            var sum = getV(y00, x00) + 
+                                      getV(y00, x01) + 
+                                      getV(y01, x00) + 
+                                      getV(y01, x01);
+                            sum /= 4;
+                            if(sum > 0 && sum != DEFAULT_VAL){
+                                var index = (j*width + i)*4;
+                                var c = _getColor(sum);
+                                // c = '#ff0000';
+                                var color = color_normal2rgb(c, true);
+                                console.log(color, c, sum, index,i,j);
+                                _data[index] = color[0];
+                                _data[index + 1] = color[1];
+                                _data[index + 2] = color[2];
+                                _data[index + 3] = 100;
+                            }
                         }
                     }
                 }
+                ctx.putImageData(imagedata, 0, 0);
+                window.test_data = imagedata;
+                console.log(imagedata);
             }
-            ctx.putImageData(imagedata, 0, 0);
-            window.test_data = imagedata;
-            console.log(imagedata);
+            // 上下左右都有颜色时进行平均，如果缺少再进行插值计算
+            // var _draw_data = (function(){
+            //     return function(){
+            //         console.log(data.length * data[0].length);
+            //         $.each(data, function(v_i, v_x){
+            //             $.each(v_x, function(i, v_y){
+            //                 if(v_y.v != 999999){
+            //                     var c = _getColor(v_y.v);
+            //                     var color = color_normal2rgb(c, true);
+            //                     var pixel = map.pointToPixel(new BMap.Point(v_y.x, v_y.y));
+            //                     var index = (pixel.y * width + pixel.x)*4;
+            //                     _data[index] = color[0];
+            //                     _data[index + 1] = color[1];
+            //                     _data[index + 2] = color[2];
+            //                     _data[index + 3] = 255;
+
+            //                     // console.log(pixel, color);
+            //                 }
+            //             });
+            //         });
+            //         ctx.putImageData(imagedata, 0, 0);
+            //     }
+            // })();
+            
+            var set = function(x, y, color){
+                var index = (y * width + x)*4;
+                _data[index] = color[0];
+                _data[index + 1] = color[1];
+                _data[index + 2] = color[2];
+                _data[index + 3] = 255;
+            }
+            var _draw_data = (function(){
+                function _initX(y, start_x, end_x){
+                    var val_y = data[y],
+                        v_start = val_y[start_x],
+                        v_end = val_y[end_x];
+                    var num = end_x - start_x,
+                        v_space = (v_end - v_start) / num;
+                    for(var index_x = 1; start_x < end_x; start_x++){
+                        var c = _getColor(v_start + index_x* v_space);
+                        var color = color_normal2rgb(c, true);
+                        set(start_x, y, color);
+                    }
+                }
+                function _initY(x, start_y, end_y){
+                    var v_start = data[start_y][x],
+                        v_end = data[end_y][x];
+                    var num = end_y - start_y,
+                        v_space = (v_end - v_start) / num;
+                    for(var index_y = 1; start_y < end_y; start_y++){
+                        var c = _getColor(v_start + index_y* v_space);
+                        var color = color_normal2rgb(c, true);
+                        set(x, start_y, color);
+                    }    
+                }
+                var len_x, len_y;
+                function _initXY(x, y){
+                    var d = data[y][x];
+                    var next_y = y+1;
+                    if(next_y >=0 && next_y < len_y){
+                        var v_next_y = data[next_y][x];
+                        if(v_next_y.v != DEFAULT_VAL){
+
+                        }
+                    }
+                }
+                // 对格点间像素进行填充
+                return function(){
+                    $.each(data, function(v_i, v_x){
+                        $.each(v_x, function(i, v_y){
+                            var pixel = map.pointToPixel(new BMap.Point(v_y.x, v_y.y));
+                                
+                           var x = pixel.x,
+                               y = pixel.y;
+                            v_y.x = x;
+                            v_y.y = y;
+                        })
+                    });
+                    window.data = data;
+                    var cache_data = [];
+                    len_y = data.length;
+                    $.each(data, function(v_i, v_x){
+                        len_x = v_x.length;
+                        $.each(v_x, function(i, v_y){
+                            if(v_y.v != DEFAULT_VAL){
+                                var x = v_y.x,
+                                    y = v_y.y;
+                                if(!(x > 0 && x < width && y > 0 && y < height)){
+                                    return;
+                                }
+
+                                var c = _getColor(v_y.v);
+                                var color = color_normal2rgb(c, true);
+
+                                set(x, y, color);
+                                return;
+
+                                var val1 = v_y.v;
+                                var i2 = i+1;
+                                if(i2 < len_x){
+                                    var v2 = v_x[i2];
+                                    var x2 = v2.x,
+                                        y2 = v2.y;
+                                    var val2 = v2.v;
+                                    if(val2 != DEFAULT_VAL){
+                                        // y2 < y1
+                                        var start_y = y - 1,
+                                            num = Math.abs(y2 - start_y);
+                                        var v_space = (val2 - val1)/num;
+                                        for(var i_updown = 1; start_y >= y2; start_y--, i_updown++){
+                                            var _v_new = val1 + v_space*i_updown;
+                                            var c = _getColor(_v_new);
+                                            var color = color_normal2rgb(c, true);
+
+                                            console.log(x, start_y, color);
+                                            set(x, start_y, color);
+
+                                            
+                                        }
+                                    }
+                                }
+                                var i3 = v_i+1;
+                                if(i3 < len_y){
+                                    var v2 = data[i3][i];
+                                    var x2 = v2.x,
+                                        y2 = v2.y;
+                                    var val2 = v2.v;
+                                    if(val2 != DEFAULT_VAL){
+                                        // y2 < y1
+                                        var start_x = x + 1,
+                                            num = Math.abs(x2 - start_x);
+                                        var v_space = (val2 - val1)/num;
+                                        for(var i_leftright = 1; start_x <= x2; start_x++, i_leftright++){
+                                            var _v_new = val1 + v_space*i_leftright;
+                                            var c = _getColor(_v_new);
+                                            var color = color_normal2rgb(c, true);
+
+                                            console.log(start_x, y, color);
+                                            set(start_x, y + i_updown, color);
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    });
+                    ctx.putImageData(imagedata, 0, 0);
+                }
+            })();
+            var time_start = new Date();
+            _draw_data();
+            console.log(new Date() - time_start + ' ms!');
             // var max = Number.MIN_VALUE;
             // $.each(data, function(i, v){
             //     if(v.v > 0 && v.v != 999999){

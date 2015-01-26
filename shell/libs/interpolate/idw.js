@@ -198,12 +198,15 @@ function Interpolation_IDW_Neighbor(SCoords, lnglat_arr, NumberOfNearestNeighbor
 	// });
 	return lnglat_arr;
 }
-var GRID_SPACE = 0.5,
+var GRID_SPACE = 0.1,
 	DIS_POINTS = 0.2;
 function genLngLatArr(x0, y0, x1, y1, x_num, y_num){
 	var arr = [];
 	var x_num = Math.ceil((x1 - x0)/GRID_SPACE),
 		y_num = Math.ceil((y1 - y0)/GRID_SPACE);
+
+	console.log(x_num, y_num, x_num*y_num);
+	
 	for(i = 0;i<x_num;i++){
 		var x = x0 + GRID_SPACE*i;
 		var val = [];
