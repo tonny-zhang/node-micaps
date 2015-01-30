@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;}
+ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+</style>
+<title>micas14类数据展示</title>
+</head>
+<body>
+    <div id="allmap">
+    </div>
+    <script type="text/javascript" src="http://i.tq121.com.cn/j/jquery-1.8.2.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=E8MDMS4BVFEMeAxVP3YddQ6X"></script>
+    <script type="text/javascript">
+    !function(){
+        var REG_RGB = /rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/i;
+        var REG_HTML = /#([\da-f]{2})([\da-f]{2})([\da-f]{2})/i;
+        function color_normal2rgb(color_html,isReturnArray){
+            if(color_html){
+                var m = REG_HTML.exec(color_html);
+                if(m){
+                    var arr = [parseInt(m[1],16),parseInt(m[2],16),parseInt(m[3],16)];
+
+                    if(isReturnArray){
+                        return arr;
+                    }
+                    return 'rgb('+(arr.join(','))+')';
+                }else{
+                    var m = REG_RGB.exec(color_html);
+                    if(m){
+                        if(isReturnArray){
+                            m.shift();
+                            return m;
+                        }else{
+                            return color_html;
+                        }
+                    }
+                }
+            }
+        }
+        function _getColor(v){
+            var color = '#ffffff';
+            if(v <= 0.9){
+                color = '#66FF00';
+            }else if(v <= 1.9){
+                color = '#666633';
+            }else if(v <= 3.9){
+                color = '#663300';
+            }else if(v <= 5.9){
+                color = '#003399';
+            }else if(v < 7.9){
+                color = '#CC0033';
+            }else{
+                color = '#000000'
+            }
+            return color;
+        }
+        map = new BMap.Map("allmap");
+        map.centerAndZoom(new BMap.Point(116.404, 39.915), 5);
+        // map.centerAndZoom(new BMap.Point(69.772, 46.886), 8);
+        map.enableScrollWheelZoom();
+        var COLOR = ['#ffffff', '#66FF00', '#666633', '#663300', '#003399', '#CC0033', '#000000'];
+        // var url = '../../../shell/2.json';
+        var url = '../../../data/micaps/3/15012108.000.json';
+        $.getJSON(url, function(data){
+            $.each(data, function(i, v){
+                // if(i != 16 && i != 14){
+                //     return;
+                // }
+                var point_arr = [];
+                var level = 0;
+                $.each(v, function(i_v, v_v){
+                    level = v_v.l;
+                    var point = new BMap.Point(v_v.x, v_v.y);
+                    // setTimeout(function(){
+                    //     var marker = new BMap.Marker(point);
+                    //     map.addOverlay(marker);
+                    // }, 500*i_v);
+                    point_arr.push(point);
+                });
+                var color = COLOR[level];
+                var polygon = new BMap.Polygon(point_arr, {strokeColor: color, fillColor: color,fillOpacity: 1, strokeWeight: 1, strokeOpacity:1});
+                map.addOverlay(polygon);
+            });
+        });
+    }()
+    </script>
+</body>
+</html>
