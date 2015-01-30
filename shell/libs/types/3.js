@@ -65,7 +65,7 @@ function _sort(data){
 			v_v.l = level;
 			if(level != undefined){
 				// for(var i = 1; i <= level; i++){
-					if(!levels_arr[i]){
+					if(!levels_arr[level]){
 						levels_arr[level] = _getArray(_width, v.length);
 					}
 					
@@ -419,8 +419,8 @@ function _parse_file(lines){
 	// require('fs').writeFile('./gedian.json', JSON.stringify(new_data));
 
 	// var area_arr = [];
-	// var levels_arr = _sort(new_data);
-	// require('fs').writeFile('./1.json', JSON.stringify(levels_arr));
+	var levels_arr = _sort(new_data);
+	require('fs').writeFile('./1.json', JSON.stringify(levels_arr));
 	// console.log(levels_arr[1].data[0].length);
 	// console.log('\r\nresult',_stroke(levels_arr[1]));return;
 	// console.log('\n\r', levels_arr.length);

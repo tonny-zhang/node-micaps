@@ -124,18 +124,18 @@ ul{
             'rgb(111,0,21)',
             'rgb(80,0,15)'
         ]
-        // function _getColor(v){
-        //     if(v < -30){
-        //         v = -30;
-        //     }
-        //     var color = temp_color[Math.ceil((v - (-30))/2)];
-        //     return color;
-        // }
+        function _getColor(v){
+            if(v < -30){
+                v = -30;
+            }
+            var color = temp_color[Math.ceil((v - (-30))/2)];
+            return color;
+        }
         map = new BMap.Map("allmap");
         map.centerAndZoom(new BMap.Point(116.404, 39.915), 5);
         // map.centerAndZoom(new BMap.Point(69.772, 46.886), 8);
         map.enableScrollWheelZoom();
-        // $.getJSON('../../../data/micaps/3/15012108.000.json', function(data){
+        // $.getJSON('../../../data/micaps/3/15012108.000.j6son', function(data){
         //     $.each(data, function(i, v){
         //         // var marker = new BMap.Marker(new BMap.Point(v.x, v.y));
         //         // marker.addEventListener("click",function(){
@@ -194,7 +194,6 @@ ul{
                         return v;
                     }
                 }catch(e){}
-                return 0;
             }
             // for (var i=0;i<_data.length;i+=4){
             //   _data[i+0]=255;
@@ -269,7 +268,7 @@ ul{
                 _data[index] = color[0];
                 _data[index + 1] = color[1];
                 _data[index + 2] = color[2];
-                _data[index + 3] = 255;
+                _data[index + 3] = color[3] || 255;
             }
             var _draw_data = (function(){
                 function _initX(y, start_x, end_x){
@@ -384,8 +383,122 @@ ul{
                     ctx.putImageData(imagedata, 0, 0);
                 }
             })();
+            var _fill_color = (function(){
+                var _cache_rgb = (function(){
+                    var _cache = {};
+                    return function(x, y){
+                        var key = [x, y].join('_');
+                        var v_cache = _cache_rgb[key];
+                        if(v_cache){
+                            return v_cache;
+                        }else{
+                            var v = getV(x, y);
+                            var color = [0, 0, 0, 0];
+                            if(!isNaN(v)){
+                                color = color_normal2rgb(v, true);
+                            }
+                            _cache_rgb[key] = color;
+                            return color;
+                        }
+                    }
+                })();
+                return function(){
+                    var width, height;
+                    try{
+                        width = data.length;
+                        height = data[0].length;
+                    }catch(e){}
+                    if(width > 0 && height > 0){
+                        var new_pixel_arr = [];
+                        var last_pixel;
+                        for(var i = 0; i < width; i++){
+                            var arr = [];
+                            for(var j = 0; j< height; j++){
+                                var v = data[i][j];
+                                var point = new BMap.Point(v.x, v.y);
+                                var pixel = map.pointToPixel(point);
+                                last_pixel = pixel;
+                                var color = color_normal2rgb(_getColor(v.v), true);
+                                if(color){
+                                    color.push(100);
+                                }else{
+                                    color = [0, 0, 0, 0];
+                                }
+                                arr.push({
+                                    x: pixel.x, 
+                                    y: pixel.y, 
+                                    color: color
+                                });
+                            } 
+                            new_pixel_arr.push(arr);  
+                        }
+                        var pixel_x_start = new_pixel_arr[0][0].x,//左下点
+                            pixel_y_start = new_pixel_arr[0][0].y,
+                            pixel_x_end = last_pixel.x,
+                            pixel_y_end = last_pixel.y,
+                            space_pixel_x = new_pixel_arr[0][1].x - pixel_x_start,
+                            space_pixel_y = new_pixel_arr[1][0].y - pixel_y_start;
+                        function _get_pixel(x, y){
+                            try{
+                                var pixel = new_pixel_arr[x][y];
+                                if(pixel){
+                                    return pixel;
+                                }
+                            }catch(e){}
+
+                            return {
+                                x: pixel_x_start + x*space_pixel_x, 
+                                y: pixel_y_start + y*space_pixel_y, 
+                                color: [0, 0, 0, 0]
+                            }
+                        }
+                        function _get_pixel_color(x, y, pixel00, pixel10, pixel01, pixel11){
+                            var x1 = pixel00.x,
+                                x2 = pixel10.x,
+                                y1 = pixel00.y,
+                                y2 = pixel01.y;
+
+                            // http://zh.wikipedia.org/wiki/%E5%8F%8C%E7%BA%BF%E6%80%A7%E6%8F%92%E5%80%BC
+                            var denominator = (x2 - x1)*(y2 - y1)
+                            var p1 = (x2 - x)*(y2 - y)/denominator,
+                                p2 = (x - x1)*(y2 - y)/ denominator,
+                                p3 = (x2 - x)*(y - y1)/denominator,
+                                p4 = (x - x1)*(y - y1)/denominator;
+
+
+                            var arr = [];
+                            for(var i = 0; i < 4; i++){
+                                var v00 = pixel00.color[i],
+                                    v01 = pixel01.color[i],
+                                    v10 = pixel10.color[i],
+                                    v11 = pixel11.color[i];
+                                var v = v00 * p1 + v10 * p2 + v01 * p3 + v11 * p4;
+                                arr.push(v);
+                            }
+                            return arr;
+                        }
+                        for(var i = 0; i < width; i++){
+                            for(var j = 0; j< height; j++){
+                                var pixel00 = _get_pixel(i, j);
+                                var pixel10 = _get_pixel(i+1, j);
+                                var pixel01 = _get_pixel(i, j+1);
+                                var pixel11 = _get_pixel(i+1, j+1);
+                                for(var p_x = pixel00.x, p_e_x = pixel10.x; p_x < p_e_x && p_x < pixel_x_end; p_x++){
+                                    for(var p_y = pixel00.y, p_e_y = pixel01.y; p_y > p_e_y && p_y > pixel_y_end; p_y--){
+                                        var color = _get_pixel_color(p_x, p_y, pixel01, pixel11, pixel00, pixel10);
+
+                                        set(p_x, p_y, color);
+                                    }
+                                }
+                            }
+                        }
+                        ctx.putImageData(imagedata, 0, 0);
+                    }
+                }
+            })();
             var time_start = new Date();
-            _draw_data();
+            // _draw_data();
+            _fill_color();
             console.log(new Date() - time_start + ' ms!');
             // alert('完');
             // var max = Number.MIN_VALUE;

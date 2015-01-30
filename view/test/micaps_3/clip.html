@@ -128,6 +128,57 @@ ul{
                 }
             }
         })();
+        var _clip = (function(){
+            var width,height;
+            var _data;
+            function _is_boundary(x, y){
+                var _v = _data[x][y];
+                if(_is_have_val(_v)){
+                    try{
+                        var _v_tmp = _data[x][y-1];
+                        if(!_is_have_val(_v_tmp)){
+                            return true;
+                        }
+                    }catch(e){}
+                    try{
+                        var _v_tmp = _data[x][y+1];
+                        if(!_is_have_val(_v_tmp)){
+                            return true;
+                        }
+                    }catch(e){}
+                    try{
+                        var _v_tmp = _data[x-1][y];
+                        if(!_is_have_val(_v_tmp)){
+                            return true;
+                        }
+                    }catch(e){}
+                    try{
+                        var _v_tmp = _data[x+1][y];
+                        if(!_is_have_val(_v_tmp)){
+                            return true;
+                        }
+                    }catch(e){}
+                }
+            }
+            return function(data){
+                try{
+                    width = data.length;
+                    height = data[0].length;
+                    _data = data;
+                }catch(e){}
+                if(width > 0 && height > 0){
+                    var newData = [];
+                    for(var x = 0; x<width; x++){
+                        var arr = [];
+                        for(var y = 0; y<height; y++){
+                            arr.push(_is_boundary(x, y)? _data[x][y]: null);
+                        }
+                        newData.push(arr);
+                    }
+                }
+                return newData;
+            }
+        })();
         function _clip(data){
             cache_x.reset();
             var width,height;
@@ -317,26 +368,6 @@ ul{
                     return val_arr;
                 }
                 return val_arr.shift();
-            }
-            function create_chain(x, y, next, prev){
-                return {
-                    x: x,
-                    y: y,
-                    next: next,
-                    prev: prev
-                }
-            }
-            function chain_increase(chain, x, y){
-                var next_point;
-                while((next_point = _next(x, y))){
-                    if(next_point.x == chain.x && next_point.y == chain.y){//和头相接
-                        break;
-                    }
-                    var tmp_chain_item = create_chain(next_point.x, next_point.y, null, last_chain_item);
-                    last_chain_item.next = tmp_chain_item
-                    last_chain_item = tmp_chain_item;
-                }
-                return last_chain_item;
             }
             /*缓存数据里各点状态*/
             var _cache = (function(){
@@ -619,7 +650,7 @@ ul{
         }
         $.getJSON('../../../shell/1.json', function(data_all){
             window.data_all = data_all;
-            for(var i = 0, j = data_all.length; i< j; i++){
+            for(var i = 1, j = data_all.length; i< 2; i++){
                 var d = data_all[i];
                 var level = d.level;
                 document.title = 'level:'+level+', i = '+i;
