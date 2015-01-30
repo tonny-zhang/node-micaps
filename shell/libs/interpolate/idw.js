@@ -90,7 +90,7 @@ function Interpolation_IDW_Neighbor(SCoords, lnglat_arr, NumberOfNearestNeighbor
 	});
 	return lnglat_arr;
 }
-var GRID_SPACE = 0.5,
+var GRID_SPACE = 0.4,
 	DIS_POINTS = 0.5;
 function genLngLatArr(x0, y0, x1, y1, x_num, y_num){
 	var arr = [];
