@@ -197,12 +197,6 @@ ul{
                     }
                 }catch(e){}
             }
-            // for (var i=0;i<_data.length;i+=4){
-            //   _data[i+0]=255;
-            //   _data[i+1]=255;
-            //   _data[i+2]=0;
-            //   _data[i+3]=255;
-            // }
             /*基于像素点的画法*/
             function _draw_grid(){
                 var point_left_top = map.pointToPixel(new BMap.Point(x0, y1)),
@@ -241,29 +235,6 @@ ul{
                 window.test_data = imagedata;
                 console.log(imagedata);
             }
-            // 上下左右都有颜色时进行平均，如果缺少再进行插值计算
-            // var _draw_data = (function(){
-            //     return function(){
-            //         console.log(data.length * data[0].length);
-            //         $.each(data, function(v_i, v_x){
-            //             $.each(v_x, function(i, v_y){
-            //                 if(v_y.v != 999999){
-            //                     var c = _getColor(v_y.v);
-            //                     var color = color_normal2rgb(c, true);
-            //                     var pixel = map.pointToPixel(new BMap.Point(v_y.x, v_y.y));
-            //                     var index = (pixel.y * width + pixel.x)*4;
-            //                     _data[index] = color[0];
-            //                     _data[index + 1] = color[1];
-            //                     _data[index + 2] = color[2];
-            //                     _data[index + 3] = 255;
-
-            //                     // console.log(pixel, color);
-            //                 }
-            //             });
-            //         });
-            //         ctx.putImageData(imagedata, 0, 0);
-            //     }
-            // })();
             
             var set = function(x, y, color){
                 var index = (y * width + x)*4;
