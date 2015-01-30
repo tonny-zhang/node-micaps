@@ -33,5 +33,4 @@ function _parse_file(lines){
 	var new_data = idw.interpolate(data, lnglat_arr, 4, DEFAULT_VALUE, true);
 	return new_data;
 }
-exports.stroke = _stroke;
 exports.parse = _parse_file;
