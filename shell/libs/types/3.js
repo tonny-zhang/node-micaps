@@ -2,7 +2,8 @@ var idw = require('../interpolate/idw');
 
 var DEFAULT_VALUE = 999999;
 var REG_DATA_NUM = /^\d+\s+(\d+)$/;
-var REG_DATA = /^(\d+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)$/;
+var REG_DATA = /^(\d+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+(-?[\d.]+)$/;
+// 降水
 function _parse_level(v){
 	var level = 0;
 	if(v != DEFAULT_VALUE){
@@ -18,6 +19,30 @@ function _parse_level(v){
 	        level = 5;
 	    }else{
 	        level = 6;
+	    }
+    }
+    return level;
+}
+// 温度
+function _parse_level(v){
+	var level = 0;
+	if(v != DEFAULT_VALUE){
+		if(v <= -15){
+	        level = 1;
+	    }else if(v <= -10){
+	        level = 2;
+	    }else if(v <= -5){
+	        level = 3;
+	    }else if(v <= 0){
+	        level = 4;
+	    }else if(v <= 5){
+	        level = 5;
+	    }else if(v <= 10){
+	        level = 6;
+	    }else if(v <= 15){
+	        level = 7;
+	    }else{
+	    	level = 8;
 	    }
     }
     return level;
@@ -39,13 +64,13 @@ function _sort(data){
 			var level = _parse_level(v_v.v);
 			v_v.l = level;
 			if(level != undefined){
-				for(var i = 1; i <= level; i++){
+				// for(var i = 1; i <= level; i++){
 					if(!levels_arr[i]){
-						levels_arr[i] = _getArray(_width, v.length);
+						levels_arr[level] = _getArray(_width, v.length);
 					}
 					
-					levels_arr[i][x][y] = v_v;
-				}
+					levels_arr[level][x][y] = v_v;
+				// }
 			}
 		})
 	});
@@ -389,26 +414,26 @@ function _parse_file(lines){
 		}		
 	});
 	var lnglat_arr = idw.genLngLatArr(73.5, 18.16, 135.09, 53.56);
-	var new_data = idw.interpolate(data, lnglat_arr, 6, DEFAULT_VALUE);
+	var new_data = idw.interpolate(data, lnglat_arr, 4, DEFAULT_VALUE, true);
 
-	require('fs').writeFile('./gedian.json', JSON.stringify(levels_arr));
+	// require('fs').writeFile('./gedian.json', JSON.stringify(new_data));
 
-	var area_arr = [];
-	var levels_arr = _sort(new_data);
-	require('fs').writeFile('./1.json', JSON.stringify(levels_arr));
+	// var area_arr = [];
+	// var levels_arr = _sort(new_data);
+	// require('fs').writeFile('./1.json', JSON.stringify(levels_arr));
 	// console.log(levels_arr[1].data[0].length);
 	// console.log('\r\nresult',_stroke(levels_arr[1]));return;
 	// console.log('\n\r', levels_arr.length);
-	levels_arr.forEach(function(v){
-	// 	console.log(v.level);return;
-		var area = _stroke(v);
-	// 	// console.log(v.data[57][25]);
-		if(area){
-			console.log(area.length);
-			area_arr = area_arr.concat(area);
-		}
-	});
-	return area_arr;
+	// levels_arr.forEach(function(v){
+	// // 	console.log(v.level);return;
+	// 	var area = _stroke(v);
+	// // 	// console.log(v.data[57][25]);
+	// 	if(area){
+	// 		console.log(area.length);
+	// 		area_arr = area_arr.concat(area);
+	// 	}
+	// });
+	return new_data;
 }
 exports.stroke = _stroke;
 exports.parse = _parse_file;

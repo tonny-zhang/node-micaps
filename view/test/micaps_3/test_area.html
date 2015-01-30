@@ -67,7 +67,7 @@ ul{
         map.centerAndZoom(new BMap.Point(116.404, 39.915), 5);
         // map.centerAndZoom(new BMap.Point(69.772, 46.886), 8);
         map.enableScrollWheelZoom();
-        var COLOR = ['yellow', 'orange', 'red', 'green', 'blue', 'black', '#00aabb'];
+        var COLOR = ['#ffffff', '#66FF00', '#666633', '#663300', '#003399', '#CC0033', '#000000'];
         // var url = '../../../shell/2.json';
         var url = '../../../data/micaps/3/15012108.000.json';
         $.getJSON(url, function(data){
@@ -83,7 +83,7 @@ ul{
                     // setTimeout(function(){
                     //     var marker = new BMap.Marker(point);
                     //     map.addOverlay(marker);
-                    // }, 500*(i_v*i)+10);
+                    // }, 500*i_v);
                     point_arr.push(point);
                 });
                 var color = COLOR[level];

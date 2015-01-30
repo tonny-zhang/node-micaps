@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;}
+ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+#result{
+    display: none;
+    width: 96%;
+    height: 96%;
+    margin: 2%;
+    overflow: auto;
+    white-space:nowrap; 
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 101;
+    background-color: #fff;
+}
+#result span{
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+}
+#result div:nth-child(2n) span:nth-child(2n+1),
+#result div span:nth-child(2n){
+    background-color: #eee;
+}
+#location_info{
+    position: fixed; 
+    z-index: 101;
+    top: 10px;
+    left: 50%;
+    width: 400px;
+    margin-left: -200px;
+    height: 30px;
+    line-height: 30px;
+}
+</style>
+<title>micas14类数据展示</title>
+</head>
+<body>
+    <div id="result"></div>
+    <div id="location_info"></div>
+    <div id="allmap">
+    </div>
+    <script type="text/javascript" src="http://i.tq121.com.cn/j/jquery-1.8.2.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=E8MDMS4BVFEMeAxVP3YddQ6X"></script>
+    <script type="text/javascript">
+    !function(){
+        var COLOR = ['#ffffff', '#66FF00', '#666633', '#663300', '#003399', '#CC0033', '#000000'];// 降水
+        var COLOR = ['#ffffff',' #201885', '#114AD9', '#4DB4F6', '#D1F8F3', '#F9DE45', '#FFA800', '#FF6D00', '#D50100'];//温度
+        var is_graph = location.href.indexOf('graph') > -1;
+        var is_stroke = location.href.indexOf('stroke') > -1;
+        var is_cilp = location.href.indexOf('cilp') > -1;
+        var is_map = location.href.indexOf('map') > -1;
+        function show_data(data){
+            var $location_info = $('#location_info');
+            var $result = $('#result').on('mouseover', function(e){
+                var $target = $(e.target);
+                if($target.is('[data-line] [data-column]')){
+                    // console.log($target.index(), $target.parent().data('line'));
+                    $location_info.text('行:'+($target.data('column'))+'列：'+$target.parent().data('line'));
+                }
+            });
+            var text = '';
+            var width = data.length,
+                height = data[0].length;
+            var arr = ['<span></span>']
+            for (var j = 0; j < width; j++) {
+                arr.push('<span>'+j+'</span>');
+            }
+            text += '<div>'+arr.join('')+'</div>';
+            // console.log(arr.join(' '));
+            for (var i = 0; i < height; i++) {
+                var arr = ['<span>'+i+'</span>']
+                for (var j = 0; j < width; j++) {
+                    if(is_cilp){
+                        arr.push('<span data-column='+j+'>'+(data[j][i] === undefined? '-':  data[j][i] === null? '&nbsp;' : '*')+'</span>');
+                    }else{
+                        arr.push('<span data-column='+j+'>'+(data[j][i]? '*' : '&nbsp;')+'</span>');
+                    }
+                }
+                // console.log(arr.join(' '));
+                text += '<div data-line='+i+'>'+arr.join('')+'</div>';
+            }
+            $result.html(text).show();
+        }
+        var _is_have_val = function(val){
+            return !!val;
+        }
+        var cache_x = (function(){
+            var _cache = {};
+            var _cache_v = {};
+            return {
+                reset: function(){
+                    _cache = {};
+                    _cache_v = {};
+                },
+                flag: function(x, y, v){
+                    if(!_cache[y]){
+                        _cache[y] = [];
+                    }
+                    if(_cache[y].indexOf(x) == -1){
+                        _cache[y].push(x);
+                        _cache_v[[x, y].join('_')] = v;
+                    }
+                },
+                is_flag: function(x, y){
+                    var v_y = _cache[y];
+                    if(v_y){
+                        return !!v_y[x];
+                    }
+                },
+                get: function(){
+                    return _cache;
+                },
+                get_val: function(x, y){
+                    return _cache_v[[x, y].join('_')];
+                }
+            }
+        })();
+        function _clip(data){
+            cache_x.reset();
+            var width,height;
+            try{
+                width = data.length;
+                height = data[0].length;
+            }catch(e){}
+            if(width > 0 && height > 0){
+                for(var x = 0; x<width; x++){
+                    var data_y = data[x];
+                    var clip = false;
+                    var prev_v;
+                    for(var y = 0; y<height; y++){
+                        var v_y = data_y[y];
+                        if(_is_have_val(v_y)){
+                            if(clip){
+                                data_y[y] = null;
+                                cache_x.flag(x, y, v_y);
+                            }else{
+                                clip = true;
+                            }
+                        }else{
+                            var v_below = data_y[y+1];
+                            if(_is_have_val(v_below) && clip){ //对偶尔缺失值进行填充
+                                // console.log(v_below, v_y);
+                                // data_y[y] = undefined;
+                                // data_y[y] = {
+                                //     x: (v_below.x + v_y.x)/2,
+                                //     y: (v_below.y + v_y.y)/2,
+                                //     v: (v_below.v + v_y.v)/2
+                                // }
+                                data_y[y] = v_below; //暂时用下方值替代
+                                cache_x.flag(x, y, v_below);
+                            }else{
+                                if(prev_v){
+                                    data_y[y-1] = prev_v; //最后一个点进行还原
+                                    cache_x.flag(x, y-1, prev_v);
+                                }
+                                clip = false;
+                            }
+                        }
+                        prev_v = v_y;
+                    }
+                }
+                var cache_data = cache_x.get();
+                for(var y in cache_data){
+                    var data_y = cache_data[y];
+                    // if(y != 48){
+                    //     continue;
+                    // }
+                    data_y.sort(function(a, b){
+                        return a > b? 1: -1;
+                    });
+                    var start_x = -1;
+                    for(var i = 0, j = data_y.length; i< j; i++){
+                        var x = data_y[i];
+                        var x_right = data_y[i+1];
+                        var is_have_right = x+1 == x_right,
+                            is_start = start_x == -1;
+                        var is_have_left = x > 0 && _is_have_val(data[x-1][y]);
+                        var is_have_up = y > 0 && _is_have_val(data[x][y-1]);
+                        if(!is_have_right || (is_start)){
+                            data[x][y] = cache_x.get_val(x, y);
+                        }
+                        start_x = is_have_right? x: -1;
+                    }
+                }
+                return data;
+            }
+        }
+        var _stroke = (function(){
+            var _data;
+            function _point_weight(x, y){var arr = [];
+                var sum = 0;
+                var current_point;
+                try{
+                    current_point = _data[x][y];
+                }catch(e){}
+                if(_is_have_val(current_point)){
+                    for(var i = x - 1, j = x + 1; i<=j; i++){
+                        for(var i_y = y - 1, j_y = y + 1; i_y<=j_y; i_y++){
+                            // if(i == x && i_y == y){
+                            //     continue;
+                            // }
+                            var c;
+                            try{
+                                c = _data[i][i_y];
+                            }catch(e){}
+                            if(_is_have_val(c)){
+                                arr.push([i, i_y, c.v]);
+                                sum ++;
+                            }
+                        }
+                    }
+                }
+                return {
+                    x: x,
+                    y: y,
+                    sum: sum,
+                    arr: arr
+                };
+            }
+            var _cache_first_x_y = {};
+            function _get_v(x, y, arr){
+                try{
+                    var v = _data[x][y];
+                    var _is_flag = _cache.is_flag(x, y);
+                    var _is_first = _cache.is_first(x, y);
+                    var _is_abandon = _cache_abandon.is_in(x, y);
+                    if(_is_have_val(v) && (!_is_flag || _is_first) && !_is_abandon){
+                        var index = arr.length;
+                        if(_is_first){
+                            _cache_first_x_y = {
+                                x: x, 
+                                y: y,
+                                index: index
+                            };
+                        }
+                        var val = {
+                            x: x,
+                            y: y,
+                            v: v
+                        };
+                        arr.push(val);
+                        return {
+                            index: index,
+                            val: val
+                        };
+                    }
+                }catch(e){
+                    console.log(e.stack);
+                }
+            }
+            function _next(x, y, is_return_array){
+                _cache_first_x_y = {};
+                var x0 = x - 1, //左
+                    x1 = x,     
+                    x2 = x + 1; //右
+                var y0 = y - 1, //上
+                    y1 = y,
+                    y2 = y + 1; //下
+
+                var val_arr = [];
+                var val01, //上
+                    val12, //右
+                    val02, //右上
+                    val21, //下
+                    val22, //右下
+                    val20, //左下
+                    val10, //左
+                    val00; //左上
+                
+                val01 = _get_v(x1, y0, val_arr);//上
+
+                val12 = _get_v(x2, y1, val_arr);//右
+
+                val02 = _get_v(x2, y0, val_arr);//右上
+
+                val21 = _get_v(x1, y2, val_arr);//下
+
+                val22 = _get_v(x2, y2, val_arr);//右下
+
+                val20 = _get_v(x0, y2, val_arr);//左下
+
+                val10 = _get_v(x0, y1, val_arr);//左
+
+                val00 = _get_v(x0, y0, val_arr);//左上
+                
+                if(_cache.is_first(x, y) && val_arr.length == 2){
+                    /*
+                        #
+                        * *
+                    */
+                    if(val21 && val22){
+                        val_arr[val21.index] = val22.val;
+                        val_arr[val22.index] = val21.val;
+                    }
+                }
+                if(val_arr.length > 1){
+                    var index = _cache_first_x_y.index;
+                    if(index != undefined){
+                        var first_item = val_arr.splice(index, 1);
+                        val_arr.push(first_item); //让第一个点的权重降低
+                    }
+                }
+                if(is_return_array){
+                    return val_arr;
+                }
+                return val_arr.shift();
+            }
+            function create_chain(x, y, next, prev){
+                return {
+                    x: x,
+                    y: y,
+                    next: next,
+                    prev: prev
+                }
+            }
+            function chain_increase(chain, x, y){
+                var next_point;
+                while((next_point = _next(x, y))){
+                    if(next_point.x == chain.x && next_point.y == chain.y){//和头相接
+                        break;
+                    }
+                    var tmp_chain_item = create_chain(next_point.x, next_point.y, null, last_chain_item);
+                    last_chain_item.next = tmp_chain_item
+                    last_chain_item = tmp_chain_item;
+                }
+                return last_chain_item;
+            }
+            /*缓存数据里各点状态*/
+            var _cache = (function(){
+                var _cache_chain = {};
+                var _cache_next = {};
+                var _cache_first = {};
+                return {
+                    reset: function(){
+                        _cache_chain = {};
+                        _cache_next = {};
+                        _cache_first = {};
+                    }, 
+                    flag_next: function(x, y, next_x, next_y){
+                        var key = [x, y].join('_');
+                        _cache_next[key] = {
+                            x: next_x, 
+                            y: next_y
+                        };
+                        console.log(x, y, '->', next_x, next_y);
+                    },
+                    get_next: function(x, y){
+                        return _cache_next[[x, y].join('_')];
+                    },
+                    flag: function(x, y, is_cancel){
+                        var key = [x, y].join('_');
+                        if(is_cancel){
+                            delete _cache_chain[key];
+                        }else{
+                            _cache_chain[key] = 1;
+                        }
+                        // console.log('flag', x, y,is_cancel?'========':'');
+                    },
+                    is_flag: function(x, y){
+                        return !!_cache_chain[[x, y].join('_')];
+                    },
+                    first: function(x, y, is_cancel){
+                        var key = [x, y].join('_');
+                        if(is_cancel){
+                            delete _cache_first[key];
+                        }else{
+                            _cache_first[key] = 1;
+                        }
+                    },
+                    is_first: function(x, y){
+                        return !!_cache_first[[x, y].join('_')];
+                    }
+                }
+            })();
+            function _next_item(items, x, y){
+                var first_item = items[0],
+                    first_x = first_item.x, 
+                    first_y = first_item.y;
+                var next_point;
+                var current_x = x, current_y = y;
+                while((next_point = _next(current_x, current_y))){
+                    var new_x = next_point.x;
+                    var new_y = next_point.y;
+
+
+                    // if(current_x == 554 && current_y == 280){
+                    //     debugger;
+                    // }
+                    
+                    _cache.flag_next(current_x, current_y, new_x, new_y); 
+                    items.push(next_point);
+
+                    _cache.flag(new_x, new_y);
+                    if(first_x == new_x && first_y == new_y){
+                        break;
+                    }
+                    current_x = new_x, 
+                    current_y = new_y;
+                }
+                _reback_item(items);
+            }
+            /*缓存回溯点信息*/
+            var _cache_abandon = (function(){
+                var _cache_abandon_arr = [];
+                return {
+                    reset: function(){
+                        _cache_abandon_arr = [];
+                    },
+                    add: function(item){
+                        console.log('abandon', item.x, item.y);
+                        _cache_abandon_arr.push(item);
+                    },
+                    is_in: function(x, y){
+                        for(var i_a = 0, j_a = _cache_abandon_arr.length; i_a < j_a; i_a++){
+                            var abandon_tmp = _cache_abandon_arr[i_a];
+                            if(abandon_tmp.x == x && abandon_tmp.y == y){
+                                return true;
+                            }
+                        }
+                    }
+                }
+            })();
+            
+            function _reback_item(items){
+                if(items.length <= 1){ //在描边过程中舍弃的点
+                    for(var i = 0; i<items.length;i++){
+                        var item = items[i];
+                        _cache.flag(item.x, item.y);
+                    }
+                    return;
+                }
+                var first_item = items[0],
+                    first_x = first_item.x, 
+                    first_y = first_item.y;
+                var abandon_item = items.pop();
+                // if(abandon_item.x == 556 && abandon_item.y == 283){
+                //     debugger;
+                // }
+                _cache_abandon.add(abandon_item);
+                if(abandon_item.x != first_x || abandon_item.y != first_y){
+                    _cache.flag(abandon_item.x, abandon_item.y, true);
+                    var next_point;
+                    var item_tmp = items[items.length-1];
+                    // if(item_tmp.x == 554 && item_tmp.y == 282){
+                    //     debugger;
+                    // }
+                    var arr = _next(item_tmp.x, item_tmp.y, true);
+                    var old_next = _cache.get_next(item_tmp.x, item_tmp.y);
+                    for(var i = 0, j = arr.length; i<j; i++){
+                        var item = arr[i];
+                        if(item.x != old_next.x || item.y != old_next.y && !_cache.is_flag(item.x, item.y)){
+                            if(!_cache_abandon.is_in(item.x, item.y)){
+                                next_point = item;
+
+                                _cache.flag_next(item_tmp.x, item_tmp.y, next_point.x, next_point.y); 
+                                break;
+                            }
+                        }
+                    }
+                    if(next_point){
+                        items.push(next_point);
+                        _cache.flag(next_point.x, next_point.y);
+                        _next_item(items, next_point.x, next_point.y);
+                    }else{
+                        _reback_item(items);
+                    }
+                }
+            }
+            return function (data){
+                var width,height;
+                try{
+                    width = data.length;
+                    height = data[0].length;
+                }catch(e){}
+                if(width > 0 && height > 0){
+                    _cache.reset();
+                    _data = data;
+                    var areas_arr = [];
+                    while(1){
+                        var next_while = false;
+                        var first_point_x = undefined, first_point_y = undefined;
+                        for(var x = 0; x < width; x++){
+                            for(var y = 0; y < height; y++){
+                                var weight = _point_weight(x, y);
+                                var around_num = weight.sum;
+                                if(around_num > 0){ //有值
+                                    if(around_num <= 2){ //单独为面数据
+                                        var items = [];
+                                        var _around_arr = weight.arr;
+                                        for(var i = 0;i<around_num;i++){
+                                            var w_info = _around_arr[i];
+                                            var _w_info_x = w_info[0],
+                                                _w_info_y = w_info[1];
+                                            if(_w_info_x != x || _w_info_y != y){
+                                                if(_point_weight(_w_info_x, _w_info_y).sum > 2){
+                                                    continue;
+                                                }
+                                            }
+                                            var v = _data[_w_info_x][_w_info_y];
+                                            _data[_w_info_x][_w_info_y] = undefined;
+                                            console.log('undefined', _w_info_x, _w_info_y);
+                                            items.push({
+                                                x: _w_info_x, 
+                                                y: _w_info_y,
+                                                v: v
+                                            });
+                                        }
+                                        areas_arr.push(items);
+                                        next_while = true;
+                                    }else{
+                                        if(!_cache.is_flag(x, y)){
+                                            first_point_x = x,
+                                            first_point_y = y;
+                                            next_while = true;
+                                        }
+                                    }
+                                    if(next_while)
+                                        break;
+                                }
+                            }
+                            if(next_while){
+                                break;
+                            }
+                        }
+                        console.log('=======');
+                        console.log('start', first_point_x, first_point_y);
+                        if(first_point_y != undefined && first_point_x != undefined){
+                            // if(first_point_x == 137 && first_point_y == 32){
+                            //     debugger;
+                            // }
+                            _cache.flag(first_point_x, first_point_y);
+                            _cache.first(first_point_x, first_point_y);
+                            // return;
+                            var items = [{
+                                x: first_point_x,
+                                y: first_point_y,
+                                v: _data[first_point_x][first_point_y]
+                            }];
+                            _next_item(items, first_point_x, first_point_y);
+
+                            _cache_abandon.reset();
+                            areas_arr.push(items);
+                            if(items.length <= 1){
+                                _cache.first(first_point_x, first_point_y, true);
+                            }
+                            console.log('end', first_point_x, first_point_y, items);
+                        }
+                        if(next_while){
+                            continue;
+                        }
+                        return areas_arr;
+                    }
+                }
+                _cache_abandon.reset();
+                _cache.reset();
+            }
+        })();
+        if(is_map){
+            map = new BMap.Map("allmap");
+            map.centerAndZoom(new BMap.Point(116.404, 39.915), 5);
+            map.enableScrollWheelZoom();
+        }
+        function _show_map(data, color){
+            $.each(data, function(i_data, v){
+                var len = v.length;
+                if(len >= 5){
+                    var point_arr = [];
+                    $.each(v, function(item_i, item){
+                        item = item.v;
+                        var point = new BMap.Point(item.x, item.y);
+                        // setTimeout(function(){
+                        //     var marker = new BMap.Marker(point);
+                        //     map.addOverlay(marker);
+                        // }, 500*item_i);
+                        point_arr.push(point);
+                    });
+                    // console.log(point_arr, color);
+                    var polygon = new BMap.Polygon(point_arr, {
+                        strokeColor: color, 
+                        fillColor: color,
+                        fillOpacity: 1, 
+                        strokeWeight: 1, 
+                        strokeOpacity:1
+                    });
+                    setTimeout(function(){
+                        map.addOverlay(polygon);
+                    }, 100*Math.random());
+                }else{
+                    $.each(v, function(item_i, item){
+                        item = item.v;
+                        var point = new BMap.Point(item.x, item.y);
+                        var circle = new BMap.Circle(point,6000,{
+                            strokeColor: color, 
+                            fillColor: 'red',
+                            fillOpacity: 0.9, 
+                            strokeWeight: 1, 
+                            strokeOpacity:1
+                        }); //创建圆
+                        map.addOverlay(circle);
+                    })
+                }
+            });
+        }
+        window.fn = {
+            show_data: show_data
+        }
+        $.getJSON('../../../shell/1.json', function(data_all){
+            window.data_all = data_all;
+            for(var i = 0, j = data_all.length; i< j; i++){
+                var d = data_all[i];
+                var level = d.level;
+                document.title = 'level:'+level+', i = '+i;
+                var data = d.data;
+                if(is_cilp || is_map){
+                    data = _clip(data);
+                }
+                console.log('\n\r');
+                console.log('\n\r');
+                console.log('level', level, 'i = '+i);
+                if(is_graph){
+                    show_data(data);
+                }
+                if(is_stroke || is_map){
+                    data = _stroke(data);
+                }
+                if(is_map){
+                    var color = COLOR[level];
+                    _show_map(data, color);
+                }
+                
+                console.log('end');
+            }
+        });
+    }();
+    </script>
+</body>
+</html>
