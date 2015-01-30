@@ -1,4 +1,5 @@
 var idw = require('../interpolate/idw');
+var digit_util = require('../utils').Digit;
 
 var DEFAULT_VALUE = 999999;
 var REG_DATA_NUM = /^\d+\s+(\d+)$/;
@@ -31,6 +32,13 @@ function _parse_file(lines){
 	});
 	var lnglat_arr = idw.genLngLatArr(73.5, 18.16, 135.09, 53.56);
 	var new_data = idw.interpolate(data, lnglat_arr, 4, DEFAULT_VALUE, true);
+	// 对格点上的数据值进行格式化，减小文件体积
+	for(var i = 0, j = new_data.length; i < j; i++){
+		var items = new_data[i];
+		for(var y = 0, y_len = items.length; y < y_len; y++){
+			items[y].v = parseFloat(digit_util.toFixed(items[y].v));
+		}
+	}
 	return new_data;
 }
 exports.parse = _parse_file;

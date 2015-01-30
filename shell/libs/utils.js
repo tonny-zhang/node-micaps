@@ -111,7 +111,17 @@ function _isInLeftTopLine(line, x, y) {
     }
     return true;
 }
+var Digit = {
+    toFixed: function(num, places){
+        if(!isNaN(num)){
+            num = num.toFixed(places||4)
+        }
+        return num;
+    }
+}
 exports.isInsidePolygon = _isInsidePolygon;
 exports.isInLeftTopLine = _isInLeftTopLine;
 exports.lineIsInsidePolygon = _lineIsInsidePolygon;
 exports.polygonIsInsidePolygon = _polygonIsInsidePolygon;
+
+exports.Digit = Digit;
