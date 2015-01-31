@@ -69,7 +69,7 @@ var format = (function(){
 						data.mtime = file_time.getTime(); // 可以做为数据的制作时间
 
 
-						m = /^(([12]\d)?\d{2})\s+(\d{1,2})\s+(\d{1,2})\s+(\d{1,2})/.exec(line_arr[1]);
+						m = /^(([12]\d)?\d{2})\s+(\d{1,2})\s+(\d{1,2})\s+(\d{1,2})/.exec(line_arr[1].trim());
 						
 						if(m){
 							var year = file_time.getFullYear(),// 暂时以文件的修改时间里的年数据代替

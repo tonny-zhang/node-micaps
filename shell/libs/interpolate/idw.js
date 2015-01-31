@@ -1,3 +1,5 @@
+var GRID_SPACE = 0.2,
+	DIS_POINTS = 0.5;
 function Interpolation_IDW_Neighbor(SCoords, lnglat_arr, NumberOfNearestNeighbors, unDefData, bCalAllGrids){
 	var num4,num5;
 	var length = lnglat_arr.length,	//获取X数组大小
@@ -90,8 +92,6 @@ function Interpolation_IDW_Neighbor(SCoords, lnglat_arr, NumberOfNearestNeighbor
 	});
 	return lnglat_arr;
 }
-var GRID_SPACE = 0.4,
-	DIS_POINTS = 0.5;
 function genLngLatArr(x0, y0, x1, y1, x_num, y_num){
 	var arr = [];
 	var x_num = Math.ceil((x1 - x0)/GRID_SPACE),

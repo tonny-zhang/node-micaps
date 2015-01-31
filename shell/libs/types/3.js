@@ -30,7 +30,7 @@ function _parse_file(lines){
 			}
 		}		
 	});
-	var lnglat_arr = idw.genLngLatArr(73.5, 18.16, 135.09, 53.56);
+	var lnglat_arr = idw.genLngLatArr(73.5, 18.16, 139, 54);
 	var new_data = idw.interpolate(data, lnglat_arr, 4, DEFAULT_VALUE, true);
 	// 对格点上的数据值进行格式化，减小文件体积
 	for(var i = 0, j = new_data.length; i < j; i++){
@@ -39,6 +39,8 @@ function _parse_file(lines){
 			items[y].v = parseFloat(digit_util.toFixed(items[y].v));
 		}
 	}
-	return new_data;
+	return {
+		interpolate: new_data
+	};
 }
 exports.parse = _parse_file;
