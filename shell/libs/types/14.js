@@ -227,9 +227,9 @@ function _parse_file(line_arr){
 		}
 	});
 	// 当有特殊的线分割面的情况时进行处理
-	if(content_info.areas.len > 0 && content_info.line_symbols.len > 0){
-		_parseArea(content_info);
-	}
+	// if(content_info.areas.len > 0 && content_info.line_symbols.len > 0){
+	// 	_parseArea(content_info);
+	// }
 	// 格式化数据
 	_format(content_info);
 	return content_info;
