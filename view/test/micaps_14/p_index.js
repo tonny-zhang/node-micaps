@@ -113,6 +113,7 @@ $(function(){
 			});
 		}
 		_sort_areas(areas);
+		// areas = areas.splice(5, 1);
 		$.each(areas,function(i_outer,v_outer){
 			(function(i,v){
 				// setTimeout(function(){
@@ -136,7 +137,8 @@ $(function(){
 					});
 					var symbols = v.symbols;
 					var color = Color[i%Color.length];
-					// var color = getPrecipitationColor(v.code,symbols?symbols.text:0);
+					// console.log(v.code, symbols);
+					var color = getPrecipitationColor(v.code,symbols?symbols.text:0);
 					var polygon = new BMap.Polygon(point_arr, {strokeColor: color, fillColor: color,fillOpacity: 0.9, strokeWeight: 1, strokeOpacity:1});
 					map.addOverlay(polygon);   //增加面
 					setTimeout(_add_svg_pattern,10);
@@ -248,19 +250,19 @@ $(function(){
 				text = '台';
 				color = 'green';
 			}
-			else if(23 == type || 24 == type || 26 == type || 48 == type){// 处理雨雪的极值
-				text = v.text;
-				if(text == 0){
-					return;
-				}
-				style.fontSize = '20px';
-				style.fontShadow = '0 0 3px white';
-				color = 'black';
-			}
-			// else{//测试特殊点标识
+			// else if(23 == type || 24 == type || 26 == type || 48 == type){// 处理雨雪的极值
+			// 	text = v.text;
+			// 	if(text == 0){
+			// 		return;
+			// 	}
+			// 	style.fontSize = '20px';
+			// 	style.fontShadow = '0 0 3px white';
 			// 	color = 'black';
-			// 	text = type;
 			// }
+			else{//测试特殊点标识
+				color = 'black';
+				text = type;
+			}
 			style.color = color;
 			var label = new BMap.Label(text, {
 				position: new BMap.Point(v.x,v.y),

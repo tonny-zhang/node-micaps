@@ -62,7 +62,7 @@ function _parse_file(line_arr){
 			lines.len = reg_m[1];
 			reg_m = null;
 			flag = FLAG_READLINE_WEIGHT;
-			console.log('1. LINES -> ',lines.len);
+			// console.log('1. LINES -> ',lines.len);
 			return;
 		}else if(reg_m = REG_LINES_SYMBOL.exec(v)){
 			line_symbols.len = reg_m[1];
@@ -71,13 +71,13 @@ function _parse_file(line_arr){
 			return;
 		}else if(reg_m = REG_SYMBOLS.exec(v)){
 			symbols.len = reg_m[1];
-			console.log('8. SYMBOLE(len:'+reg_m[1]+')');
+			// console.log('8. SYMBOLE(len:'+reg_m[1]+')');
 			reg_m = null;
 			flag = FLAG_SYMBOLE_ITEM;
 			return;
 		}else if(reg_m = REG_CLOSED_CONTOURS.exec(v)){
 			areas.len = reg_m[1];
-			console.log('9. CLOSED_CONTOURS(len:'+reg_m[1]+')');
+			// console.log('9. CLOSED_CONTOURS(len:'+reg_m[1]+')');
 			reg_m = null;
 			flag = FLAG_AREA_POINTS_INFO;
 			return;
@@ -101,7 +101,7 @@ function _parse_file(line_arr){
 						items: []
 					}
 				});
-				console.log('2. LINES(weight:'+m[1]+',pointLen:'+m[2]+')');
+				// console.log('2. LINES(weight:'+m[1]+',pointLen:'+m[2]+')');
 			}
 			flag = FLAG_READLINE_POINTS;
 		}else if(flag == FLAG_READLINE_POINTS /*step 3*/ || 
@@ -112,7 +112,7 @@ function _parse_file(line_arr){
 			var items = [];
 			var points_arr = v.split(REG_BLANK);
 			if(points_arr.length%3 != 0){
-				console.log('===',points_arr.length);
+				// console.log('===',points_arr.length);
 				return;
 			}
 			for(var i = 0,j = points_arr.length;i<j;i+=3){
@@ -124,31 +124,31 @@ function _parse_file(line_arr){
 				items.push(point);
 			}
 			if(flag == FLAG_READLINE_POINTS){
-				console.log('3. LINES_POINT()');
+				// console.log('3. LINES_POINT()');
 				var line = lines.items[lines.items.length-1];
 				// console.log(lines.items);
 				line.point.items = line.point.items.concat(items);
-				console.log('3. ->',items.length,line.point.items.length);
+				// console.log('3. ->',items.length,line.point.items.length);
 				if(line.point.len == line.point.items.length){
 					flag = FLAG_READLINE_FLAG;
 				}
 			}else if(flag == FLAG_READLINE_FLAG_POINTS){
-				console.log('5. LINES_POINT()');
+				// console.log('5. LINES_POINT()');
 				var line = lines.items[lines.items.length-1];
 				line.flags.items = line.flags.items.concat(items);
-				console.log('5. ->',items.length,line.flags.items.length,v);
+				// console.log('5. ->',items.length,line.flags.items.length,v);
 				if(line.flags.len == line.flags.items.length){/* to step 2*/
 					flag = FLAG_READLINE_WEIGHT;
 				}
 			}else if(flag == FLAG_LINES_SYMBOLE_POINTS){
-				console.log('7. LINES_POINT()');
+				// console.log('7. LINES_POINT()');
 				var line_symbol = line_symbols.items[line_symbols.items.length-1];
 				line_symbol.items = line_symbol.items.concat(items);
 				if(line_symbol.items.length == line_symbol.len){
 					flag = FLAG_LINES_SYMBOLE;
 				}
 			}else if(flag == FLAG_AREA_POINTS){
-				console.log('11. AREA_POINT()');
+				// console.log('11. AREA_POINT()');
 				var area = areas.items[areas.items.length-1];
 				area.items = area.items.concat(items);
 				if(area.items.length == area.len){
@@ -173,7 +173,7 @@ function _parse_file(line_arr){
 				_flags.text = m[1];
 				_flags.len = m[2];
 				flag = FLAG_READLINE_FLAG_POINTS;
-				console.log('4. LINES_FLAG(text:'+m[1]+',len:'+m[2]+')');
+				// console.log('4. LINES_FLAG(text:'+m[1]+',len:'+m[2]+')');
 			}
 		}else if(flag == FLAG_LINES_SYMBOLE){/*step 6*/
 			var m = REG_THREE_NUM.exec(v);
@@ -185,7 +185,7 @@ function _parse_file(line_arr){
 					items: []
 				});
 				flag = FLAG_LINES_SYMBOLE_POINTS;
-				console.log('6. LINES_SYMBOLE(code:'+m[1]+',weight:'+m[2]+',len:'+m[3]+')');
+				// console.log('6. LINES_SYMBOLE(code:'+m[1]+',weight:'+m[2]+',len:'+m[3]+')');
 			}
 			
 		}else if(flag == FLAG_SYMBOLE_ITEM){
@@ -197,7 +197,7 @@ function _parse_file(line_arr){
 				z: Number(arr[3]),
 				text: arr[4]
 			});
-			console.log('9. symbols');
+			// console.log('9. symbols');
 			if(symbols.items.length == symbols.len){
 				flag = FLAG_OVER;
 			}					
@@ -210,7 +210,7 @@ function _parse_file(line_arr){
 					items: []
 				});
 				flag = FLAG_AREA_POINTS;
-				console.log('10. area_FLAG(weight:'+m[1]+',len:'+m[2]+')');
+				// console.log('10. area_FLAG(weight:'+m[1]+',len:'+m[2]+')');
 			}
 		}else if(flag == FLAG_AREA_LABEL_INFO){
 			flag = FLAG_AREA_POINTS_INFO;
@@ -226,10 +226,13 @@ function _parse_file(line_arr){
 			}
 		}
 	});
+	// content_info.areas.items = content_info.areas.items.splice(3, 1);
+	// content_info.areas.len = content_info.areas.items.length;
 	// 当有特殊的线分割面的情况时进行处理
-	// if(content_info.areas.len > 0 && content_info.line_symbols.len > 0){
-	// 	_parseArea(content_info);
-	// }
+	if(content_info.areas.len > 0 && content_info.line_symbols.len > 0){
+		_parseArea(content_info);
+	}
+	console.log(content_info.areas.items.length, ' area');
 	// 格式化数据
 	_format(content_info);
 	return content_info;
@@ -238,119 +241,75 @@ var PRECIPITATION_SNOW = 1,
 	PRECIPITATION_RAIN = 2,
 	PRECIPITATION_RAIN_SNOW = 3;
 
-// 判断线是否可以分割面（在面中点占全部点的百分比）	
-var PERCENT_LINE_IN_POLYGON = 0.5;
 function _parseArea(content_info){
+	// 得到所含特殊线的面
+	var include_relation = {};
 	var line_symbols = content_info.line_symbols.items.filter(function(v){
 		return v.code == 0;
 	});
-	// 得到所含特殊线的面
-	var include_relation = [];
-	content_info.areas.items.forEach(function(v,i){
+	var items_area = content_info.areas.items;
+	items_area.forEach(function(v,i){
 		var items = v.items;
 		line_symbols.forEach(function(v_line,i_line){
-			if(lineIsInsidePolygon(items,v_line.items,true)){
-				include_relation.push([i,i_line]);
+			if(lineIsInsidePolygon(items, v_line.items, true)){
+				if(!include_relation[i]){
+					include_relation[i] = [];
+				}
+				include_relation[i].push(i_line);
 			}
 		});
 	});
 	console.log(include_relation);
-	// 用特殊线和面的部分点组成新的面
-
-	content_info.lines = {
-		items: [{
-			point: {
-				items: []
-			},
-			flags: {
-				len: 0
-			}
-		}]
-	};
-	// include_relation = [[3,1],[14,1]]
-	var cha_index = 0,
-		tmp_include_relation;
-
-	var include_relation_bak = include_relation.slice();	
-	var cache_area = {};
-	while(tmp_include_relation = include_relation.shift()){
-		var area_index = tmp_include_relation[0],
-			line_index = tmp_include_relation[1];
-
-		var line_items = line_symbols[line_index].items.slice();
-
-		if(cache_area[area_index]){
-			var cache_items = cache_area[area_index];
-			var flag = false;
-			for(var i = 0,j=cache_items.length;i<j;i++){
-				var _items = cache_items[i].items;
-				var _flag = lineIsInsidePolygon(_items,line_items,true);
-				if(_flag){
-					var areas = _split_area(_items,line_items,content_info,line_index);
-					var arr = [];
-					areas.forEach(function(v){
-						arr.push({
-							len: v.length,
-							items: v,
-							type: 'add'
-						});
-					});
-					arr.unshift(1);
-					arr.unshift(i);
-					cache_items.splice.apply(cache_items,arr);
-					flag = true;
-					break;
+	// include_relation[0] = [0]
+	var _cache_area = {};
+	for(var i in include_relation){
+		var line_indexs = include_relation[i];
+		var _area = items_area[i],
+			_items_area = _area.items.slice();
+		var new_areas = [];
+		while(line_indexs.length > 0){
+			var c_line_index = line_indexs.shift();
+			var line_items = line_symbols[c_line_index].items.slice();
+			var len_new_areas = new_areas.length;
+			if(len_new_areas > 0){
+				for(var i_new_area = 0; i_new_area < len_new_areas; i_new_area++){
+					var _items = new_areas[i_new_area].items;
+					if(lineIsInsidePolygon(_items, line_items, true)){
+						new_areas.splice(i_new_area, 1);
+						console.log(len_new_areas, '->', new_areas.length);
+						var areas = _split_area(_items, line_items, content_info);
+						new_areas = new_areas.concat(areas);
+						console.log(areas.length, new_areas.length);
+						break;
+					}
 				}
+			}else{
+				var areas = _split_area(_items_area, line_items, content_info);
+				new_areas = new_areas.concat(areas);
+				console.log('init', c_line_index, areas.length, new_areas.length);
 			}
-			continue;
 		}
-		var area_items = content_info.areas.items[area_index].items.slice();
-		var areas = _split_area(area_items,line_items,content_info,line_index);
-
-		if(!cache_area[area_index]){
-			cache_area[area_index] = [];
-		}
-		areas.forEach(function(v){
-			cache_area[area_index].push({
-				len: v.length,
-				items: v,
-				type: 'add'
+		var weight = _area.weight;
+		var symbols = _area.symbols;
+		if(weight || symbols){
+			new_areas.forEach(function(val){
+				if(weight){
+					val.weight = weight;
+				}
+				if(symbols){
+					val.symbols = symbols;
+				}
 			});
-		});
-		
+		}
+		_add_area_code(content_info, new_areas);
+		_cache_area[i] = new_areas;
 	}
-	
 	var items_arr = [];
 	content_info.areas.items.forEach(function(v,items_index){
-		var in_include = false;
-		for(var i = 0,j = include_relation_bak.length;i<j;i++){
-			var val = include_relation_bak[i];
-			if(val[0] == items_index){
-				in_include = true;
-				break;
-			}
-		}
-		if(in_include){
-			var val_cache = cache_area[items_index];
-			if(val_cache){
-				// 重置被切割的面的其它属性
-				var weight = v.weight;
-				var symbols = v.symbols;
-				if(weight || symbols){
-					val_cache.forEach(function(val){
-						if(weight){
-							val.weight = weight;
-						}
-						if(symbols){
-							val.symbols = symbols;
-						}
-					});
-				}
-				
-				items_arr = items_arr.concat(val_cache);
-				delete cache_area[items_index];
-			}
-			
+		var _cache = _cache_area[items_index];
+		if(_cache){
+			items_arr = items_arr.concat(_cache);
+			delete _cache_area[items_index];
 		}else{
 			items_arr.push(v);
 		}
@@ -359,9 +318,130 @@ function _parseArea(content_info){
 	content_info.areas.len = items_arr.length;
 
 	_sort_areas(content_info.areas);
-	_add_area_code(content_info);
-	return ;
+	// _add_area_code(content_info);
 }
+// function _parseArea(content_info){
+// 	var line_symbols = content_info.line_symbols.items.filter(function(v){
+// 		return v.code == 0;
+// 	});
+// 	// 得到所含特殊线的面
+// 	var include_relation = [];
+// 	content_info.areas.items.forEach(function(v,i){
+// 		var items = v.items;
+// 		line_symbols.forEach(function(v_line,i_line){
+// 			if(lineIsInsidePolygon(items,v_line.items,true)){
+// 				include_relation.push([i,i_line]);
+// 			}
+// 		});
+// 	});
+// 	console.log(include_relation);
+// 	// 用特殊线和面的部分点组成新的面
+
+// 	content_info.lines = {
+// 		items: [{
+// 			point: {
+// 				items: []
+// 			},
+// 			flags: {
+// 				len: 0
+// 			}
+// 		}]
+// 	};
+// 	// include_relation = [[0,0], [0,1], [0,2]]
+// 	var cha_index = 0,
+// 		tmp_include_relation;
+
+// 	var include_relation_bak = include_relation.slice();	
+// 	var cache_area = {};
+// 	while(tmp_include_relation = include_relation.shift()){
+// 		var area_index = tmp_include_relation[0],
+// 			line_index = tmp_include_relation[1];
+
+// 		var line_items = line_symbols[line_index].items.slice();
+
+// 		if(cache_area[area_index]){
+// 			var cache_items = cache_area[area_index];
+// 			var flag = false;
+// 			for(var i = 0,j=cache_items.length;i<j;i++){
+// 				var _items = cache_items[i].items;
+// 				var _flag = lineIsInsidePolygon(_items,line_items,true);
+// 				if(_flag){
+// 					var areas = _split_area(_items,line_items,content_info);
+// 					var arr = [];
+// 					areas.forEach(function(v){
+// 						arr.push({
+// 							len: v.length,
+// 							items: v,
+// 							type: 'add'
+// 						});
+// 					});
+// 					arr.unshift(1);
+// 					arr.unshift(i);
+// 					cache_items.splice.apply(cache_items,arr);
+// 					flag = true;
+// 					break;
+// 				}
+// 			}
+// 			continue;
+// 		}
+// 		var area_items = content_info.areas.items[area_index].items.slice();
+// 		var areas = _split_area(area_items,line_items,content_info);
+
+// 		if(!cache_area[area_index]){
+// 			cache_area[area_index] = [];
+// 		}
+// 		areas.forEach(function(v){
+// 			cache_area[area_index].push({
+// 				len: v.length,
+// 				items: v,
+// 				type: 'add'
+// 			});
+// 		});
+		
+// 	}
+	
+// 	var items_arr = [];
+// 	content_info.areas.items.forEach(function(v,items_index){
+// 		var in_include = false;
+// 		for(var i = 0,j = include_relation_bak.length;i<j;i++){
+// 			var val = include_relation_bak[i];
+// 			if(val[0] == items_index){
+// 				in_include = true;
+// 				break;
+// 			}
+// 		}
+// 		if(in_include){
+// 			var val_cache = cache_area[items_index];
+// 			if(val_cache){
+// 				// 重置被切割的面的其它属性
+// 				var weight = v.weight;
+// 				var symbols = v.symbols;
+// 				if(weight || symbols){
+// 					val_cache.forEach(function(val){
+// 						if(weight){
+// 							val.weight = weight;
+// 						}
+// 						if(symbols){
+// 							val.symbols = symbols;
+// 						}
+// 					});
+// 				}
+				
+// 				items_arr = items_arr.concat(val_cache);
+// 				delete cache_area[items_index];
+// 			}
+			
+// 		}else{
+// 			items_arr.push(v);
+// 		}
+// 	});
+// 	content_info.areas.items = items_arr;
+// 	content_info.areas.len = items_arr.length;
+
+// 	_sort_areas(content_info.areas);
+// 	_add_area_code(content_info);
+// 	return ;
+// }
 /*得到面的面积*/
 function _get_acreage(area_items){
 	var len = area_items.length;
@@ -398,96 +478,120 @@ function _sort_areas(areas){
 		delete area.area;
 	});
 }
+function _split_area(area_items, line_items, content_info){
+	var return_areas = [];
+	var len = line_items.length;
+	var start_line_index = 0;
+	while( start_line_index < len){
+		var len_return = return_areas.length;
+		if(len_return > 0){
+			for(var i = 0; i< len_return; i++){
+				var _items = return_areas[i].items;
+				var info = _split_area2two(_items, line_items, content_info, start_line_index);
+
+				if(info){
+					var areas = info.areas;
+					if(areas && areas.length > 0){
+						return_areas.splice(i, 1);
+						return_areas = return_areas.concat(areas);
+					}
+					start_line_index = info.start_line_index;
+					console.log('init2', start_line_index, areas.length, return_areas.length);
+					break;
+				}
+			}
+			if(i == len_return){
+				break;
+			}
+		}else{
+			var info = _split_area2two(area_items, line_items, content_info, start_line_index);
+			var areas = info.areas;
+			if(areas && areas.length > 0){
+				return_areas = return_areas.concat(areas);
+				start_line_index = info.start_line_index;
+				console.log('init1', start_line_index, areas.length, return_areas.length);
+			}else{
+				break;
+			}			
+		}
+	}
+	return return_areas;
+}
 /*单线分割面(暂时不考虑单线和分割面有两个以上交点情况)*/
-function _split_area(area_items,line_items,content_info,info){
-	var areas = [];
-	var new_line_items = [],
-		start_line_items = [],
-		end_line_items = [];
+function _split_area2two(area_items, line_items, content_info, start_line_index){
+	start_line_index || (start_line_index = 0); //检测线上点的开始索引
+	var areas = []; //存储分割后的面
+	var new_line_items = [];
 	// 开头点的准确率很高，结尾点的准确率很低
 	var _items_len = line_items.length;
 	var _all_true_len = 0;
 	var _flag_all_false = false;
 	// 把线分割成三部分
-	console.log('===',area_items.length,line_items.length);
-	line_items.forEach(function(v_line_item,v_line_item_i){
-		var flag = isInsidePolygon(area_items,v_line_item.x,v_line_item.y);
-		if(!flag){
-			if(_all_true_len/_items_len > 0.6){
-				_flag_all_false = true;
-			}
-		}else{
-			// 当连续出现大量在面中的点后第一个出现不在面中的点后，修正后续点都不在面中
-			/*暂时不考虑一条线在面内外穿梭情况*/
-			if(_flag_all_false){
-				flag = false;
-			}
-		}
-		if(flag){
-			_all_true_len++;
-			new_line_items.push(v_line_item);
-		}else{
-			var _line_items = new_line_items.length > 0?end_line_items:start_line_items;
-			_line_items.push(v_line_item);
-		}
-		// content_info.symbols.items.push({
-		// 	x: v_line_item.x,
-		// 	y: v_line_item.y,
-		// 	z: 0,
-		// 	type: 3,
-		// 	flag: flag+" "+info + " "+_items_len+" "+v_line_item_i+"[len = "+start_line_items.length+","+new_line_items.length+","+end_line_items.length+']'
-		// });
-		v_line_item.flag = flag;
-	});
-	// console.log(start_line_items,new_line_items,end_line_items);
+	// console.log('===',area_items.length,line_items.length);
+
+	// 重写得到四个端点逻辑，！！！暂时不考虑开头点不在面外面情况
 	// 得到四个端点
+	// console.log('\r\n============', start_line_index , _items_len);
 	var start_x1,start_y1,
 		start_x2,start_y2,
 		start_item_1,start_item_2;
 	var end_x1,end_y1,
 		end_x2,end_y2,
 		end_item_1,end_item_2;
-	// console.log('===',line_items.length,'=',start_line_items.length,new_line_items.length,end_line_items.length,'===');
-	if(start_line_items.length > 0){
-		start_item_1 = start_line_items.slice(-1)[0];
-		start_item_2 = new_line_items.slice(0,1)[0];
-	}else{
-		start_item_1 = new_line_items.slice(0,1)[0];
-		start_item_2 = new_line_items.slice(1,2)[0];
+	for(var i = start_line_index; i < _items_len; i++){
+		var v_line_item = line_items[i];
+		var flag = isInsidePolygon(area_items,v_line_item.x,v_line_item.y);
+		if(flag){
+			if(!start_item_2){
+				start_item_2 = v_line_item;
+			}else{
+				end_item_1 = v_line_item;
+			}
+			new_line_items.push(v_line_item);
+		}else{
+			if(start_item_1 && start_item_2){
+				end_item_2 = v_line_item
+			}else{
+				start_item_1 = v_line_item;
+			}
+		}
+		if(start_item_1 && start_item_2 && end_item_1 && end_item_2){
+			start_line_index = i;
+			break;
+		}
 	}
-	if(end_line_items.length > 0){
-		end_item_1 = end_line_items.slice(0,1)[0];
-		end_item_2 = new_line_items.slice(-1)[0];
-	}else{
-		end_item_1 = new_line_items.slice(-1)[0];
-		end_item_2 = new_line_items.slice(-2,-1)[0];
+	if(start_line_index == _items_len || !start_item_1 || !start_item_2 || !end_item_1 || !end_item_2){
+		return;
 	}
 
+	// console.log(start_line_index, start_item_1 , start_item_2 , end_item_1 , end_item_2);
+
+
 	// 添加方便在前端显示的有交点的四个顶点
-	// content_info.symbols.items.push({
-	// 	x: start_item_1.x,
-	// 	y: start_item_1.y,
-	// 	z: 0,
-	// 	type: 3
-	// });
-	// content_info.symbols.items.push({
-	// 	x: start_item_2.x,
-	// 	y: start_item_2.y,
-	// 	z: 0,
-	// 	type: 3
-	// });
-	// content_info.symbols.items.push({
-	// 	x: end_item_1.x,
-	// 	y: end_item_1.y,
-	// 	z: 0,
-	// 	type: 4
-	// });
-	// content_info.symbols.items.push({
-	// 	x: end_item_2.x,
-	// 	y: end_item_2.y,
-	// 	z: 0,
-	// 	type: 4
-	// });
+	content_info.symbols.items.push({
+		x: start_item_1.x,
+		y: start_item_1.y,
+		z: 0,
+		type: 3
+	});
+	content_info.symbols.items.push({
+		x: start_item_2.x,
+		y: start_item_2.y,
+		z: 0,
+		type: 3
+	});
+	content_info.symbols.items.push({
+		x: end_item_1.x,
+		y: end_item_1.y,
+		z: 0,
+		type: 4
+	});
+	content_info.symbols.items.push({
+		x: end_item_2.x,
+		y: end_item_2.y,
+		z: 0,
+		type: 4
+	});
 	start_x1 = start_item_1.x;
 	start_y1 = start_item_1.y;
 	start_x2 = start_item_2.x,
@@ -628,7 +732,7 @@ function _split_area(area_items,line_items,content_info,info){
 		// 从面数据里截取点片段
 		var add_items = [],
 			add_items_other = [];
-		console.log('start_index,end_index',start_index,end_index);
+		// console.log('start_index,end_index',start_index,end_index);
 		if(start_index > end_index){
 			// add_items = area_items.slice(0,start_index+1).reverse();//.concat(area_items.slice(end_index).reverse());
 			// add_items = area_items.slice(end_index).concat(area_items.slice(0,start_index+1));
@@ -641,7 +745,7 @@ function _split_area(area_items,line_items,content_info,info){
 			add_items = area_items.slice(start_index,end_index + 1);
 			add_items_other = area_items.slice(end_index).concat(area_items.slice(0,start_index)).reverse();
 		}
-		console.log('len -- '+area_items.length,add_items.length,new_line_items.length,start_line_items.length+end_line_items.length);
+		// console.log('len -- '+area_items.length,add_items.length,new_line_items.length);
 		
 		add_items[0].x = _jiaodian_start[0];
 		add_items[0].y = _jiaodian_start[1];
@@ -683,15 +787,37 @@ function _split_area(area_items,line_items,content_info,info){
 		}
 		areas = [new_line_items.concat(add_items),new_line_items.concat(add_items_other)];
 	}
-	return areas;
+
+	// var new_areas = [];
+	areas.forEach(function(v, i){
+		areas[i] = {
+			len: v.length,
+			items: v,
+			type: 'add'
+		}
+	});
+	// areas.forEach(function(v, i){
+	// 	var other_areas = _split_area(v.items, line_items, content_info, start_line_index);
+	// 	if(other_areas && other_areas.length > 0){
+	// 		areas = areas.concat(other_areas);
+	// 	}
+	// });
+	// var other_areas = _split_area(area_items, line_items, content_info, start_line_index);
+	// if(other_areas && other_areas.length > 0){
+	// 	areas = areas.concat(other_areas);
+	// }
+	return {
+		areas: areas,
+		start_line_index: start_line_index
+	};
 }
 
 var CODE_MORE = 48;
 
 /*给面添加状态码*/
-function _add_area_code(content_info){
+function _add_area_code(content_info, areas){
 	var relation = [];
-	var areas = content_info.areas.items;
+	// var areas = content_info.areas.items;
 	var symbols = content_info.symbols.items;
 	areas.forEach(function(area,area_index){
 		var area_items = area.items;
