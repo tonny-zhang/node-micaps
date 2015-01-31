@@ -85,52 +85,52 @@ ul{
             }
             return color;
         }
-        var temp_color = [
-            'rgb(2,12,100)',
-            'rgb(7,30,120)',
-            'rgb(17,49,139)',
-            'rgb(27,68,159)',
-            'rgb(38,87,179)',
-            'rgb(48,106,199)',
-            'rgb(59,126,219)',
-            'rgb(78,138,221)',
-            'rgb(97,150,224)',
-            'rgb(116,163,226)',
-            'rgb(135,175,229)',
-            'rgb(155,188,232)',
-            'rgb(154,196,220)',
-            'rgb(153,205,208)',
-            'rgb(152,214,196)',
-            'rgb(151,232,173)',
-            'rgb(215,222,126)',
-            'rgb(234,219,112)',
-            'rgb(244,217,99)',
-            'rgb(250,204,79)',
-            'rgb(247,180,45)',
-            'rgb(242,155,0)',
-            'rgb(241,147,3)',
-            'rgb(240,132,10)',
-            'rgb(239,117,17)',
-            'rgb(238,102,24)',
-            'rgb(238,88,31)',
-            'rgb(231,75,26a)',
-            'rgb(224,63,22)',
-            'rgb(217,51,18)',
-            'rgb(208,36,14)',
-            'rgb(194,0,3)',
-            'rgb(181,1,9)',
-            'rgb(169,2,16)',
-            'rgb(138,5,25)',
-            'rgb(111,0,21)',
-            'rgb(80,0,15)'
-        ]
-        function _getColor(v){
-            if(v < -30){
-                v = -30;
-            }
-            var color = temp_color[Math.ceil((v - (-30))/2)];
-            return color;
-        }
+        // var temp_color = [
+        //     'rgb(2,12,100)',
+        //     'rgb(7,30,120)',
+        //     'rgb(17,49,139)',
+        //     'rgb(27,68,159)',
+        //     'rgb(38,87,179)',
+        //     'rgb(48,106,199)',
+        //     'rgb(59,126,219)',
+        //     'rgb(78,138,221)',
+        //     'rgb(97,150,224)',
+        //     'rgb(116,163,226)',
+        //     'rgb(135,175,229)',
+        //     'rgb(155,188,232)',
+        //     'rgb(154,196,220)',
+        //     'rgb(153,205,208)',
+        //     'rgb(152,214,196)',
+        //     'rgb(151,232,173)',
+        //     'rgb(215,222,126)',
+        //     'rgb(234,219,112)',
+        //     'rgb(244,217,99)',
+        //     'rgb(250,204,79)',
+        //     'rgb(247,180,45)',
+        //     'rgb(242,155,0)',
+        //     'rgb(241,147,3)',
+        //     'rgb(240,132,10)',
+        //     'rgb(239,117,17)',
+        //     'rgb(238,102,24)',
+        //     'rgb(238,88,31)',
+        //     'rgb(231,75,26a)',
+        //     'rgb(224,63,22)',
+        //     'rgb(217,51,18)',
+        //     'rgb(208,36,14)',
+        //     'rgb(194,0,3)',
+        //     'rgb(181,1,9)',
+        //     'rgb(169,2,16)',
+        //     'rgb(138,5,25)',
+        //     'rgb(111,0,21)',
+        //     'rgb(80,0,15)'
+        // ]
+        // function _getColor(v){
+        //     if(v < -30){
+        //         v = -30;
+        //     }
+        //     var color = temp_color[Math.ceil((v - (-30))/2)];
+        //     return color;
+        // }
         map = new BMap.Map("allmap");
         map.centerAndZoom(new BMap.Point(116.404, 39.915), 5);
         // map.centerAndZoom(new BMap.Point(69.772, 46.886), 8);
@@ -374,9 +374,10 @@ ul{
                 })();
                 return function(){
                     var width, height;
+                    var interpolate_data = data.interpolate;
                     try{
-                        width = data.length;
-                        height = data[0].length;
+                        width = interpolate_data.length;
+                        height = interpolate_data[0].length;
                     }catch(e){}
                     if(width > 0 && height > 0){
                         var new_pixel_arr = [];
@@ -384,13 +385,13 @@ ul{
                         for(var i = 0; i < width; i++){
                             var arr = [];
                             for(var j = 0; j< height; j++){
-                                var v = data[i][j];
+                                var v = interpolate_data[i][j];
                                 var point = new BMap.Point(v.x, v.y);
                                 var pixel = map.pointToPixel(point);
                                 last_pixel = pixel;
                                 var color = color_normal2rgb(_getColor(v.v), true);
                                 if(color){
-                                    color.push(100);
+                                    color.push(200);
                                 }else{
                                     color = [0, 0, 0, 0];
                                 }
@@ -437,7 +438,7 @@ ul{
 
 
                             var arr = [];
-                            for(var i = 0; i < 4; i++){
+                            for(var i = 0; i < 3; i++){
                                 var v00 = pixel00.color[i],
                                     v01 = pixel01.color[i],
                                     v10 = pixel10.color[i],
@@ -445,6 +446,7 @@ ul{
                                 var v = v00 * p1 + v10 * p2 + v01 * p3 + v11 * p4;
                                 arr.push(v);
                             }
+                            arr.push(255);
                             return arr;
                         }
                         for(var i = 0; i < width; i++){
