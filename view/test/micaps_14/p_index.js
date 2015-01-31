@@ -76,9 +76,48 @@ $(function(){
 		// map.centerAndZoom(new BMap.Point(69.772, 46.886), 8);
 		map.enableScrollWheelZoom();
 		var areas = data.areas;
+		/*得到面的面积*/
+		function _get_acreage(area_items){
+			var len = area_items.length;
+			var first_item = area_items[0];
+			var minx = maxx = first_item.x,miny = maxy = first_item.y;
+			for(var i = 1;i<len;i++){
+				var item = area_items[i],
+					x = item.x,
+					y = item.y;
+				if(minx > x){
+					minx = x;
+				}
+				if(maxx < x){
+					maxx = x;
+				}
+				if(miny > y){
+					miny = y;
+				}
+				if(maxy < y){
+					maxy = y;
+				}
+			}
+			return (maxx - minx)*(maxy - miny);
+		}
+		/*对面数据进行排序*/
+		function _sort_areas(areas){
+			areas.forEach(function(area){
+				area.area = _get_acreage(area.items);
+			});
+			areas.sort(function(a,b){
+				return a.area < b.area? 1: -1;
+			});
+			areas.forEach(function(area){
+				delete area.area;
+			});
+		}
+		_sort_areas(areas);
 		$.each(areas,function(i_outer,v_outer){
 			(function(i,v){
 				// setTimeout(function(){
+
+					var Color = ['red','blue','green','orange','black', '#123','#f26','#ccc','#333', 'yellow', 'pink'];
 					var point_arr = [];
 					$.each(v.items,function(v_i,v_v){
 
@@ -96,10 +135,9 @@ $(function(){
 						// }
 					});
 					var symbols = v.symbols;
-					var Color = ['red','blue','green','orange','black', '#123','#f26','#ccc','#333', 'yellow', 'pink'];
-					// var color = Color[Math.floor(Math.random()*Color.length)];
-					var color = getPrecipitationColor(v.code,symbols?symbols.text:0);
-					var polygon = new BMap.Polygon(point_arr, {strokeColor: color, fillColor: color,fillOpacity: 1, strokeWeight: 1, strokeOpacity:1});
+					var color = Color[i%Color.length];
+					// var color = getPrecipitationColor(v.code,symbols?symbols.text:0);
+					var polygon = new BMap.Polygon(point_arr, {strokeColor: color, fillColor: color,fillOpacity: 0.9, strokeWeight: 1, strokeOpacity:1});
 					map.addOverlay(polygon);   //增加面
 					setTimeout(_add_svg_pattern,10);
 					if(symbols){
