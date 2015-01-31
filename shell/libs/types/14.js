@@ -228,7 +228,7 @@ function _parse_file(line_arr){
 	});
 	// content_info.areas.items = content_info.areas.items.splice(3, 1);
 	// content_info.areas.len = content_info.areas.items.length;
-	console.log(content_info.areas.len , content_info.line_symbols.len);
+	// console.log(content_info.areas.len , content_info.line_symbols.len);
 	// 当有特殊的线分割面的情况时进行处理
 	if(content_info.areas.len > 0 && content_info.line_symbols.len > 0){
 		_parseArea(content_info);
@@ -312,7 +312,7 @@ function _parseArea(content_info){
 			});
 		}
 		_cache_area[i] = new_areas;
-		console.log('split', new_areas.length);
+		// console.log('split', new_areas.length);
 	}
 	var items_arr = [];
 	content_info.areas.items.forEach(function(v,items_index){
@@ -792,7 +792,7 @@ function _deal_code_list_after_parsearea(content_info){
 			continue;
 		}
 	}
-	console.log(special_index);
+	// console.log(special_index);
 	var area_len = areas.length;
 	var symbols = content_info.symbols.items;
 	for(var i = 0, j= special_index.length; i < j; i++){
@@ -809,67 +809,67 @@ function _deal_code_list_after_parsearea(content_info){
 			var p_area = areas[start_index];
 			var p = polygonIsInsidePolygon(p_area.items, items, true);
 			if(p >= len_items - 6){// 由于线分割面时可能出现误差，这里先送去６个交点
-				// area.code_list = p_area.code_list;
-				// area.code = p_area.code;
-				// break;
-				parent_areas.push(p_area);
+				area.code_list = p_area.code_list;
+				area.code = p_area.code;
+				break;
+				// parent_areas.push(p_area);
 			}
 		}
-		var len_p_area = parent_areas.length;
-		// console.log('parent_areas', area_index, len_p_area);
-		if(len_p_area == 1){
-			area.code = parent_areas[0].code;
-		}else{
-			parent_areas.sort(function(a, b){
-				return a.area < b.area;
-			});
-			var new_p_areas = [];
-			var tmp;
-			while((tmp = parent_areas.shift())){
-				var items_tmp = tmp.items;
-				for(var i_tmp = 0, j_tmp = parent_areas.length; i_tmp < j_tmp; i_tmp++){
-					if(polygonIsInsidePolygon(items_tmp, parent_areas[i_tmp].items)){
-						break;
-					}
-				}
-				if(i_tmp == j_tmp){
-					new_p_areas.push(tmp);
-				}
-			}
-			if(new_p_areas.length == 1){
-				area.code = new_p_areas[0].code;
-			}else{
-				var arr = [];
-				var _cache_p = {};
-				new_p_areas.forEach(function(v){
-					var _code = v.code;
-					if(!_cache_p[_code]){
-						_cache_p[_code] = 0;
-					}
-					_cache_p[_code]++;
-					arr.push(v.code);
-				});
-				var max_num = Number.MIN_VALUE,max_type;
-				for(var key in _cache_p){
-					var num = _cache_p[key];
-					if(max_num < num){
-						max_num = num;
-						max_type = key;
-					}
-				}
-				if(max_num / new_p_areas.length >= 0.5 && area.code != max_type){
-					// area.code = max_type;
-					console.log('change code', area.code, max_type);
-				}
-				console.log('new_p_areas', area_index, new_p_areas.length, max_num, max_type, _cache_p, arr);
-			}
-		}
+		// var len_p_area = parent_areas.length;
+		// // console.log('parent_areas', area_index, len_p_area);
+		// if(len_p_area == 1){
+		// 	area.code = parent_areas[0].code;
+		// }else{
+		// 	parent_areas.sort(function(a, b){
+		// 		return a.area < b.area;
+		// 	});
+		// 	var new_p_areas = [];
+		// 	var tmp;
+		// 	while((tmp = parent_areas.shift())){
+		// 		var items_tmp = tmp.items;
+		// 		for(var i_tmp = 0, j_tmp = parent_areas.length; i_tmp < j_tmp; i_tmp++){
+		// 			if(polygonIsInsidePolygon(items_tmp, parent_areas[i_tmp].items)){
+		// 				break;
+		// 			}
+		// 		}
+		// 		if(i_tmp == j_tmp){
+		// 			new_p_areas.push(tmp);
+		// 		}
+		// 	}
+		// 	if(new_p_areas.length == 1){
+		// 		area.code = new_p_areas[0].code;
+		// 	}else{
+		// 		var arr = [];
+		// 		var _cache_p = {};
+		// 		new_p_areas.forEach(function(v){
+		// 			var _code = v.code;
+		// 			if(!_cache_p[_code]){
+		// 				_cache_p[_code] = 0;
+		// 			}
+		// 			_cache_p[_code]++;
+		// 			arr.push(v.code);
+		// 		});
+		// 		var max_num = Number.MIN_VALUE,max_type;
+		// 		for(var key in _cache_p){
+		// 			var num = _cache_p[key];
+		// 			if(max_num < num){
+		// 				max_num = num;
+		// 				max_type = key;
+		// 			}
+		// 		}
+		// 		if(max_num / new_p_areas.length >= 0.5 && area.code != max_type){
+		// 			// area.code = max_type;
+		// 			console.log('change code', area.code, max_type);
+		// 		}
+		// 		console.log('new_p_areas', area_index, new_p_areas.length, max_num, max_type, _cache_p, arr);
+		// 	}
+		// }
 		
 	}
-	console.log('\r\n');
-	areas.forEach(function(area, i){
-		console.log('show', i, area.code);
-	});
+	// console.log('\r\n');
+	// areas.forEach(function(area, i){
+	// 	console.log('show', i, area.code);
+	// });
 }
 /*对数据进行格式化(数据精简)*/
 function _format(content_info){
