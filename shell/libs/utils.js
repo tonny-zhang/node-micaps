@@ -4,12 +4,17 @@ var _isInsidePolygon = (function(){
         // ray-casting algorithm based on
         // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
         
-        var inside = false;
+        /* 
+            false 不在面内
+            true 在面内，但不是多边形的端点
+            1 在面内，又是多边形的端点
+        */
+        var inside = 0;
         for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
             var xi = vs[i].x, yi = vs[i].y;
             var xj = vs[j].x, yj = vs[j].y;
             if(x == xi && y == yi || x == xj && y == yj){
-                return true;
+                return 1;
             }
             var intersect = ((yi > y) != (yj > y))
                 && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
@@ -21,7 +26,7 @@ var _isInsidePolygon = (function(){
     };
 })();
 /*多边形是否在另一个多边形里*/
-var _polygonIsInsidePolygon = function(polygon_items,sub_polygon_items){
+var _polygonIsInsidePolygon = function(polygon_items,sub_polygon_items, is_return_num){
     var inside_num = 0;
     sub_polygon_items.forEach(function(v){
         var flag = _isInsidePolygon(polygon_items,v.x,v.y);
@@ -29,6 +34,9 @@ var _polygonIsInsidePolygon = function(polygon_items,sub_polygon_items){
             inside_num++;
         }
     });
+    if(is_return_num){
+        return inside_num;
+    }
     /*线切割面时由于计算得到的两交点可能稍有误差,所以判断是否在多边形中时去除两交点的检测*/
     if(inside_num >= sub_polygon_items.length-2){
         return true;
