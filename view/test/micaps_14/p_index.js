@@ -115,8 +115,8 @@ $(function(){
 		_sort_areas(areas);
 		// areas = areas.splice(5, 1);
 		$.each(areas,function(i_outer,v_outer){
-			(function(i,v){console.log(i);
-				// if( !(i == 19 || i == 3 || i == 20)){
+			(function(i,v){
+				// if( !(i == 10 || i == 20)){
 				// 	return;
 				// }
 				// setTimeout(function(){
@@ -127,7 +127,7 @@ $(function(){
 
 						var point = new BMap.Point(v_v.x,v_v.y);
 						point_arr.push(point);
-						// if(i == 0){
+						// if(i == 20){
 						// 	setTimeout(function(){
 						// 		var marker = new BMap.Marker(point);
 						// 		marker.addEventListener("click",function(){
