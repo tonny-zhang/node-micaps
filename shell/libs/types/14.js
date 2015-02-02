@@ -226,8 +226,8 @@ function _parse_file(line_arr){
 			}
 		}
 	});
-	// content_info.areas.items = content_info.areas.items.splice(3, 1);
-	// content_info.areas.len = content_info.areas.items.length;
+	content_info.areas.items = content_info.areas.items.splice(3, 1);
+	content_info.areas.len = content_info.areas.items.length;
 	// 当有特殊的线分割面的情况时进行处理
 	if(content_info.areas.len > 0 && content_info.line_symbols.len > 0){
 		_parseArea(content_info);

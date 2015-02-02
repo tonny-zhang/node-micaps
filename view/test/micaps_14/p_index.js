@@ -138,7 +138,7 @@ $(function(){
 					var symbols = v.symbols;
 					var color = Color[i%Color.length];
 					// console.log(v.code, symbols);
-					var color = getPrecipitationColor(v.code,symbols?symbols.text:0);
+					// var color = getPrecipitationColor(v.code,symbols?symbols.text:0);
 					var polygon = new BMap.Polygon(point_arr, {strokeColor: color, fillColor: color,fillOpacity: 0.9, strokeWeight: 1, strokeOpacity:1});
 					map.addOverlay(polygon);   //增加面
 					setTimeout(_add_svg_pattern,10);
