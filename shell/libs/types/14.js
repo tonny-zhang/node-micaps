@@ -5,8 +5,6 @@ var util = require('util'),
 	lineIsInsidePolygon = utils.lineIsInsidePolygon,
 	polygonIsInsidePolygon = utils.polygonIsInsidePolygon;
 
-var CONSTANT = require('../../../config/constant');
-
 /*个部调用的解析入口主程序*/
 function _parse_file(line_arr){
 	var REG_TOW_NUM = /^([\d.]+)\s+([\d.]+)$/,
