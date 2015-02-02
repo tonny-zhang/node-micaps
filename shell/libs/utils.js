@@ -26,7 +26,7 @@ var _isInsidePolygon = (function(){
     };
 })();
 /*多边形是否在另一个多边形里*/
-var _polygonIsInsidePolygon = function(polygon_items,sub_polygon_items){
+var _polygonIsInsidePolygon = function(polygon_items,sub_polygon_items, is_return_num){
     var inside_num = 0;
     sub_polygon_items.forEach(function(v){
         var flag = _isInsidePolygon(polygon_items,v.x,v.y);
@@ -34,6 +34,9 @@ var _polygonIsInsidePolygon = function(polygon_items,sub_polygon_items){
             inside_num++;
         }
     });
+    if(is_return_num){
+        return inside_num;
+    }
     /*线切割面时由于计算得到的两交点可能稍有误差,所以判断是否在多边形中时去除两交点的检测*/
     if(inside_num >= sub_polygon_items.length-2){
         return true;

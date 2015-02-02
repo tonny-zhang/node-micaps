@@ -116,6 +116,9 @@ $(function(){
 		// areas = areas.splice(5, 1);
 		$.each(areas,function(i_outer,v_outer){
 			(function(i,v){
+				// if( !(i == 10 || i == 20)){
+				// 	return;
+				// }
 				// setTimeout(function(){
 
 					var Color = ['red','blue','green','orange','black', '#123','#f26','#ccc','#333', 'yellow', 'pink'];
@@ -124,7 +127,7 @@ $(function(){
 
 						var point = new BMap.Point(v_v.x,v_v.y);
 						point_arr.push(point);
-						// if(i == 0){
+						// if(i == 20){
 						// 	setTimeout(function(){
 						// 		var marker = new BMap.Marker(point);
 						// 		marker.addEventListener("click",function(){
@@ -138,8 +141,13 @@ $(function(){
 					var symbols = v.symbols;
 					var color = Color[i%Color.length];
 					// console.log(v.code, symbols);
+<<<<<<< HEAD
 					// var color = getPrecipitationColor(v.code,symbols?symbols.text:0);
 					var polygon = new BMap.Polygon(point_arr, {strokeColor: color, fillColor: color,fillOpacity: 0.9, strokeWeight: 1, strokeOpacity:1});
+=======
+					var color = getPrecipitationColor(v.code,symbols?symbols.text:0);
+					var polygon = new BMap.Polygon(point_arr, {strokeColor: color, fillColor: color,fillOpacity: 1, strokeWeight: 1, strokeOpacity:1});
+>>>>>>> aab740afab9d2a0f9b5648c04d96ba60a49c26aa
 					map.addOverlay(polygon);   //增加面
 					setTimeout(_add_svg_pattern,10);
 					if(symbols){
@@ -218,8 +226,8 @@ $(function(){
 		var symbols = data.symbols;
 		$.each(symbols,function(i,v){
 			var type = v.type;
-			console.log(type);
-			if(type == 3 || type == 4){
+			// console.log(type);
+			if(type == 3 || type == 4){return;
 				var marker = new BMap.Marker(new BMap.Point(v.x,v.y));
 				marker.addEventListener("click",function(){
 					var p = marker.getPosition();  //获取marker的位置
@@ -260,7 +268,7 @@ $(function(){
 			// 	color = 'black';
 			// }
 			else{//测试特殊点标识
-				color = 'black';
+				color = 'white';
 				text = type;
 			}
 			style.color = color;
@@ -490,7 +498,7 @@ $(function(){
 					var color = colors[i];
 					var condition = color[0];
 					if(val >= condition[0] && val < condition[1]){
-						var c = color[1];console.log(code,val,c);
+						var c = color[1];
 						if(code == 24){
 							c = 'url(#rain_snow_'+(i++)+')';
 						}
