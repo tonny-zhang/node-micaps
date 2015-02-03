@@ -225,15 +225,21 @@ function _parse_file(line_arr){
 			}
 		}
 	});
+	//先初始化面积，方便排序
+	var items_area = content_info.areas.items;
+	items_area.forEach(function(v, i){
+		var items = v.items;
+		v.area = _get_acreage(items);
+	});
 	// content_info.areas.items = content_info.areas.items.splice(3, 1);
 	// content_info.areas.len = content_info.areas.items.length;
 	// console.log(content_info.areas.len , content_info.line_symbols.len);
 	// 当有特殊的线分割面的情况时进行处理
 	if(content_info.areas.len > 0 && content_info.line_symbols.len > 0){
 		_parseArea(content_info);
-		console.log('get '+ content_info.areas.items.length+' areas!');
+		// console.log('get '+ content_info.areas.items.length+' areas!');
 	}
-	
+	_sort_areas(content_info.areas);
 	// 格式化数据
 	_format(content_info);
 	return content_info;
@@ -251,12 +257,6 @@ function _parseArea(content_info){
 	var line_symbols = content_info.line_symbols.items.filter(function(v){
 		return v.code == 0;
 	});
-	var items_area = content_info.areas.items;
-	items_area.forEach(function(v, i){
-		var items = v.items;
-		v.area = _get_acreage(items);
-	});
-
 	_sort_areas(content_info.areas);
 	_add_area_code(content_info);
 
@@ -691,6 +691,7 @@ function _split_area2two(area_items, line_items, content_info, start_line_index,
 			type: 'add'
 		}
 	});
+	
 	return {
 		areas: areas,
 		start_line_index: start_line_index

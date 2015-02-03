@@ -112,7 +112,7 @@ $(function(){
 				delete area.area;
 			});
 		}
-		_sort_areas(areas);
+		// _sort_areas(areas);
 		// areas = areas.splice(5, 1);
 		$.each(areas,function(i_outer,v_outer){
 			(function(i,v){
@@ -141,7 +141,7 @@ $(function(){
 					var symbols = v.symbols;
 					var color = Color[i%Color.length];
 					// console.log(v.code, symbols);
-					var color = getPrecipitationColor(v.code,symbols?symbols.text:0);
+					// var color = getPrecipitationColor(v.code,symbols?symbols.text:0);
 					var polygon = new BMap.Polygon(point_arr, {strokeColor: color, fillColor: color,fillOpacity: 1, strokeWeight: 1, strokeOpacity:1});
 					map.addOverlay(polygon);   //增加面
 					setTimeout(_add_svg_pattern,10);
@@ -512,14 +512,15 @@ $(function(){
 	var data_url = '../../../data/micaps/14/rr111314.024.json';
 	var data_url = '../../../data/micaps/14/rr112108.048.json';
 	var data_url = '../../../data/micaps/14/14110508.000.json';
-	var data_url = '../../../data/micaps/14/rr012608/rr012608.024.json';
+	// var data_url = '../../../data/micaps/14/rr012608/rr012608.024.json';
 	// var data_url = '../../../data/micaps/14/rr012608/rr012608.048.json';
-	var data_url = '../../../data/micaps/14/rr012608/rr012608.072.json';
+	// var data_url = '../../../data/micaps/14/rr012608/rr012608.072.json';
 	// var data_url = '../../../data/micaps/14/14110514.000.json';
 	// var data_url = '../../../data/micaps/14/14110520.000.json';
 	// var data_url = '../../../data/micaps/14/rrr112708.006.json';
 	// var data_url = '../../../data/micaps/14/kw14121808.024.json';
 	// var data_url = '../../../data/micaps/14/wt121808.024.json';
+	var data_url = '../../../data/micaps/14/haze020308.024.json';
 	var ajax_data = $.getJSON(data_url),
 		ajax_constant = $.getJSON('../../../config/constant.json'),
 		ajax_color_precipitation = $.getJSON('../../../config/precipitation.json'),

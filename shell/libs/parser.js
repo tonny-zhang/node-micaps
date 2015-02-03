@@ -126,7 +126,13 @@ var format = function(data_path, format_path_fn){
 			if(stats.isDirectory()){
 				formatDir(data_path,format_path_fn);
 			}else{
-				formatFile(data_path,format_path_fn);
+				formatFile(data_path, function(err, data){
+					if(err){
+						console.log(err);
+					}else{
+						saveData(data, format_path_fn(data_path));
+					}
+				});
 			}
 		}
 	});
