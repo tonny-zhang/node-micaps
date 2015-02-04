@@ -259,7 +259,7 @@ function _parseArea(content_info){
 	});
 	_sort_areas(content_info.areas);
 	_add_area_code(content_info);
-
+	var items_area = content_info.areas.items;
 	items_area.forEach(function(v, i){
 		var items = v.items;
 		line_symbols.forEach(function(v_line,i_line){
@@ -331,26 +331,29 @@ function _parseArea(content_info){
 /*得到多边形所在矩形的面积*/
 function _get_acreage(area_items){
 	var len = area_items.length;
-	var first_item = area_items[0];
-	var minx = maxx = first_item.x,miny = maxy = first_item.y;
-	for(var i = 1;i<len;i++){
-		var item = area_items[i],
-			x = item.x,
-			y = item.y;
-		if(minx > x){
-			minx = x;
+	if(len > 0){
+		var first_item = area_items[0];
+		var minx = maxx = first_item.x,miny = maxy = first_item.y;
+		for(var i = 1;i<len;i++){
+			var item = area_items[i],
+				x = item.x,
+				y = item.y;
+			if(minx > x){
+				minx = x;
+			}
+			if(maxx < x){
+				maxx = x;
+			}
+			if(miny > y){
+				miny = y;
+			}
+			if(maxy < y){
+				maxy = y;
+			}
 		}
-		if(maxx < x){
-			maxx = x;
-		}
-		if(miny > y){
-			miny = y;
-		}
-		if(maxy < y){
-			maxy = y;
-		}
+		return (maxx - minx)*(maxy - miny);
 	}
-	return (maxx - minx)*(maxy - miny);
+	return 0;
 }
 
 /*对面数据进行排序*/

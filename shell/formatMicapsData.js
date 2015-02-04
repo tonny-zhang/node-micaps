@@ -17,7 +17,7 @@ var args = [].slice.call(process.argv);
 if(args.length > 2){
 	var fileIn = args[2];
 	if(fileIn == '-local'){
-		var file_path = '../data/micaps_source/14/haze020308.024';
+		var file_path = '../data/micaps_source/14/';
 		// file_path = '../data/micaps_source/14/14110508.000';
 		// var file_path = '../data/micaps_source/3/';
 		// var file_path = '../data/micaps_source/3/15012114.000';
