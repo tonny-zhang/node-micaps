@@ -66,7 +66,11 @@ ERROR_NOT_SUPPORT = {
 	msg: 'no support this type'
 }
 /*解析文件*/
-function formatFile(file_path, callback){
+function formatFile(file_path, option, callback){
+	if(({}).toString.call(option) == '[object Function]'){
+		callback = option;
+		option = null;
+	}
 	fs.readFile(file_path,{encoding: 'utf8'},function(err,data){
 		if(err){
 			callback && callback(err);
@@ -85,7 +89,7 @@ function formatFile(file_path, callback){
 						callback && callback(ERROR_NOT_SUPPORT);
 						return;
 					}
-					var data = parser.parse(line_arr.slice(2));
+					var data = parser.parse(line_arr.slice(2), option);
 
 					data.type = type;
 					var stat = fs.statSync(file_path);
