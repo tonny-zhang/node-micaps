@@ -517,7 +517,7 @@ function _split_area2two(area_items, line_items, content_info, start_line_index,
 			y1 = area_items[i].y,
 			y2 = area_items[j].y;
 
-		var k,b;
+		var k = b = undefined;
 		if(x1 != x2){
 			k = (y1-y2)/(x1-x2);
 			b = (x1*y2 - x2*y1)/(x1-x2);
