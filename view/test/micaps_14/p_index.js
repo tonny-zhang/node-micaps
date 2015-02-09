@@ -522,7 +522,7 @@ $(function(){
 	// var data_url = '../../../data/micaps/14/wt121808.024.json';
 	// var data_url = '../../../data/micaps/14/haze020308.024.json';
 	// var data_url = '../../../data/micaps/14/kw15020408.024.json';
-	var data_url = '../../../data/micaps/14/rr020908.024.json';
+	// var data_url = '../../../data/micaps/14/rr020908.024.json';
 	var ajax_data = $.getJSON(data_url),
 		ajax_constant = $.getJSON('../../../config/constant.json'),
 		ajax_color_precipitation = $.getJSON('../../../config/precipitation.json'),

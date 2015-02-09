@@ -64,105 +64,53 @@ ul{
             }
             return color;
         }
+        var _color_arr = ['#ffffff', '#201885', '#114AD9', '#4DB4F6', /*'#D1F8F3'*/'#ff0000', '#F9DE45', '#FFA800', '#FF6D00', '#D50100'];
         function _getColor(v){
-            var color = '#ffffff';
+            var color = _color_arr[0];
             if(v <= -15){
-                color = '#201885';
+                color = _color_arr[1];
             }else if(v <= -10){
-                color = '#114AD9';
+                color = _color_arr[2];
             }else if(v <= -5){
-                color = '#4DB4F6';
+                color = _color_arr[3];
             }else if(v <= 0){
-                color = '#D1F8F3';
+                color = _color_arr[4];
             }else if(v <= 5){
-                color = '#F9DE45';
+                color = _color_arr[5];
             }else if(v <= 10){
-                color = '#FFA800';
+                color = _color_arr[6];
             }else if(v <= 15){
-                color = '#FF6D00';
+                color = _color_arr[7];
             }else{
-                color = '#D50100';
+                color = _color_arr[8];
             }
             return color;
         }
-        // var temp_color = [
-        //     'rgb(2,12,100)',
-        //     'rgb(7,30,120)',
-        //     'rgb(17,49,139)',
-        //     'rgb(27,68,159)',
-        //     'rgb(38,87,179)',
-        //     'rgb(48,106,199)',
-        //     'rgb(59,126,219)',
-        //     'rgb(78,138,221)',
-        //     'rgb(97,150,224)',
-        //     'rgb(116,163,226)',
-        //     'rgb(135,175,229)',
-        //     'rgb(155,188,232)',
-        //     'rgb(154,196,220)',
-        //     'rgb(153,205,208)',
-        //     'rgb(152,214,196)',
-        //     'rgb(151,232,173)',
-        //     'rgb(215,222,126)',
-        //     'rgb(234,219,112)',
-        //     'rgb(244,217,99)',
-        //     'rgb(250,204,79)',
-        //     'rgb(247,180,45)',
-        //     'rgb(242,155,0)',
-        //     'rgb(241,147,3)',
-        //     'rgb(240,132,10)',
-        //     'rgb(239,117,17)',
-        //     'rgb(238,102,24)',
-        //     'rgb(238,88,31)',
-        //     'rgb(231,75,26a)',
-        //     'rgb(224,63,22)',
-        //     'rgb(217,51,18)',
-        //     'rgb(208,36,14)',
-        //     'rgb(194,0,3)',
-        //     'rgb(181,1,9)',
-        //     'rgb(169,2,16)',
-        //     'rgb(138,5,25)',
-        //     'rgb(111,0,21)',
-        //     'rgb(80,0,15)'
-        // ]
-        // function _getColor(v){
-        //     if(v < -30){
-        //         v = -30;
-        //     }
-        //     var color = temp_color[Math.ceil((v - (-30))/2)];
-        //     return color;
-        // }
+
         map = new BMap.Map("allmap");
-        map.centerAndZoom(new BMap.Point(116.404, 39.915), 5);
+        map.centerAndZoom(new BMap.Point(116.404, 39.915), 8);
         // map.centerAndZoom(new BMap.Point(69.772, 46.886), 8);
         map.enableScrollWheelZoom();
-
-        // $.getJSON('../../../data/micaps/3/15012108.000.j6son', function(data){
-        //     $.each(data, function(i, v){
-        //         // var marker = new BMap.Marker(new BMap.Point(v.x, v.y));
-        //         // marker.addEventListener("click",function(){
-        //         //     console.log(v.v);
-        //         // });
-        //         // map.addOverlay(marker);
-
-        //         var point = new BMap.Point(v.x, v.y);
-        //         var v = v.v;
-        //         if(v > 0){
-        //             var color = _getColor(v);
-        //             var circle = new BMap.Circle(point,35000,{
-        //                 strokeColor: color, 
-        //                 fillColor: color,
-        //                 fillOpacity: 0.9, 
-        //                 strokeWeight: 1, 
-        //                 strokeOpacity:1
-        //             }); //创建圆
-        //             map.addOverlay(circle);
-        //         }
-                
-        //     });
-        // });
         var url = '../../../shell/test/micaps_3.json';
         var url = '../../../shell/gedian.json';
         var url = '../../../data/micaps/3/15012114.000.json';
+        function getCtx(width, height){
+            var $mask = $('#allmap .BMap_mask');
+            var $canvas = $mask.find('canvas');
+            if($canvas.length == 0){
+                $canvas = $('<canvas width='+width+' height='+height+' class="layer_vector">').css({
+                    left: 0,
+                    top: 0
+                }).appendTo($mask);
+            }
+            var canvas = $canvas.get(0);
+
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0, width, height);
+            ctx.fillStyle = 'rgba(255, 255, 255,0.7)';
+            ctx.fillRect(0,0,width,height);
+            return ctx;
+        }
         $.getJSON(url, function(data){
             var bounds = map.getBounds(),
                 sw_point = bounds.getSouthWest(),
@@ -175,16 +123,8 @@ ul{
                 width = size.width,
                 height = size.height;
 
-            var canvas = $('<canvas width='+width+' height='+height+' class="layer_vector">').css({
-                left: 0,
-                top: 0
-            }).appendTo($('#allmap .BMap_mask')).get(0);
-            var ctx = canvas.getContext('2d');
-            // ctx.fillStyle = 'rgba(255,255,255,1)';
-            // ctx.fillRect(0,0,width,height);
-            // ctx.arc(300,300, 100, 0, Math.PI*2);
-
-            // ctx.fill();
+            
+            var ctx = getCtx(width, height);
 
             var imagedata = ctx.createImageData(width, height),
                 _data = imagedata.data;
@@ -352,7 +292,38 @@ ul{
                     ctx.putImageData(imagedata, 0, 0);
                 }
             })();
+            var _draw_points = (function(){
+                
+                return function(zoom){
+                    var width_data, height_data;
+                    var interpolate_data = data.interpolate;
+                    try{
+                        width_data = interpolate_data.length;
+                        height_data = interpolate_data[0].length;
+                    }catch(e){}
+                    ctx = getCtx(width, height);
+                    if(width_data > 0 && height_data > 0){
+                        for(var i = 0; i < width_data; i++){
+                            var arr = [];
+                            for(var j = 0; j< height_data; j++){
+                                var v = interpolate_data[i][j];
+                                var point = new BMap.Point(v.x, v.y);
+                                var pixel = map.pointToPixel(point);
+                                var c = _getColor(v.v);
+                                if(c == _color_arr[4]){
+                                    var color = color_normal2rgb(c, true);
 
+                                    ctx.fillStyle = 'rgba('+color[0]+', '+color[1]+', '+color[2]+',100)';
+                                    ctx.beginPath();
+                                    ctx.arc(pixel.x, pixel.y, zoom, 0, Math.PI*2, 1);
+                                    ctx.closePath();
+                                    ctx.fill();
+                                }
+                            }
+                        }
+                    }
+                }
+            })();
             var _fill_color = (function(){
                 var _cache_rgb = (function(){
                     var _cache = {};
@@ -470,7 +441,17 @@ ul{
             })();
             var time_start = new Date();
             // _draw_data();
-            _fill_color();
+            // _fill_color();
+            var tt;
+            function dragendOrZoomend(){
+                clearTimeout(tt);
+                tt = setTimeout(function(){
+                    _draw_points(map.getZoom()-4);
+                }, 30);
+            }
+            map.addEventListener("dragend", dragendOrZoomend);
+            map.addEventListener("zoomend", dragendOrZoomend);
+            dragendOrZoomend();
             console.log(new Date() - time_start + ' ms!');
             // alert('完');
             // var max = Number.MIN_VALUE;
