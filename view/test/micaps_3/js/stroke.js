@@ -114,7 +114,9 @@
 			var obj_tmp;
 			while ((obj_tmp = arr_return.shift())) {
 				if (obj_tmp.color == color_current && obj_tmp.area.indexOf(int_global_area_index) == -1) {// 
-					return obj_tmp;
+					if(!_cache_abandon.get(obj_tmp.x, obj_tmp.y)){
+						return obj_tmp;
+					}
 				}
 			}
 			return;
@@ -249,6 +251,20 @@
 			}
 		}
 	}
+	var _cache_abandon = (function(){
+		var _obj_cache = {};
+		return {
+			reset: function(){
+				_obj_cache = {};
+			},
+			set: function(x, y){
+				_obj_cache[[x, y].join('_')] = 1;
+			},
+			get: function(x, y){
+				return _obj_cache[[x, y].join('_')];
+			}
+		}
+	})();
 	/*得到下一个最优点*/
 	function _get_next_put_items(x, y, obj_first_items) {
 		var obj_current_point = _get_flag(x, y); // 得到当前点
@@ -275,11 +291,27 @@
 			arr_return_items = arr_return_items.concat(obj_first_items);
 		}else{
 			// 回退
+			var arr_new = _reback(arr_return_items, obj_first_items);
+			arr_return_items = arr_return_items.concat(arr_new);
 		}
 		return arr_return_items;
 	}
-	function _reback(){
+	function _reback(arr_added, obj_first_items){
+		var obj_abandon;
+		while((obj_abandon = arr_added.pop())){
+			console.log('abandon', obj_abandon.x, obj_abandon.y);
+			_cache_abandon.set(obj_abandon.x, obj_abandon.y);
 
+			var obj_last = arr_added[arr_added.length - 1];
+			if(obj_last){
+				var arr_new = _get_next_put_items(obj_last.x, obj_last.y, obj_first_items);
+				if(arr_new.length > 0){
+					return arr_new;
+				}
+			}
+			
+		}
+		return [];
 	}
 	var int_global_area_index = 0;
 	/*把已经标记的点进行描边操作*/
@@ -287,6 +319,8 @@
 		var obj_item;
 		while ((obj_item = _get_no_used_item())) {
 			arr_fork_info = []; //重置分岔点记录信息
+			_cache_abandon.reset();
+
 			var arr_area_items = [];
 			var color_current_area = obj_item.color;
 			var obj_first_items = _replace_current(obj_item.x, obj_item.y);
