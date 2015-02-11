@@ -59,6 +59,9 @@
 	}
 	/*得到点周围被标记的点数组*/
 	function _get_around_flag(x, y, conf) {
+		// if(x == 20 && y == 163){
+		// 	debugger;
+		// }
 		var is_return_next = false,
 			is_get_lral = false;//是否保得到上下左右
 		if(conf){
@@ -66,12 +69,12 @@
 			is_get_lral = conf.is_get_lral;
 		}
 		var arr_return = [];
-		var obj_above = _get_flag(x, y - 1);
+		var obj_above = _get_flag(x, y + 1);
 		if (obj_above) {
 			arr_return.push(obj_above);
 		}
 		if(!is_get_lral){
-			var obj_above_right = _get_flag(x + 1, y - 1);
+			var obj_above_right = _get_flag(x + 1, y + 1);
 			if (obj_above_right) {
 				arr_return.push(obj_above_right);
 			}
@@ -81,17 +84,17 @@
 			arr_return.push(obj_right);
 		}
 		if(!is_get_lral){
-			var obj_below_right = _get_flag(x + 1, y + 1);
+			var obj_below_right = _get_flag(x + 1, y - 1);
 			if (obj_below_right) {
 				arr_return.push(obj_below_right);
 			}
 		}
-		var obj_below = _get_flag(x, y + 1);
+		var obj_below = _get_flag(x, y - 1);
 		if (obj_below) {
 			arr_return.push(obj_below);
 		}
 		if(!is_get_lral){
-			var obj_below_left = _get_flag(x - 1, y + 1);
+			var obj_below_left = _get_flag(x - 1, y - 1);
 			if (obj_below_left) {
 				arr_return.push(obj_below_left);
 			}
@@ -101,7 +104,7 @@
 			arr_return.push(obj_left);
 		}
 		if(!is_get_lral){
-			var obj_above_left = _get_flag(x - 1, y - 1);
+			var obj_above_left = _get_flag(x - 1, y + 1);
 			if (obj_above_left) {
 				arr_return.push(obj_above_left);
 			}
@@ -110,7 +113,7 @@
 			var color_current = _get_flag(x, y).color;
 			var obj_tmp;
 			while ((obj_tmp = arr_return.shift())) {
-				if (obj_tmp.color == color_current) {// && obj_tmp.area.indexOf(int_global_area_index) == -1
+				if (obj_tmp.color == color_current && obj_tmp.area.indexOf(int_global_area_index) == -1) {// 
 					return obj_tmp;
 				}
 			}
@@ -253,19 +256,25 @@
 		var obj_next;
 		var int_current_x = x, int_current_y = y;
 		var arr_return_items = [];
+		var is_first = false;
 		while((obj_next = _get_around_flag(int_current_x, int_current_y, {
 			is_return_next: true
 		}))){
+			console.log(int_current_x, int_current_y, '->', obj_next.x, obj_next.y);
+			if(_next_is_first(obj_next.x, obj_next.y, obj_first_items)){//填充最后一个点
+				is_first = true;
+				break;
+			}
 			obj_next.n_u++; //增加使用记录
 			int_current_x = obj_next.x;
 			int_current_y = obj_next.y;
 			var arr_next_items = _replace_current(int_current_x, int_current_y);
 			arr_return_items = arr_return_items.concat(arr_next_items);
 		}
-		if(_next_is_first(x, y, obj_first_items)){//填充最后一个点
+		if(is_first){//填充最后一个点
 			arr_return_items = arr_return_items.concat(obj_first_items);
 		}else{
-
+			// 回退
 		}
 		return arr_return_items;
 	}

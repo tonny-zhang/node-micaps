@@ -451,7 +451,6 @@ ul{
                 var interpolate_data = data.interpolate;
                 // 对标记点进行检测
                 // Stroker.stroke(interpolate_data);
-                debugger;
                 _is_inited || Stroker.init(interpolate_data);
                 _is_inited = true;
                 var obj_flag = Stroker._get_flag();
@@ -491,7 +490,7 @@ ul{
                     if(items.length > 0){
                         _stroke_tt[index] = setTimeout(function(){
                             _show(index, items, color, false);
-                        }, 700);
+                        }, 200);
                     }else{
                         delete _stroke_cache[index];
                         delete _stroke_tt[index];
