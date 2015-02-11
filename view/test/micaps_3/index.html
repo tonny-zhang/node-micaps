@@ -19,6 +19,7 @@ ul{
     </div>
     <script type="text/javascript" src="http://i.tq121.com.cn/j/jquery-1.8.2.js"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=E8MDMS4BVFEMeAxVP3YddQ6X"></script>
+    <script type="text/javascript" src="js/stroke.js"></script>
     <script type="text/javascript">
     !function(){
         var DEFAULT_VAL = 999999;
@@ -88,7 +89,7 @@ ul{
         }
 
         map = new BMap.Map("allmap");
-        map.centerAndZoom(new BMap.Point(116.404, 39.915), 8);
+        map.centerAndZoom(new BMap.Point(116.404, 39.915), 6);
         // map.centerAndZoom(new BMap.Point(69.772, 46.886), 8);
         map.enableScrollWheelZoom();
         var url = '../../../shell/test/micaps_3.json';
@@ -297,6 +298,7 @@ ul{
                 return function(zoom){
                     var width_data, height_data;
                     var interpolate_data = data.interpolate;
+                    window.interpolate_data = interpolate_data;
                     try{
                         width_data = interpolate_data.length;
                         height_data = interpolate_data[0].length;
@@ -310,7 +312,8 @@ ul{
                                 var point = new BMap.Point(v.x, v.y);
                                 var pixel = map.pointToPixel(point);
                                 var c = _getColor(v.v);
-                                if(c == _color_arr[4]){
+                                interpolate_data[i][j].color = c;
+                                // if(c == _color_arr[4]){
                                     var color = color_normal2rgb(c, true);
 
                                     ctx.fillStyle = 'rgba('+color[0]+', '+color[1]+', '+color[2]+',100)';
@@ -318,9 +321,10 @@ ul{
                                     ctx.arc(pixel.x, pixel.y, zoom, 0, Math.PI*2, 1);
                                     ctx.closePath();
                                     ctx.fill();
-                                }
+                                // }
                             }
                         }
+
                     }
                 }
             })();
@@ -439,6 +443,64 @@ ul{
                     }
                 }
             })();
+
+            var _is_inited = false;
+            var _test_stroke = function(){
+                var interpolate_data = data.interpolate;
+                // 对标记点进行检测
+                // Stroker.stroke(interpolate_data);
+                _is_inited || Stroker.init(interpolate_data);
+                _is_inited = true;
+                var obj_flag = Stroker._get_flag();
+                for(var i in obj_flag){
+                    var item = obj_flag[i];
+                    var pos = interpolate_data[item.x][item.y];
+                    var point = new BMap.Point(pos.x, pos.y);
+                    var pixel = map.pointToPixel(point);
+                    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+                    ctx.beginPath();
+                    ctx.arc(pixel.x, pixel.y, 2, 0, Math.PI*2, 1);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+                function _show(items, is_start){
+                    var item = items.shift();
+                    var pos = interpolate_data[item.x][item.y];
+                    var point = new BMap.Point(pos.x, pos.y);
+                    var pixel = map.pointToPixel(point);
+                    if(is_start){
+                        ctx.moveTo(pixel.x, pixel.y);
+                    }else{
+                        ctx.lineTo(pixel.x, pixel.y);
+                    }
+                    ctx.stroke();
+                    if(items.length > 0){
+                        setTimeout(function(){
+                            _show(items);
+                        }, 300);
+                    }
+                }
+                var arr_area = Stroker._get_erea();
+                for(var i = 0, j = arr_area.length; i < j; i++){
+                    ctx.fillStyle = arr_area[i].color;
+                    ctx.beginPath();
+                    _show(arr_area[i].items, true);
+                    // for(var i_item = 0, items = arr_area[i].items, j_item = items.length; i_item < j_item; i_item++){
+                    //     var item = items[i_item];
+                    //     var pos = interpolate_data[item.x][item.y];
+                    //     var point = new BMap.Point(pos.x, pos.y);
+                    //     var pixel = map.pointToPixel(point);
+                    //     if(i_item == 0){
+                    //         ctx.moveTo(pixel.x, pixel.y);
+                    //     }else{
+                    //         ctx.lineTo(pixel.x, pixel.y);
+                    //     }
+                    // }
+                    // ctx.closePath();
+                    // ctx.stroke();
+                }
+                console.log(arr_area);
+            }
             var time_start = new Date();
             // _draw_data();
             // _fill_color();
@@ -447,11 +509,13 @@ ul{
                 clearTimeout(tt);
                 tt = setTimeout(function(){
                     _draw_points(map.getZoom()-4);
+                    _test_stroke();
                 }, 30);
             }
             map.addEventListener("dragend", dragendOrZoomend);
             map.addEventListener("zoomend", dragendOrZoomend);
             dragendOrZoomend();
+            
             console.log(new Date() - time_start + ' ms!');
             // alert('完');
             // var max = Number.MIN_VALUE;
