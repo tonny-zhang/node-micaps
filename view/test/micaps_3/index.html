@@ -90,7 +90,7 @@ ul{
 
         map = new BMap.Map("allmap");
         map.centerAndZoom(new BMap.Point(116.404, 39.915), 6);
-        map.centerAndZoom(new BMap.Point(83.9, 20.76), 7);
+        map.centerAndZoom(new BMap.Point(103.2, 36), 5);
         map.enableScrollWheelZoom();
         var url = '../../../shell/test/micaps_3.json';
         var url = '../../../shell/gedian.json';
@@ -465,32 +465,35 @@ ul{
                     ctx.closePath();
                     ctx.fill();
                 }
+                window.delay = 200;
                 function _show(index, items, color, callback){
                     clearTimeout(_stroke_tt[index]);
                     var item = items.shift();
                     
-                    ctx.strokeStyle = color;
-                    ctx.lineWidth = 3;
-                    var item_prev = _stroke_cache[index];
-                    if(item_prev){
-                        ctx.beginPath();
-                        var pos = interpolate_data[item_prev.x][item_prev.y];
-                        var point = new BMap.Point(pos.x, pos.y);
-                        var pixel = map.pointToPixel(point);
-                        ctx.moveTo(pixel.x, pixel.y);
+                    if(item){
+                        ctx.strokeStyle = color;
+                        ctx.lineWidth = 3;
+                        var item_prev = _stroke_cache[index];
+                        if(item_prev){
+                            ctx.beginPath();
+                            var pos = interpolate_data[item_prev.x][item_prev.y];
+                            var point = new BMap.Point(pos.x, pos.y);
+                            var pixel = map.pointToPixel(point);
+                            ctx.moveTo(pixel.x, pixel.y);
 
-                        var pos = interpolate_data[item.x][item.y];
-                        var point = new BMap.Point(pos.x, pos.y);
-                        var pixel = map.pointToPixel(point);
-                        ctx.lineTo(pixel.x, pixel.y);
-                        ctx.stroke();
+                            var pos = interpolate_data[item.x][item.y];
+                            var point = new BMap.Point(pos.x, pos.y);
+                            var pixel = map.pointToPixel(point);
+                            ctx.lineTo(pixel.x, pixel.y);
+                            ctx.stroke();
+                        }
+
+                        _stroke_cache[index] = item;
                     }
-
-                    _stroke_cache[index] = item;
                     if(items.length > 0){
                         _stroke_tt[index] = setTimeout(function(){
                             _show(index, items, color, false);
-                        }, 200);
+                        }, window.delay);
                     }else{
                         delete _stroke_cache[index];
                         delete _stroke_tt[index];

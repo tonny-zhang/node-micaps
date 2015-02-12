@@ -297,6 +297,8 @@
 		return arr_return_items;
 	}
 	function _reback(arr_added, obj_first_items){
+		console.log('reback', obj_first_items);
+		debugger;
 		var obj_abandon;
 		while((obj_abandon = arr_added.pop())){
 			console.log('abandon', obj_abandon.x, obj_abandon.y);
@@ -304,12 +306,16 @@
 
 			var obj_last = arr_added[arr_added.length - 1];
 			if(obj_last){
-				var arr_new = _get_next_put_items(obj_last.x, obj_last.y, obj_first_items);
-				if(arr_new.length > 0){
-					return arr_new;
+				var obj_next = _get_around_flag(obj_last.x, obj_last.y, {
+					is_return_next: true
+				});
+				if(obj_next){
+					var arr_new = _get_next_put_items(obj_last.x, obj_last.y, obj_first_items);
+					if(arr_new.length > 0){
+						return arr_new;
+					}
 				}
 			}
-			
 		}
 		return [];
 	}
