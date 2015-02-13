@@ -17,7 +17,7 @@ ul{
 <body>
     <div id="allmap">
     </div>
-    <script type="text/javascript" src="http://i.tq121.com.cn/j/jquery-1.8.2.js"></script>
+    <script type="text/javascript" src="http://tonny-zhang.github.io/source/js/jquery-1.8.2.js"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=E8MDMS4BVFEMeAxVP3YddQ6X"></script>
     <script type="text/javascript" src="js/stroke.js"></script>
     <script type="text/javascript">
@@ -465,6 +465,16 @@ ul{
                     ctx.closePath();
                     ctx.fill();
                 }
+                window.flag = function(x, y){
+                    var pos = interpolate_data[x][y];
+                    var point = new BMap.Point(pos.x, pos.y);
+                    var pixel = map.pointToPixel(point);
+                    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                    ctx.beginPath();
+                    ctx.arc(pixel.x, pixel.y, 5, 0, Math.PI*2, 1);
+                    ctx.closePath();
+                    ctx.fill();
+                }
                 window.delay = 200;
                 function _show(index, items, color, callback){
                     clearTimeout(_stroke_tt[index]);
@@ -500,16 +510,21 @@ ul{
                         // callback && callback();
                     }
                 }
-                var arr_area = Stroker._get_erea();
+                arr_area = Stroker._get_erea();
                 console.log(arr_area);
                 // for(var i = 0, j = arr_area.length; i < j; i++){
                 //     ctx.fillStyle = arr_area[i].color;
                     
                 //     _show(i, arr_area[i].items.slice(), arr_area[i].color, true);
                 // }
-                function _show_fill(){
-                    for(var i = 0, j = arr_area.length; i < j; i++){
-                        ctx.fillStyle = arr_area[i].color;
+                function _show_fill(color){
+                    for(var i = 0, j = 90; i < j; i++){
+                        var c = arr_area[i].color;
+                        if(color && c != color){
+                            continue;
+                        }
+                        var c_rgb = color_normal2rgb(c, true);
+                        ctx.fillStyle =  'rgba('+c_rgb[0]+', '+c_rgb[1]+', '+c_rgb[2]+', 10)';
                         ctx.beginPath();
                         for(var i_item = 0, items = arr_area[i].items, j_item = items.length; i_item < j_item; i_item++){
                             var item = items[i_item];
@@ -527,6 +542,7 @@ ul{
                     }
                 }
                 // _show_fill();
+                window._show_fill = _show_fill
                 var _stroke_index = 0,
                     _stroke_len = arr_area.length - 1;
                 window._stroke_next = function(num){

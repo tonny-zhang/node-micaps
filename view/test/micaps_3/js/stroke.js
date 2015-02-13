@@ -59,9 +59,9 @@
 	}
 	/*得到点周围被标记的点数组*/
 	function _get_around_flag(x, y, conf) {
-		// if(x == 20 && y == 163){
-		// 	debugger;
-		// }
+		if(x == 0 && y == 93){
+			// debugger;
+		}
 		var is_return_next = false,
 			is_get_lral = false;//是否保得到上下左右
 		if(conf){
@@ -194,43 +194,46 @@
 	var arr_fork_info = []; //存储有分岔的点
 	var obj_last_next_point_global; //记录最后一个操作点
 	// 对当前点进行替换（主要处理已经使用的边界）
-	function _replace_current(x, y, arr_around_flag) {
-		if (!arr_around_flag) {
-			arr_around_flag = _get_around_flag(x, y);
-		}
+	function _replace_current(x, y, is_return_self) {
+		// if (!arr_around_flag) {
+		var arr_around_flag = _get_around_flag(x, y);
+		// }
 		var obj_current_point = _get_flag(x, y); // 得到当前点
 		var color_current_point = obj_current_point.color;
 
 		var arr_replaced_flag = [],
 			int_fork_num = 0;
 		var flag_is_have_replace = false;
-		for (var i = 0, j = arr_around_flag.length; i < j; i++) {
-			var obj_item = arr_around_flag[i];
-			var int_n_u = obj_item.n_u;
-			if (int_n_u > 0 && obj_item.color != color_current_point) {
-				flag_is_have_replace = true;
-				if(obj_item.area.indexOf(int_global_area_index) == -1){
-					arr_replaced_flag.push(obj_item);
+		if(!is_return_self){
+			for (var i = 0, j = arr_around_flag.length; i < j; i++) {
+				var obj_item = arr_around_flag[i];
+				var int_n_u = obj_item.n_u;
+				if (int_n_u > 0 && obj_item.color != color_current_point) {
+					flag_is_have_replace = true;
+					if(obj_item.area.indexOf(int_global_area_index) == -1){
+						arr_replaced_flag.push(obj_item);
+					}
 				}
+				// if (obj_last_next_point_global != obj_item && obj_item.color == color_current_point) {
+				// 	int_fork_num++;
+				// }
 			}
-			if (obj_last_next_point_global != obj_item && obj_item.color == color_current_point) {
-				int_fork_num++;
+			// if (int_fork_num > 1) {
+			// 	arr_fork_info.push(obj_current_point); //有分岔
+			// }
+			// 对格点边界点进行填充
+			if(x == 0 || y == global_data_width-1){
+				arr_replaced_flag.unshift(obj_current_point);
+			}
+			if(x == global_data_width-1 || y == 0){
+				arr_replaced_flag.push(obj_current_point);
 			}
 		}
-		if (int_fork_num > 1) {
-			arr_fork_info.push(obj_current_point); //有分岔
-		}
-		// 对格点边界点进行填充
-		// if(x == 0 || y == global_data_width-1){
-		// 	arr_replaced_flag.unshift(obj_current_point);
-		// }
-		// if(x == global_data_width-1 || y == 0){
-		// 	arr_replaced_flag.push(obj_current_point);
-		// }
 		obj_last_next_point_global = obj_current_point;
 		for (var i = 0, j = arr_replaced_flag.length; i < j; i++) {
 			arr_replaced_flag[i].area.push(int_global_area_index);
 		}
+		// arr_replaced_flag = [];flag_is_have_replace = false;
 		obj_current_point.area.push(int_global_area_index);
 		if (!flag_is_have_replace && arr_replaced_flag.length == 0) {
 			arr_replaced_flag.push(obj_current_point);
@@ -268,8 +271,10 @@
 			}
 		}
 	})();
+	var arr_added_stroking = [];
 	/*得到下一个最优点*/
 	function _get_next_put_items(x, y, obj_first_items) {
+		
 		var obj_current_point = _get_flag(x, y); // 得到当前点
 		var color_current_point = obj_current_point.color;
 		var obj_next;
@@ -279,7 +284,9 @@
 		while((obj_next = _get_around_flag(int_current_x, int_current_y, {
 			is_return_next: true
 		}))){
-			// console.log(int_current_x, int_current_y, '->', obj_next.x, obj_next.y);
+			if(int_global_area_index == 76)
+				console.log(int_current_x, int_current_y, '->', obj_next.x, obj_next.y);
+			
 			if(_next_is_first(obj_next.x, obj_next.y, obj_first_items)){//填充最后一个点
 				is_first = true;
 				break;
@@ -289,24 +296,53 @@
 			int_current_y = obj_next.y;
 			var arr_next_items = _replace_current(int_current_x, int_current_y);
 			arr_return_items = arr_return_items.concat(arr_next_items);
+			arr_added_stroking.push({
+				x: int_current_x, 
+				y: int_current_y,
+				num: arr_next_items.length
+			});
+			if(int_global_area_index == 76)
+				console.log('add1', int_current_x, int_current_y, arr_next_items.length);
 		}
 		if(is_first || _next_is_first(int_current_x, int_current_y, obj_first_items, true)){//填充最后一个点
 			arr_return_items = arr_return_items.concat(obj_first_items);
+			arr_added_stroking.push({
+				x: int_current_x, 
+				y: int_current_y,
+				num: obj_first_items.length
+			});
+			if(int_global_area_index == 76)
+				console.log('add2', int_current_x, int_current_y, obj_first_items.length);
 		}else{
 			// 回退
+			// if(int_global_area_index == 77){
+			// 	debugger;
+			// }
 			var arr_new = _reback(arr_return_items, obj_first_items);
 			arr_return_items = arr_return_items.concat(arr_new);
+			arr_added_stroking.push({
+				x: int_current_x, 
+				y: int_current_y,
+				num: arr_new.length
+			});
+			if(int_global_area_index == 76)
+				console.log('add3', int_current_x, int_current_y, arr_new.length);
 		}
 		return arr_return_items;
 	}
 	var int_num_reback = 0;
 	function _reback(arr_added, obj_first_items){
 		var obj_abandon;
-		while((obj_abandon = arr_added.pop())){
-			// console.log('abandon', obj_abandon.x, obj_abandon.y);
+		while((obj_abandon = arr_added_stroking.pop())){
+			if(obj_abandon.num > 0){
+				arr_added.splice(-obj_abandon.num);
+			}
+			
 			_cache_abandon.set(obj_abandon.x, obj_abandon.y);
-
-			var obj_last = arr_added[arr_added.length - 1];
+			if(int_global_area_index == 76){
+				console.log('abandon', obj_abandon.x, obj_abandon.y, obj_abandon.num);
+			}
+			var obj_last = arr_added_stroking[arr_added_stroking.length - 1];
 			if(obj_last){
 				var obj_next = _get_around_flag(obj_last.x, obj_last.y, {
 					is_return_next: true
@@ -331,7 +367,7 @@
 
 			var arr_area_items = [];
 			var color_current_area = obj_item.color;
-			var obj_first_items = _replace_current(obj_item.x, obj_item.y);
+			var obj_first_items = _replace_current(obj_item.x, obj_item.y, true);
 			arr_area_items = arr_area_items.concat(obj_first_items);
 			var arr_next_items = _get_next_put_items(obj_item.x, obj_item.y, obj_first_items);
 			if (arr_next_items.length > 0) {
