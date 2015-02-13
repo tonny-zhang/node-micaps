@@ -502,11 +502,11 @@ ul{
                 }
                 var arr_area = Stroker._get_erea();
                 console.log(arr_area);
-                for(var i = 0, j = arr_area.length; i < j; i++){
-                    ctx.fillStyle = arr_area[i].color;
+                // for(var i = 0, j = arr_area.length; i < j; i++){
+                //     ctx.fillStyle = arr_area[i].color;
                     
-                    _show(i, arr_area[i].items.slice(), arr_area[i].color, true);
-                }
+                //     _show(i, arr_area[i].items.slice(), arr_area[i].color, true);
+                // }
                 function _show_fill(){
                     for(var i = 0, j = arr_area.length; i < j; i++){
                         ctx.fillStyle = arr_area[i].color;
@@ -527,6 +527,18 @@ ul{
                     }
                 }
                 // _show_fill();
+                var _stroke_index = 0,
+                    _stroke_len = arr_area.length - 1;
+                window._stroke_next = function(num){
+                    if(typeof num != 'undefined'){
+                        _stroke_index = num;
+                    }
+                    if(_stroke_index <= _stroke_len){
+                        _show(_stroke_index, arr_area[_stroke_index].items.slice(), arr_area[_stroke_index].color, true);
+                        console.log(_stroke_index);
+                        _stroke_index++;
+                    }
+                }
             }
             var time_start = new Date();
             // _draw_data();

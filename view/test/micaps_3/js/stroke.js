@@ -239,15 +239,18 @@
 		return arr_replaced_flag;
 	}
 
-	function _next_is_first(x, y, obj_first_items) {
+	function _next_is_first(x, y, obj_first_items, is_next) {
 		var arr_arround = _get_around_flag(x, y);
 		for (var i = 0, j = obj_first_items.length; i < j; i++) {
-			// if (arr_arround.indexOf(obj_first_items[i]) > -1) {
-			// 	return true;
-			// }
-			var item = obj_first_items[i];
-			if(item.x == x && item.y == y){
-				return true;
+			if(is_next){
+				if (arr_arround.indexOf(obj_first_items[i]) > -1) {
+					return true;
+				}
+			}else{
+				var item = obj_first_items[i];
+				if(item.x == x && item.y == y){
+					return true;
+				}
 			}
 		}
 	}
@@ -276,7 +279,7 @@
 		while((obj_next = _get_around_flag(int_current_x, int_current_y, {
 			is_return_next: true
 		}))){
-			console.log(int_current_x, int_current_y, '->', obj_next.x, obj_next.y);
+			// console.log(int_current_x, int_current_y, '->', obj_next.x, obj_next.y);
 			if(_next_is_first(obj_next.x, obj_next.y, obj_first_items)){//填充最后一个点
 				is_first = true;
 				break;
@@ -287,7 +290,7 @@
 			var arr_next_items = _replace_current(int_current_x, int_current_y);
 			arr_return_items = arr_return_items.concat(arr_next_items);
 		}
-		if(is_first){//填充最后一个点
+		if(is_first || _next_is_first(int_current_x, int_current_y, obj_first_items, true)){//填充最后一个点
 			arr_return_items = arr_return_items.concat(obj_first_items);
 		}else{
 			// 回退
@@ -296,12 +299,11 @@
 		}
 		return arr_return_items;
 	}
+	var int_num_reback = 0;
 	function _reback(arr_added, obj_first_items){
-		console.log('reback', obj_first_items);
-		debugger;
 		var obj_abandon;
 		while((obj_abandon = arr_added.pop())){
-			console.log('abandon', obj_abandon.x, obj_abandon.y);
+			// console.log('abandon', obj_abandon.x, obj_abandon.y);
 			_cache_abandon.set(obj_abandon.x, obj_abandon.y);
 
 			var obj_last = arr_added[arr_added.length - 1];
@@ -340,9 +342,9 @@
 				items: arr_area_items,
 				color: color_current_area
 			});
-			if (int_global_area_index == 1) {
-				break;
-			}
+			// if (int_global_area_index == 2) {
+			// 	break;
+			// }
 		}
 	}
 	// 这里的data是外界格式好的，是插值后的结果根据值添加颜色字段后的数组
