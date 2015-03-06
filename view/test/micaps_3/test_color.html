@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+body, html{width: 100%;height: 100%;overflow: hidden;margin:0;}
+ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+div{
+	width: 500px;
+	margin: 0 auto;
+}
+</style>
+<title>micas14类数据展示</title>
+</head>
+<body>
+	<div id="allmap">
+    </div>
+    <div id="allmap1">
+    </div>
+    <div id="allmap2">
+    </div>
+    <script type="text/javascript" src="http://tonny-zhang.github.io/source/js/jquery-1.8.2.js"></script>
+    <script type="text/javascript">
+    	function getCtx(width, height, $container){
+            var $canvas = $container.find('canvas');
+            if($canvas.length == 0){
+                $canvas = $('<canvas width='+width+' height='+height+' class="layer_vector">').css({
+                    left: 0,
+                    top: 0
+                }).appendTo($container);
+            }
+            var canvas = $canvas.get(0);
+
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0, width, height);
+            // ctx.fillStyle = 'rgba(255, 255, 255,0.7)';
+            // ctx.fillRect(0,0,width,height);
+            return ctx;
+        }
+        var set = function(x, y, color, _data){
+            var index = (y * width + x)*4;
+            _data[index] = color[0];
+            _data[index + 1] = color[1];
+            _data[index + 2] = color[2];
+            _data[index + 3] = color[3] || 255;
+        }
+        var width = 100, 
+        	height = 100;
+        // 以中心点向外透明度降低
+        !function(){
+	        var ctx = getCtx(width, height, $('#allmap'));
+	        var imagedata = ctx.createImageData(width, height),
+	            _data = imagedata.data;
+
+	        var x_set = 50, 
+	        	y_set = 50;
+
+	        var r_set = 200,
+	        	g_set = 0,
+	        	b_set = 0,
+	        	a_set = 200;
+	        var radius = 20,
+	        	radius_square = Math.pow(radius, 2);
+	        set(50, 50, [r_set, g_set, b_set, a_set], _data);
+
+	        for(var i = x_set - radius; i<x_set+radius; i++){
+	        	for(var j = y_set - radius; j<y_set+radius; j++){
+	        		var dis = Math.pow(i - x_set, 2) + Math.pow(j - y_set, 2);
+	        		if(dis < radius_square){
+	        			var per = 1-dis/radius_square;
+	        			set(i, j, [r_set, g_set, b_set, a_set*per], _data);
+	        		}
+	        	}
+	        }
+	        ctx.putImageData(imagedata, 0, 0);
+        }();
+        // 画四个点中间像素值
+        !function(){
+        	var init_data = [
+        		[0, 0, [255, 0, 0, 255], 10],
+        		[50, 0, [255, 0, 0, 255], 10],
+        		[0, 50, [0, 0, 255, 255], 8],
+        		[50, 50, [0, 255, 0, 255], 3]
+        	];
+        	var width = 100;
+        	var height = 100;
+        	var ctx = getCtx(width, height, $('#allmap1'));
+	        var imagedata = ctx.createImageData(width, height),
+	            _data = imagedata.data;	
+
+	        var ctx2 = getCtx(width, height, $('#allmap2'));
+	        var imagedata2 = ctx.createImageData(width, height),
+	            _data2 = imagedata2.data;	
+
+	        for(var i = 0; i< 4;i++){
+	        	var item = init_data[i];
+	        	$('<span style="display:inline-block;background: rgba('+item[2].join(',')+');width: 20px;height:20px;"></span>').appendTo($('#allmap1'))
+	        	set(item[0], item[1], item[2], _data);
+	        	set(item[0], item[1], item[2], _data2);
+	        }
+
+	        function _getColor(val){
+	        	if(val > 9){
+	        		return [255, 0, 0, 255]
+	        	}else if(val > 6){
+	        		return [0, 0, 255, 255];
+	        	}else{
+	        		return [0, 255, 0, 255]
+	        	}
+	        }
+	        var clamp = function(val){
+        		if (val < 0) return 0;
+			  	if (val > 255) return 255;
+			  	return val;
+	        }
+        	for(var i = 0; i<width; i++){
+        		for(var j = 0; j<height; j++){
+        			var arr = [];
+        			var flag_is_myself = false;
+        			var dis_sum = 0;
+
+        			for(var i_inner = 0; i_inner< 4; i_inner++){
+        				var item = init_data[i_inner];
+        				var dis = (Math.pow(i - item[0], 2) + Math.pow(j - item[1], 2));
+        				if(dis == 0){
+        					flag_is_myself = true;
+        					break;
+        				}
+        				dis = 1/dis;
+        				dis_sum += dis;
+        				arr.push({
+        					dis: dis,
+        					c: item[2],
+        					v: item[3]
+        				});
+        			}
+        			if(flag_is_myself){
+        				continue;
+        			}
+        			var r = g = b = a = 0;
+        			var val = 999999;
+        			for(var i_inner = 0; i_inner< 4; i_inner++){
+        				var item = arr[i_inner];
+        				var c = item.c;
+        				var dis = item.dis;
+        				var per = dis/dis_sum;
+        				var v = per * item.v;
+        				if(val === 999999){
+        					val = v;
+        				}else{
+        					val += v;
+        				}
+        				r += c[0]*per;
+        				g += c[1]*per;
+        				b += c[2]*per;
+        				a += c[3]*per;
+
+        				// var r_new = c[0]*per;
+        				// var g_new = c[1]*per;
+        				// var b_new = c[2]*per;
+        				// var a_new = c[3]*per;
+
+        				// var alpha1 = a_new/255;
+        				// var alpha2 = a /255;
+        				// var r_new_2 = r_new*alpha1 + r * alpha2 * (1- alpha1);
+        				// var g_new_2 = g_new*alpha1 + g * alpha2 * (1- alpha1);
+        				// var b_new_2 = b_new*alpha1 + b * alpha2 * (1- alpha1);
+        				// var a_new_2 = 1 - (1 - alpha2) * (1- alpha1);
+
+        				// r = clamp(r_new_2/a_new_2 + 0.5);
+        				// g = clamp(g_new_2/a_new_2 + 0.5);
+        				// b = clamp(b_new_2/a_new_2 + 0.5);
+        				// a = clamp(a_new_2 * 255 + 0.5);
+        			}
+        			set(i, j, [r, g, b, a], _data);
+        			console.log(val);
+        			set(i, j, _getColor(val), _data2);
+        		}
+        	}
+        	ctx.putImageData(imagedata, 0, 0);
+        	ctx2.putImageData(imagedata2, 0, 0);
+        }();
+    </script>
+</body>
+</html>

@@ -596,26 +596,6 @@ ul{
             dragendOrZoomend();
             
             console.log(new Date() - time_start + ' ms!');
-            // alert('完');
-            // var max = Number.MIN_VALUE;
-            // $.each(data, function(i, v){
-            //     if(v.v > 0 && v.v != 999999){
-            //         console.log(v);
-            //         setTimeout(function(){
-            //             var color = _getColor(v.v);
-            //             var point = new BMap.Point(v.x, v.y);
-            //             var pixel = map.pointToPixel(point);
-            //             ctx.save();
-            //             ctx.fillStyle = color;
-            //             ctx.beginPath();
-            //             ctx.arc(pixel.x, pixel.y, 2, 0, Math.PI*2);
-            //             ctx.closePath();
-            //             ctx.fill();
-            //             ctx.restore();
-            //             console.log(color, v,pixel.x, pixel.y);
-            //         }, 0);
-            //     }
-            // });
         });
     }()
     </script>

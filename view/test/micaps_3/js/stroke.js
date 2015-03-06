@@ -125,14 +125,18 @@
 		if (is_return_next) {
 			var color_current = _get_flag(x, y).color;
 			var obj_tmp;
+			var arr_can_use = [];
 			while ((obj_tmp = arr_return.shift())) {
 				if (obj_tmp.color == color_current && obj_tmp.area.indexOf(int_global_area_index) == -1) {// 
 					if(!_cache_abandon.get(obj_tmp.x, obj_tmp.y)){
-						return obj_tmp;
+						arr_can_use.push(obj_tmp);
 					}
 				}
 			}
-			return;
+			arr_can_use.sort(function(a, b){
+				return a.area.length - b.area.length;
+			});
+			return arr_can_use.shift();
 		}
 		return arr_return;
 	}
@@ -178,28 +182,6 @@
 			arr_no_used = arr_no_used.concat(arr_same_color);
 		}
 		arr_tmp = arr_color = null;//清除数据
-		
-		//双边界处理成单边界
-		// for(var i in obj_flag){
-		// 	var obj_current_point = obj_flag[i];
-		// 	var int_x_current = obj_current_point.x,
-		// 		int_y_current = obj_current_point.y;
-
-		// 	if(int_x_current == 0 || int_y_current == 0 || int_x_current == global_data_width - 1 || int_y_current == global_data_height - 1){
-		// 		continue;
-		// 	}
-				
-		// 	var key_right = int_x_current+1+'_'+int_y_current;
-		// 	var obj_right_point = obj_flag[key_right];
-		// 	if(obj_right_point && obj_right_point.color != obj_current_point.color){
-		// 		delete obj_flag[obj_color_num[obj_right_point.color] > obj_color_num[obj_current_point.color]?i : key_right];
-		// 	}
-		// 	var key_below = int_x_current+'_'+(int_y_current+1);
-		// 	var obj_below_point = obj_flag[key_below];
-		// 	if(obj_below_point && obj_below_point.color != obj_current_point.color){
-		// 		delete obj_flag[obj_color_num[obj_below_point.color] > obj_color_num[obj_current_point.color]?i : key_below];
-		// 	}
-		// }
 	}
 	/*得到没有被使用的标记点*/
 	function _get_no_used_item() {
@@ -208,6 +190,12 @@
 		// 	if (obj_item.n_u == 0) {
 		// 		obj_item.n_u++;
 		// 		return obj_item;
+		// 	}
+		// }
+		// for(var i = 0, j = arr_no_used.length; i<j; i++){
+		// 	var obj_return = arr_no_used[i];
+		// 	if(obj_return.n_u == 0){
+		// 		return obj_return;
 		// 	}
 		// }
 		var obj_return;
@@ -287,6 +275,13 @@
 				_obj_cache = {};
 			},
 			set: function(x, y){
+				var obj_abandon = _get_flag(x, y);
+				var int_n_u = --obj_abandon.n_u;
+				if(int_n_u <= 0){
+					obj_abandon.n_u = 0;
+					arr_no_used.push(obj_abandon);
+				}
+				
 				_obj_cache[[x, y].join('_')] = 1;
 			},
 			get: function(x, y){
@@ -294,6 +289,7 @@
 			}
 		}
 	})();
+	// 合并两个数组，操持第一个数组参数的指针
 	function fn_merge_arr(a, b){
 		var last_index = a.length;
 		var arr_add = b.slice();
@@ -320,10 +316,15 @@
 			// if(int_global_area_index == 76)
 				// console.log(int_current_x, int_current_y, '->', obj_next.x, obj_next.y);
 			
+			var is_borrow = false;
 			if(_next_is_first(obj_next.x, obj_next.y, obj_first_items)){//填充最后一个点
 				is_first = true;
 				break;
+			}else if(_next_is_first(obj_next.x, obj_next.y, obj_first_items, true) && _get_flag(obj_next.x, obj_next.y).area.length > 0){
+				is_borrow = true;
+				break;
 			}
+
 			obj_next.n_u++; //增加使用记录
 			int_current_x = obj_next.x;
 			int_current_y = obj_next.y;
@@ -335,6 +336,10 @@
 				y: int_current_y,
 				num: arr_next_items.length
 			});
+			if(is_borrow){
+				is_first = true;
+				break;
+			}
 			// if(int_global_area_index == 76)
 			// 	console.log('add1', int_current_x, int_current_y, arr_next_items.length);
 		}
@@ -369,9 +374,9 @@
 	function _reback(arr_added, obj_first_items){
 		var obj_abandon;
 		while((obj_abandon = arr_added_stroking.pop())){
-			if(obj_abandon.x == 1 && obj_abandon.y == 0){
-				break;
-			}
+			// if(obj_abandon.x == 1 && obj_abandon.y == 0){
+			// 	break;
+			// }
 			var int_old_num = arr_added_stroking.length;
 			var int_old_num_added = arr_added.length;
 			if(obj_abandon.num > 0){
@@ -418,8 +423,8 @@
 				items: arr_area_items,
 				color: color_current_area
 			});
-			// if (int_global_area_index == 1) {
-			// 	break;
+			// if (int_global_area_index == 2) {debugger;
+			// 	// break;
 			// }
 		}
 	}
@@ -429,7 +434,6 @@
 			global_data_width = data.length;
 			global_data_height = data[0].length;
 			global_data = data;
-			console.log(global_data)
 		} catch (e) {
 			global_data = global_data_width = global_data_height = null; //对不合法的数据进行清空处理
 		}
