@@ -136,11 +136,20 @@
 		}
 		// console.log(x, y, len, dir_arr, point.lng, point.lat, '('+points_endpoint.length+','+points_node.length+')');
 	}
+	function getPointOfSource(x, y){
+		var item_left_top = data_parsing[x][y];
+		var item_right_bottom = data_parsing[x+1][y+1];
+		var left_top = item_left_top.c;
+		var right_top = data_parsing[x+1][y].c;
+		var left_bottom = data_parsing[x][y+1].c;
+		var right_bottom = item_right_bottom.c;
+	}
 
 	var points_endpoint = [], //所有端点
 		points_node = [];//所有结点
 
-	var arcs = [];
+	var arcs = [],//存储端点连续的弧段
+		arcs_node = [];
 	global._getEndPoints = function(){
 		return points_endpoint;
 	}	
@@ -248,57 +257,58 @@
 						}
 					}
 				}
-
-				// points.length > 1 && 
-				arcs.push(arc);
-				_build_point_arcs(arc);
+				if(arc.type == TYPE_ARC_CLOSE){
+					arcs_node.push(arc);
+				}else{
+					arcs.push(arc);
+					_build_point_arcs(arc);
+				}
 			}
 		}
 		// 生成闭合弧段
-		// var nodepoint;
-		// while((nodepoint = points_node.shift())){
-		// 	var arc = new Arc(TYPE_ARC_CLOSE);
-		// 	var points = arc.points;
-		// 	var dir = nodepoint.dir[0];
-		// 	var next_x = nodepoint.x,	
-		// 		next_y = nodepoint.y;
-		// 	if(dir == DIR_ABOVE){
-		// 		next_y--;
-		// 	}else if(dir == DIR_RIGHT){
-		// 		next_x++;
-		// 	}else if(dir == DIR_BELOW){
-		// 		next_y++;
-		// 	}else if(dir == DIR_LEFT){
-		// 		next_x--;
-		// 	}
+		var nodepoint;
+		while((nodepoint = points_node.shift())){
+			var arc = new Arc(TYPE_ARC_CLOSE);
+			var points = arc.points;
+			var dir = nodepoint.dir[0];
+			var next_x = nodepoint.x,	
+				next_y = nodepoint.y;
+			if(dir == DIR_ABOVE){
+				next_y--;
+			}else if(dir == DIR_RIGHT){
+				next_x++;
+			}else if(dir == DIR_BELOW){
+				next_y++;
+			}else if(dir == DIR_LEFT){
+				next_x--;
+			}
 
-		// 	points.push(nodepoint);
-		// 	var point_next;
-		// 	while((point_next = _get_next_arc_point(next_x, next_y))){
-		// 		points.push(point_next);
-		// 		var dir_arr = point_next.dir;
-		// 		dir = dir_arr[dir_arr[0] == -dir?1:0];
-		// 		next_x = point_next.x;
-		// 		next_y = point_next.y;
+			points.push(nodepoint);
+			var point_next;
+			while((point_next = _get_next_arc_point(next_x, next_y))){
+				points.push(point_next);
+				var dir_arr = point_next.dir;
+				dir = dir_arr[dir_arr[0] == -dir?1:0];
+				next_x = point_next.x;
+				next_y = point_next.y;
 
-		// 		if(dir == DIR_ABOVE){
-		// 			next_y--;
-		// 		}else if(dir == DIR_RIGHT){
-		// 			next_x++;
-		// 		}else if(dir == DIR_BELOW){
-		// 			next_y++;
-		// 		}else if(dir == DIR_LEFT){
-		// 			next_x--;
-		// 		}
-		// 		if(nodepoint.is(next_x, next_y)){
-		// 			// points.push(nodepoint);
-		// 			break;
-		// 		}
-		// 	}
-		// 	_build_point_arcs(arc);
-		// 	arcs.push(arc);
-		// }
-		console.log(arcs);
+				if(dir == DIR_ABOVE){
+					next_y--;
+				}else if(dir == DIR_RIGHT){
+					next_x++;
+				}else if(dir == DIR_BELOW){
+					next_y++;
+				}else if(dir == DIR_LEFT){
+					next_x--;
+				}
+				if(nodepoint.is(next_x, next_y)){
+					// points.push(nodepoint);
+					break;
+				}
+			}
+			// _build_point_arcs(arc);
+			arcs_node.push(arc);
+		}
 	}
 
 	var angles = [], angle_min;
@@ -364,10 +374,17 @@
 		var arc_dir = new ArcDir(arc, arc.dir);
 		arcDirs.push(arc_dir);
 
+		var isHavePolygon = true;
 		var arc_next = _getNextArc(arc);
-		var arc_prev;
+		var arc_prev = null;
 		while(1){
 			if(arc_next.id != arc.id){// && (arc_prev && arc_prev.id != arc_next.id)){
+				if(arc_prev && arc_prev.id == arc_next.id){
+					for(var i = 0, j = arcDirs.length; i<j; i++){
+						arcDirs[i].arc.numOfUsed--;
+					}
+					return null;
+				}
 				arc_prev = arc_next
 				arc_next.dir = angle_min.dir;
 				arc_next.numOfUsed += 1;
@@ -382,14 +399,15 @@
 		}
 
 		arc.numOfUsed += 1;
-		console.log(polygons.length);
 		return polygon;
 	}
 	var polygons = [];
 	// 产生多个polygon
 	function _buildPolygons(arc){
 		var polygon = _buildOnePolygon(arc);
-
+		if(!polygon){
+			return;
+		}
 		polygons.push(polygon);
 		for(var i = 0, j = arcs.length; i<j; i++){
 			var arc_item = arcs[i];
@@ -404,11 +422,57 @@
 			}
 		}
 	}
+	// 对polygon进行填色并对有效性进行过滤
+	var _addColor = (function(){
+
+		return function(area){
+
+		}
+	})();
+	function getColorOfPolygon(items){
+		for(var i = 0, j = items.length; i<j; i++){
+
+		}
+	}
+	var _cache_area = (function(){
+		var _cache = {};
+		return function(items){
+			var len = items.length;
+			var area = getArea(items);
+			var key = len + '_' + Math.abs(area);
+			var return_val = {
+				items: items,
+				area: area
+			};
+			if(!_cache[key]){
+				_cache[key] = [return_val];
+			}else{
+				var itemsInCache = _cache[key];
+				var idOfLastPoint = items.slice(-1)[0].id;
+				var idOfFirstPoint = items[0].id;
+				for(var i = 0, j = itemsInCache.length; i<j; i++){
+					var item = itemsInCache[i];
+					if(item.area == -area){
+						var itemsOfChecking = item.items;
+						var index = itemsOfChecking.indexOf(idOfFirstPoint);
+						var index_next = index == itemsOfChecking.length - 1? 0: index+1;
+						if(itemsOfChecking[index_next].id == idOfLastPoint.id){
+							return null;
+						}
+					}
+				}
+				_cache[key].push(return_val);
+			}
+			return return_val;
+		}
+	})();
+	// 解析polygon
 	function _parsePolygons(){
-		var areas = [];
-		for(var i = 0, j = polygons.length; i<j; i++){
+		var polygons_new = [];
+		var polygon;
+		while((polygon = polygons.shift())){
 			var items = [];
-			var arcDirs = polygons[i].arcDirs;
+			var arcDirs = polygon.arcDirs;
 			for(var i_ad = 0, j_ad = arcDirs.length; i_ad < j_ad; i_ad++){
 				var p = arcDirs[i_ad];
 				var points = p.arc.points.slice();
@@ -423,17 +487,25 @@
 				}catch(e){}
 				items = items.concat(points);
 			}
-			areas.push({
-				area: getArea(items),
-				items: items
-			});
+			items.pop();
+			var area = _cache_area(items);
+			if(area !== null){
+				polygons_new.push(area);
+			}
 		}
-		areas.sort(function(a, b){
+		for(var i = 0, j = arcs_node.length; i<j; i++){
+			var items = arcs_node[i].points;
+			var area = _cache_area(items);
+			if(area !== null){
+				polygons_new.push(area);
+			}
+		}
+		polygons_new.sort(function(a, b){
 			return Math.abs(b.area) - Math.abs(a.area);
 		});
-		// areas.shift();
-		console.log(areas);
-		return areas;
+		polygons_new.shift();// 去掉面积最大的
+		console.log(polygons_new);
+		return polygons_new;
 	}
 	// 生成多边形
 	function _makePolygons(){
@@ -444,7 +516,6 @@
 				_buildPolygons(arc);
 			}
 		}
-
 		console.log('polygons', polygons);
 		
 	}

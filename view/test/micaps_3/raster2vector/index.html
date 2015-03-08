@@ -106,17 +106,16 @@ ul{
 		        		var point = area[i_item];
 		        		points.push(new BMap.Point(point.lng, point.lat));
 		        	}
-		        	var polygon = new BMap.Polygon(points, {strokeColor: color, fillColor: color,fillOpacity: 0.3, strokeWeight: 1, strokeOpacity:1});
+		        	var polygon = new BMap.Polygon(points, {strokeColor: color, fillColor: color,fillOpacity: 0.7, strokeWeight: 1, strokeOpacity:1});
 					polygon.area = areas[i].area;
 					(function(p, delay){
-						setTimeout(function(){
+						// setTimeout(function(){
 							p.addEventListener("click", function(){
 								alert(p.area);
 							});
 							map.addOverlay(p);
-						}, delay);
+						// }, delay);
 					})(polygon, 1000*i);
-					
 		        }
             }
         	function _showEndPoints(){
@@ -125,9 +124,9 @@ ul{
 	        function _showNodePoints(){
 	        	_showPoints(_getNodePoints(), 4, 'rgba(0, 0, 255, 0.7)');
 	        }
-	        _showSourcePoints();
-	        _showEndPoints();;
-	        _showNodePoints();
+	        // _showSourcePoints();
+	        // _showEndPoints();;
+	        // _showNodePoints();
 	        _makeArcs();
 	        _makePolygons();
 		
