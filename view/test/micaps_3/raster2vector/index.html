@@ -100,15 +100,19 @@ ul{
             function _showPolygon(areas){
             	for(var i = 0, j = areas.length; i<j; i++){
             		var color = Color[i%Color.length];
-		        	var area = areas[i];
+		        	var area = areas[i].items;
 		        	var points = [];
 		        	for(var i_item = 0, j_item = area.length; i_item < j_item; i_item++){
 		        		var point = area[i_item];
 		        		points.push(new BMap.Point(point.lng, point.lat));
 		        	}
 		        	var polygon = new BMap.Polygon(points, {strokeColor: color, fillColor: color,fillOpacity: 0.3, strokeWeight: 1, strokeOpacity:1});
+					polygon.area = areas[i].area;
 					(function(p, delay){
 						setTimeout(function(){
+							p.addEventListener("click", function(){
+								alert(p.area);
+							});
 							map.addOverlay(p);
 						}, delay);
 					})(polygon, 1000*i);

@@ -96,7 +96,7 @@
 				p_b = points[i + 1];
 			S += p_a.x * p_b.y - p_b.x*p_a.y;
 		}
-		var p_a = points[j-1],
+		var p_a = points[j],
 			p_b = points[0];
 		S += p_a.x * p_b.y - p_b.x*p_a.y;
 		return S/2;
@@ -423,15 +423,23 @@
 				}catch(e){}
 				items = items.concat(points);
 			}
-			areas.push(items);
+			areas.push({
+				area: getArea(items),
+				items: items
+			});
 		}
+		areas.sort(function(a, b){
+			return Math.abs(b.area) - Math.abs(a.area);
+		});
+		// areas.shift();
 		console.log(areas);
 		return areas;
 	}
 	// 生成多边形
 	function _makePolygons(){
 		for(var i = 0, j = arcs.length; i<j; i++){
-			var arc = arcs[i];if(i == 29){debugger;}
+			var arc = arcs[i];
+			//if(i == 29){debugger;}
 			if(arc.numOfUsed == 0){
 				_buildPolygons(arc);
 			}
