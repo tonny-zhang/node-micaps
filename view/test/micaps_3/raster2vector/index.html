@@ -53,7 +53,7 @@ ul{
 
         $.getJSON(url, function(data){
         	data = global.predealData(data.interpolate);
-        	raster2vector(data);
+        	_pretreatmentData(data);
 
         	var bounds = map.getBounds(),
                 sw_point = bounds.getSouthWest(),

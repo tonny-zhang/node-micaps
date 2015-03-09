@@ -637,10 +637,7 @@
 		}
 		return polygons_new;
 	}
-	global._makeArcs = _makeArcs;
-	global._makePolygons = _makePolygons;
-	global._parsePolygons = _parsePolygons;
-	global._addColor = function(polygons){
+	var _addColor = function(polygons){
 		var polygons_island = [];
 		for(var i = 0, j = polygons.length; i<j; i++){
 			var polygon = polygons[i];
@@ -690,11 +687,22 @@
 			}
 		}
 	}
-	global.raster2vector = function(data){
+	var _pretreatmentData = function(data){
 		data_parsing = data;
 		width_data = data.length,
 		height_data = data[0].length;
 		_parseData();
-		// _makeArcs();
+	}
+	global._pretreatmentData = _pretreatmentData;
+	global._makeArcs = _makeArcs;
+	global._makePolygons = _makePolygons;
+	global._parsePolygons = _parsePolygons;
+	global._addColor = _addColor;
+	global.raster2vector = function(data){
+		_pretreatmentData(data);
+		_makeArcs();
+	    _makePolygons();
+	    _parsePolygons();
+	    return polygons;
 	}
 }(this);
