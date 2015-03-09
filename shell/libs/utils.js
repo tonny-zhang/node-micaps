@@ -26,7 +26,7 @@ var _isInsidePolygon = (function(){
     };
 })();
 /*多边形是否在另一个多边形里*/
-var _polygonIsInsidePolygon = function(polygon_items,sub_polygon_items, is_return_num){
+var _polygonIsInsidePolygon = function(polygon_items, sub_polygon_items, is_return_num){
     var inside_num = 0;
     sub_polygon_items.forEach(function(v){
         var flag = _isInsidePolygon(polygon_items,v.x,v.y);
@@ -126,6 +126,10 @@ var Digit = {
         }
         return num;
     }
+}
+if(typeof exports == 'undefined'){
+    var exports = {};
+    this.utils = exports;
 }
 exports.isInsidePolygon = _isInsidePolygon;
 exports.isInLeftTopLine = _isInLeftTopLine;

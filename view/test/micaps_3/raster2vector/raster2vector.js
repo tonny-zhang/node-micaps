@@ -134,15 +134,51 @@
 			point.type = TYPE_NODEPOINT;
 			points_node.push(point);
 		}
-		// console.log(x, y, len, dir_arr, point.lng, point.lat, '('+points_endpoint.length+','+points_node.length+')');
 	}
-	function getPointOfSource(x, y){
-		var item_left_top = data_parsing[x][y];
-		var item_right_bottom = data_parsing[x+1][y+1];
-		var left_top = item_left_top.c;
-		var right_top = data_parsing[x+1][y].c;
-		var left_bottom = data_parsing[x][y+1].c;
-		var right_bottom = item_right_bottom.c;
+	// 得到端点或结点周围原始点在多边形内的颜色
+	var SPACE_ADD = -0.1;
+	// function getPointOfSourceInPolygon(item, items){
+	// 	var x = item.index_x, y = item.index_y;
+	// 	var left_top = data_parsing[x][y];
+	// 	var right_top = data_parsing[x+1][y];
+	// 	var left_bottom = data_parsing[x][y+1];
+	// 	var right_bottom = data_parsing[x+1][y+1];
+
+	// 	var colors = [];
+	// 	if(utils.isInsidePolygon(items, left_top.x, left_top.y)){
+	// 		colors.push(left_top.c);
+	// 	}
+	// 	if(utils.isInsidePolygon(items, right_top.x, right_top.y)){
+	// 		colors.push(right_top.c);
+	// 	}
+	// 	if(utils.isInsidePolygon(items, left_bottom.x, left_bottom.y)){
+	// 		colors.push(left_bottom.c);
+	// 	}
+	// 	if(utils.isInsidePolygon(items, right_bottom.x, right_bottom.y)){
+	// 		colors.push(right_bottom.c);
+	// 	}
+	// 	return colors;
+	// }
+	function getPointOfSourceInPolygon(x, y, items){
+		// var left_top = data_parsing[x][y];
+		// var right_top = data_parsing[x+1][y];
+		// var left_bottom = data_parsing[x][y+1];
+		// var right_bottom = data_parsing[x+1][y+1];
+
+		var colors = [];
+		if(utils.isInsidePolygon(items, x+SPACE_ADD, y+SPACE_ADD)){
+			colors.push(data_parsing[x][y].c);
+		}
+		if(utils.isInsidePolygon(items, x+1+SPACE_ADD, y+SPACE_ADD)){
+			colors.push(data_parsing[x+1][y].c);
+		}
+		if(utils.isInsidePolygon(items, x+SPACE_ADD, y+1+SPACE_ADD)){
+			colors.push(data_parsing[x][y+1].c);
+		}
+		if(utils.isInsidePolygon(items, x+1+SPACE_ADD, y+1+SPACE_ADD)){
+			colors.push(data_parsing[x+1][y+1].c);
+		}
+		return colors;
 	}
 
 	var points_endpoint = [], //所有端点
@@ -422,27 +458,81 @@
 			}
 		}
 	}
-	// 对polygon进行填色并对有效性进行过滤
-	var _addColor = (function(){
-
-		return function(area){
-
-		}
-	})();
+	// 得到polygon的颜色
+	// function getColorOfPolygon(items){
+	// 	var color = '', color_num = 0;
+	// 	var items_new = [];
+	// 	for(var i = 0, j = items.length; i<j; i++){
+	// 		var item = items[i];
+	// 		items_new.push({
+	// 			x: item.lng,
+	// 			y: item.lat,
+	// 			index_x: item.x,
+	// 			index_y: item.y
+	// 		});
+			
+	// 	}
+	// 	for(var i = 0, j = items.length; i<j; i++){
+	// 		var item = items_new[i];
+	// 		var colors = getPointOfSourceInPolygon(item, items_new);
+	// 		var flag_many_color = false;
+	// 		for(var i_c = 0, j_c = colors.length; i_c < j_c; i_c++){
+	// 			var c = colors[i_c];
+	// 			if(color && color != c){
+	// 				flag_many_color = true;
+	// 				break;
+	// 			}else{
+	// 				color = c;
+	// 			}
+	// 		}
+	// 		if(flag_many_color){
+	// 			return null;
+	// 		}
+	// 	}
+	// 	return color || null;
+	// }
 	function getColorOfPolygon(items){
+		var colors_return = {};
+		var color_points = {};
 		for(var i = 0, j = items.length; i<j; i++){
-
+			var item = items[i];
+			var colors = getPointOfSourceInPolygon(item.x, item.y, items);
+			var flag_many_color = false;
+			for(var i_c = 0, j_c = colors.length; i_c < j_c; i_c++){
+				var c = colors[i_c];
+				if(!colors_return[c]){
+					colors_return[c] = 0;
+				}
+				colors_return[c]++;
+				(color_points[c] || (color_points[c] = [])).push(item);
+			}
 		}
+		var arr = [];
+		for(var i in colors_return){
+			arr.push({
+				c: i,
+				n: colors_return[i],
+				p: color_points[i]
+			});
+		}
+		return arr;
 	}
 	var _cache_area = (function(){
 		var _cache = {};
+		var _cache_index = 0;
 		return function(items){
 			var len = items.length;
 			var area = getArea(items);
 			var key = len + '_' + Math.abs(area);
+			// var color = getColorOfPolygon(items);
+			// // if(null === color){ //当没有颜色时表示多边形里包含多个颜色的多边形，应该舍去
+			// // 	return null;
+			// // }
 			var return_val = {
 				items: items,
-				area: area
+				area: area,
+				id: _cache_index++
+				// color: color
 			};
 			if(!_cache[key]){
 				_cache[key] = [return_val];
@@ -504,7 +594,9 @@
 			return Math.abs(b.area) - Math.abs(a.area);
 		});
 		polygons_new.shift();// 去掉面积最大的
-		console.log(polygons_new);
+		
+		polygons = polygons_new;
+		_addColor(polygons_new);
 		return polygons_new;
 	}
 	// 生成多边形
@@ -516,12 +608,88 @@
 				_buildPolygons(arc);
 			}
 		}
-		console.log('polygons', polygons);
-		
+	}
+	// 根据点得到点所在所有polygon
+	function getPolygonsByPoint(point){
+		var id = point.id;
+		var polygons_return = [];
+		for(var i = 0, j = polygons.length; i<j; i++){
+			var polygon = polygons[i];
+			for(var i_item = 0, items = polygon.items, j_item = items.length; i_item<j_item; i_item++){
+				var id_item = items[i_item].id;
+				if(id_item == id){
+					polygons_return.push(polygon);
+					break;
+				}
+			}
+		}
+		return polygons_return;
+	}
+	function unique_polygons(polygons){
+		var polygons_new = [];
+		var obj = {};
+		for(var i = 0, j = polygons.length; i<j; i++){
+			var p = polygons[i];
+			if(!obj[p.id]){
+				obj[p.id] = 1;
+				polygons_new.push(p);
+			}
+		}
+		return polygons_new;
 	}
 	global._makeArcs = _makeArcs;
 	global._makePolygons = _makePolygons;
 	global._parsePolygons = _parsePolygons;
+	global._addColor = function(polygons){
+		var polygons_island = [];
+		for(var i = 0, j = polygons.length; i<j; i++){
+			var polygon = polygons[i];
+			var colors = getColorOfPolygon(polygon.items);
+			if(colors.length == 1){
+				polygon.color = colors[0].c
+			}else{
+				colors.sort(function(a, b){
+					return a.n - b.n;
+				});
+				var max_color = colors.pop();
+				polygon.color = max_color.c;
+				polygons_island.push({
+					i: i,
+					p: polygon,
+					colors: colors
+				});
+			}
+		}
+		for(var i = 0, j = polygons_island.length; i<j; i++){
+			var polygon = polygons_island[i];
+			var itemsOfPolygon = polygon.p.items;
+			var id = polygon.p.id;
+			var colorOfPolygon = polygon.p.color;
+			var colors = polygon.colors;
+			var polygons_clip = [];
+			for(var i_c = 0, j_c = colors.length; i_c<j_c; i_c++){
+				var item_color = colors[i_c];
+				var points = item_color.p;
+				var polygons_bypoint = [];
+				for(var i_p = 0, j_p = points.length; i_p < j_p; i_p++){
+					polygons_bypoint = polygons_bypoint.concat(getPolygonsByPoint(points[i_p], id));
+				}
+				polygons_clip = polygons_clip.concat(unique_polygons(polygons_bypoint));
+			}
+			polygons_clip = unique_polygons(polygons_clip);
+
+			var polygons_result = [];
+			for(var i_pp = 0, j_pp = polygons_clip.length; i_pp<j_pp; i_pp++){
+				var polygon_item = polygons_clip[i_pp];
+				if(polygon_item.id != id && colorOfPolygon != polygon_item.color && utils.polygonIsInsidePolygon(itemsOfPolygon, polygon_item.items)){
+					polygons_result.push(polygon_item);
+				}
+			}
+			if(polygons_result.length > 0){
+				polygon.p.clip = polygons_result;
+			}
+		}
+	}
 	global.raster2vector = function(data){
 		data_parsing = data;
 		width_data = data.length,
