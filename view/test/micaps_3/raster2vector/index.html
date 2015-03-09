@@ -129,7 +129,8 @@ ul{
 		        		var point = area[i_item];
 		        		points.push(new BMap.Point(point.lng, point.lat));
 		        	}
-		        	var polygon = new BMap.Polygon(points, {strokeColor: color, fillColor: color,fillOpacity: 0.5, strokeWeight: 1, strokeOpacity:0.5});
+		        	var alpha = 1;
+		        	var polygon = new BMap.Polygon(points, {strokeColor: color, fillColor: color,fillOpacity: alpha, strokeWeight: 1, strokeOpacity: alpha});
 					polygon.area = areas[i].area;
 					polygon.id = areas[i].id;
 					(function(p, clip, delay){
@@ -154,7 +155,7 @@ ul{
 	        	_showPoints(_getNodePoints(), 4, 'rgba(0, 0, 255, 0.7)');
 	        }
 	        var time_1 = new Date();
-	        _showSourcePoints();
+	        // _showSourcePoints();
 	        // _showEndPoints();;
 	        // _showNodePoints();
 	        _makeArcs();
