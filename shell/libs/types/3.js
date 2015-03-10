@@ -26,7 +26,7 @@ function _parse_file(lines, option){
 		y0: 18.16,
 		x1: 139,
 		y1: 54,
-		grid_space: 3,
+		grid_space: 0.5,
 		numOfNearest: 5,
 		default_val: DEFAULT_VALUE,
 		interpolation_all: false

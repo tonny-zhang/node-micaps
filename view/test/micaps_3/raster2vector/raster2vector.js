@@ -16,6 +16,157 @@
 	var Raster2Vector = function(){
 
 	}
+
+	// B样条插值平滑算法
+	var smoothBSpline = (function(){
+		// https://github.com/Tagussan/BSpline
+		var BSpline = function(points,degree,copy){
+		    if(copy){
+		        this.points = []
+		        for(var i = 0;i<points.length;i++){
+		            this.points.push(points[i]);
+		        }
+		    }else{
+		        this.points = points;
+		    }
+		    this.degree = degree;
+		    this.dimension = points[0].length;
+		    if(degree == 2){
+		        this.baseFunc = this.basisDeg2;
+		        this.baseFuncRangeInt = 2;
+		    }else if(degree == 3){
+		        this.baseFunc = this.basisDeg3;
+		        this.baseFuncRangeInt = 2;
+		    }else if(degree == 4){
+		        this.baseFunc = this.basisDeg4;
+		        this.baseFuncRangeInt = 3;
+		    }else if(degree == 5){
+		        this.baseFunc = this.basisDeg5;
+		        this.baseFuncRangeInt = 3;
+		    } 
+		};
+
+		BSpline.prototype.seqAt = function(dim){
+		    var points = this.points;
+		    var margin = this.degree + 1;
+		    return function(n){
+		        if(n < margin){
+		            return points[0][dim];
+		        }else if(points.length + margin <= n){
+		            return points[points.length-1][dim];
+		        }else{
+		            return points[n-margin][dim];
+		        }
+		    };
+		};
+
+		BSpline.prototype.basisDeg2 = function(x){
+		    if(-0.5 <= x && x < 0.5){
+		        return 0.75 - x*x;
+		    }else if(0.5 <= x && x <= 1.5){
+		        return 1.125 + (-1.5 + x/2.0)*x;
+		    }else if(-1.5 <= x && x < -0.5){
+		        return 1.125 + (1.5 + x/2.0)*x;
+		    }else{
+		        return 0;
+		    }
+		};
+
+		BSpline.prototype.basisDeg3 = function(x){
+		    if(-1 <= x && x < 0){
+		        return 2.0/3.0 + (-1.0 - x/2.0)*x*x;
+		    }else if(1 <= x && x <= 2){
+		        return 4.0/3.0 + x*(-2.0 + (1.0 - x/6.0)*x);
+		    }else if(-2 <= x && x < -1){
+		        return 4.0/3.0 + x*(2.0 + (1.0 + x/6.0)*x);
+		    }else if(0 <= x && x < 1){
+		        return 2.0/3.0 + (-1.0 + x/2.0)*x*x;
+		    }else{
+		        return 0;
+		    }
+		};
+
+		BSpline.prototype.basisDeg4 = function(x){
+		    if(-1.5 <= x && x < -0.5){
+		        return 55.0/96.0 + x*(-(5.0/24.0) + x*(-(5.0/4.0) + (-(5.0/6.0) - x/6.0)*x));
+		    }else if(0.5 <= x && x < 1.5){
+		        return 55.0/96.0 + x*(5.0/24.0 + x*(-(5.0/4.0) + (5.0/6.0 - x/6.0)*x));
+		    }else if(1.5 <= x && x <= 2.5){
+		        return 625.0/384.0 + x*(-(125.0/48.0) + x*(25.0/16.0 + (-(5.0/12.0) + x/24.0)*x));
+		    }else if(-2.5 <= x && x <= -1.5){
+		        return 625.0/384.0 + x*(125.0/48.0 + x*(25.0/16.0 + (5.0/12.0 + x/24.0)*x));
+		    }else if(-1.5 <= x && x < 1.5){
+		        return 115.0/192.0 + x*x*(-(5.0/8.0) + x*x/4.0);
+		    }else{
+		        return 0;
+		    }
+		};
+
+		BSpline.prototype.basisDeg5 = function(x){
+		    if(-2 <= x && x < -1){
+		        return 17.0/40.0 + x*(-(5.0/8.0) + x*(-(7.0/4.0) + x*(-(5.0/4.0) + (-(3.0/8.0) - x/24.0)*x)));
+		    }else if(0 <= x && x < 1){
+		        return 11.0/20.0 + x*x*(-(1.0/2.0) + (1.0/4.0 - x/12.0)*x*x);
+		    }else if(2 <= x && x <= 3){
+		        return 81.0/40.0 + x*(-(27.0/8.0) + x*(9.0/4.0 + x*(-(3.0/4.0) + (1.0/8.0 - x/120.0)*x)));
+		    }else if(-3 <= x && x < -2){
+		        return 81.0/40.0 + x*(27.0/8.0 + x*(9.0/4.0 + x*(3.0/4.0 + (1.0/8.0 + x/120.0)*x)));
+		    }else if(1 <= x && x < 2){
+		        return 17.0/40.0 + x*(5.0/8.0 + x*(-(7.0/4.0) + x*(5.0/4.0 + (-(3.0/8.0) + x/24.0)*x)));
+		    }else if(-1 <= x && x < 0){
+		        return 11.0/20.0 + x*x*(-(1.0/2.0) + (1.0/4.0 + x/12.0)*x*x);
+		    }else{
+		        return 0;
+		    }
+		};
+
+		BSpline.prototype.getInterpol = function(seq,t){
+		    var f = this.baseFunc;
+		    var rangeInt = this.baseFuncRangeInt;
+		    var tInt = Math.floor(t);
+		    var result = 0;
+		    for(var i = tInt - rangeInt;i <= tInt + rangeInt;i++){
+		        result += seq(i)*f(t-i);
+		    }
+		    return result;
+		};
+
+		BSpline.prototype.calcAt = function(t){
+		    t = t*((this.degree+1)*2+this.points.length);//t must be in [0,1]
+		    return {
+		    	lng: this.getInterpol(this.seqAt('lng'),t),
+		    	lat: this.getInterpol(this.seqAt('lat'),t)
+		    };
+		    if(this.dimension == 2){
+		        return [this.getInterpol(this.seqAt(0),t),this.getInterpol(this.seqAt(1),t)];
+		    }else if(this.dimension == 3){
+		        return [this.getInterpol(this.seqAt(0),t),this.getInterpol(this.seqAt(1),t),this.getInterpol(this.seqAt(2),t)];
+		    }else{
+		        var res = [];
+		        for(var i = 0;i<this.dimension;i++){
+		            res.push(this.getInterpol(this.seqAt(i),t));
+		        }
+		        return res;
+		    }
+		};
+		// degree = [2, 5]; factor = [2, 10]
+		return function(points, degree, factor){
+			degree = degree || 4;
+			var len = points.length;
+			var num = len * (factor || 5);
+			num < 20 && (num = 20);
+			var spline = new BSpline(points, degree, true);
+			var points_return = [];
+			var space = 1/num;
+			// points_return.push(points[0]);
+			for(var t = 0; t <= 1; t += space){
+				var interpol = spline.calcAt(t);
+				points_return.push(interpol);
+			}
+			// points_return.push(points[len-1]);
+			return points_return;
+		}
+	})();
 	/*数据结构*/
 	// 点
 	function Point(x, y, dir){
@@ -94,11 +245,11 @@
 		for(var i = 0, j = points.length - 1; i<j; i++){
 			var p_a = points[i],
 				p_b = points[i + 1];
-			S += p_a.x * p_b.y - p_b.x*p_a.y;
+			S += p_a.lng * p_b.lat - p_b.lng*p_a.lat;
 		}
 		var p_a = points[j],
 			p_b = points[0];
-		S += p_a.x * p_b.y - p_b.x*p_a.y;
+		S += p_a.lng * p_b.lat - p_b.lng*p_a.lat;
 		return S/2;
 	}
 
@@ -137,34 +288,7 @@
 	}
 	// 得到端点或结点周围原始点在多边形内的颜色
 	var SPACE_ADD = -0.1;
-	// function getPointOfSourceInPolygon(item, items){
-	// 	var x = item.index_x, y = item.index_y;
-	// 	var left_top = data_parsing[x][y];
-	// 	var right_top = data_parsing[x+1][y];
-	// 	var left_bottom = data_parsing[x][y+1];
-	// 	var right_bottom = data_parsing[x+1][y+1];
-
-	// 	var colors = [];
-	// 	if(utils.isInsidePolygon(items, left_top.x, left_top.y)){
-	// 		colors.push(left_top.c);
-	// 	}
-	// 	if(utils.isInsidePolygon(items, right_top.x, right_top.y)){
-	// 		colors.push(right_top.c);
-	// 	}
-	// 	if(utils.isInsidePolygon(items, left_bottom.x, left_bottom.y)){
-	// 		colors.push(left_bottom.c);
-	// 	}
-	// 	if(utils.isInsidePolygon(items, right_bottom.x, right_bottom.y)){
-	// 		colors.push(right_bottom.c);
-	// 	}
-	// 	return colors;
-	// }
 	function getPointOfSourceInPolygon(x, y, items){
-		// var left_top = data_parsing[x][y];
-		// var right_top = data_parsing[x+1][y];
-		// var left_bottom = data_parsing[x][y+1];
-		// var right_bottom = data_parsing[x+1][y+1];
-
 		var colors = [];
 		if(utils.isInsidePolygon(items, x+SPACE_ADD, y+SPACE_ADD)){
 			colors.push(data_parsing[x][y].c);
@@ -236,8 +360,27 @@
 			(point_arcs[id_point] || (point_arcs[id_point] = [])).push(arc);
 		}
 	}
+	function smoothArc(arc){
+		var points = arc.points;
+
+		var points_new = [];
+		for(var i = 0, j = points.length; i<j; i++){
+			var p = points[i];
+			points_new.push(p);
+		}
+		// points_new = smoothSpline(points_new);
+
+		// var points_new = [];
+		// for(var i = 0, j = points.length; i<j; i++){
+		// 	var p = points[i];
+		// 	points_new.push([p.lng, p.lat]);
+		// }
+		points_new = smoothBSpline(points_new);
+		arc.points = points_new;
+		arc.points_old = points;
+	}
 	// 生成弧段
-	function _makeArcs(){
+	function _makeArcs(is_smooth){
 		var endpoint;
 		while((endpoint = points_endpoint.shift())){
 			var dir_arr = endpoint.dir;
@@ -293,6 +436,7 @@
 						}
 					}
 				}
+				is_smooth && smoothArc(arc);
 				if(arc.type == TYPE_ARC_CLOSE){
 					arcs_node.push(arc);
 				}else{
@@ -342,6 +486,7 @@
 					break;
 				}
 			}
+			is_smooth && smoothArc(arc);
 			// _build_point_arcs(arc);
 			arcs_node.push(arc);
 		}
@@ -596,7 +741,6 @@
 		polygons_new.shift();// 去掉面积最大的
 		
 		polygons = polygons_new;
-		_addColor(polygons_new);
 		return polygons_new;
 	}
 	// 生成多边形
@@ -693,6 +837,7 @@
 		height_data = data[0].length;
 		_parseData();
 	}
+	global._smoothBSpline = smoothBSpline;
 	global._pretreatmentData = _pretreatmentData;
 	global._makeArcs = _makeArcs;
 	global._makePolygons = _makePolygons;
@@ -703,6 +848,8 @@
 		_makeArcs();
 	    _makePolygons();
 	    _parsePolygons();
+
+		_addColor(polygons);
 	    return polygons;
 	}
 }(this);
