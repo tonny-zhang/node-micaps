@@ -30,7 +30,7 @@ function _parse_file(lines, option){
 		grid_space: 0.5,
 		numOfNearest: 5,
 		default_val: DEFAULT_VALUE,
-		interpolation_all: true,
+		interpolation_all: 0,
 	}
 	for(var i in default_option){
 		if(option[i] === undefined){

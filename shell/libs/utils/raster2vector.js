@@ -10,16 +10,22 @@
 		TYPE_ARC_OPEN = 2;
 	var DIR_CW = 1,//顺时针
 		DIR_CCW = 2;//逆时针
-
+	var SPACE_ADD = -0.1;
 	var utils = global.utils;
 	if(typeof utils == 'undefined'){
 		utils = require('../utils');
 	}
 	var data_parsing,
 		width_data, height_data;
-	var Raster2Vector = function(){
-
-	}
+	
+	var _index_arc = 0;
+	var _index_polygon = 0;
+	var points_endpoint = [], //所有端点
+		points_node = [];//所有结点
+	var arcs = [],//存储端点连续的弧段
+		arcs_node = [];
+	var point_arcs = {}; //存储点和弧段关系
+	var polygons = []; //存储多边形
 	var smoothSpline = (function(){
 		var vector = {
 			distance: function distance(p1, p2){
@@ -198,23 +204,24 @@
 		    return result;
 		};
 
+		
 		BSpline.prototype.calcAt = function(t){
 		    t = t*((this.degree+1)*2+this.points.length);//t must be in [0,1]
 		    return {
-		    	lng: this.getInterpol(this.seqAt('lng'),t),
-		    	lat: this.getInterpol(this.seqAt('lat'),t)
+		    	lng: this.getInterpol(this.seqAt('lng'),t).toFixed(4),
+		    	lat: this.getInterpol(this.seqAt('lat'),t).toFixed(4)
 		    };
-		    if(this.dimension == 2){
-		        return [this.getInterpol(this.seqAt(0),t),this.getInterpol(this.seqAt(1),t)];
-		    }else if(this.dimension == 3){
-		        return [this.getInterpol(this.seqAt(0),t),this.getInterpol(this.seqAt(1),t),this.getInterpol(this.seqAt(2),t)];
-		    }else{
-		        var res = [];
-		        for(var i = 0;i<this.dimension;i++){
-		            res.push(this.getInterpol(this.seqAt(i),t));
-		        }
-		        return res;
-		    }
+		    // if(this.dimension == 2){
+		    //     return [this.getInterpol(this.seqAt(0),t),this.getInterpol(this.seqAt(1),t)];
+		    // }else if(this.dimension == 3){
+		    //     return [this.getInterpol(this.seqAt(0),t),this.getInterpol(this.seqAt(1),t),this.getInterpol(this.seqAt(2),t)];
+		    // }else{
+		    //     var res = [];
+		    //     for(var i = 0;i<this.dimension;i++){
+		    //         res.push(this.getInterpol(this.seqAt(i),t));
+		    //     }
+		    //     return res;
+		    // }
 		};
 		// degree = [2, 5]; factor = [2, 10]
 		return function(points, degree, factor){
@@ -245,7 +252,6 @@
 	Point.prototype.is = function(x, y){
 		return this.id == x+'_'+y;
 	}
-	var _index_arc = 0;
 	// 弧段
 	function Arc(type){
 		this.id = _index_arc++;
@@ -260,11 +266,11 @@
 		this.dir = dir;
 	}
 	// 多边形
-	var _index_polygon = 0;
 	function Polygon(){
 		this.id = _index_polygon++;
 		this.arcDirs = [];
 	}
+	// 角
 	function Angle(arc, angle, dir){
 		this.arc = arc;
 		this.angle = angle;
@@ -319,7 +325,7 @@
 		S += p_a.lng * p_b.lat - p_b.lng*p_a.lat;
 		return S/2;
 	}
-
+	// 处理所有点,得到端点和结点
 	function make_point(x, y){
 		var item_left_top = data_parsing[x][y];
 		var item_right_bottom = data_parsing[x+1][y+1];
@@ -354,7 +360,6 @@
 		}
 	}
 	// 得到端点或结点周围原始点在多边形内的颜色
-	var SPACE_ADD = -0.1;
 	function getPointOfSourceInPolygon(x, y, items){
 		var colors = [];
 		if(utils.isInsidePolygon(items, x+SPACE_ADD, y+SPACE_ADD)){
@@ -372,11 +377,6 @@
 		return colors;
 	}
 
-	var points_endpoint = [], //所有端点
-		points_node = [];//所有结点
-
-	var arcs = [],//存储端点连续的弧段
-		arcs_node = [];
 	global._getEndPoints = function(){
 		return points_endpoint;
 	}	
@@ -419,32 +419,13 @@
 			}
 		}
 	}
-	var point_arcs = {};
+	
 	function _build_point_arcs(arc){
 		var points = arc.points;
 		for(var i = 0, j = points.length; i<j; i++){
 			var id_point = points[i].id;
 			(point_arcs[id_point] || (point_arcs[id_point] = [])).push(arc);
 		}
-	}
-	function smoothArc(arc){
-		var points = arc.points;
-
-		var points_new = [];
-		for(var i = 0, j = points.length; i<j; i++){
-			var p = points[i];
-			points_new.push(p);
-		}
-		// points_new = smoothSpline(points_new);
-
-		// var points_new = [];
-		// for(var i = 0, j = points.length; i<j; i++){
-		// 	var p = points[i];
-		// 	points_new.push([p.lng, p.lat]);
-		// }
-		points_new = smoothBSpline(points_new);
-		arc.points = points_new;
-		arc.points_old = points;
 	}
 	// 生成弧段
 	function _makeArcs(is_smooth){
@@ -503,7 +484,6 @@
 						}
 					}
 				}
-				is_smooth && smoothArc(arc);
 				_cutArc(arc);
 				if(arc.type == TYPE_ARC_CLOSE){
 					arcs_node.push(arc);
@@ -554,7 +534,6 @@
 					break;
 				}
 			}
-			is_smooth && smoothArc(arc);
 			_cutArc(arc);
 			// _build_point_arcs(arc);
 			arcs_node.push(arc);
@@ -657,7 +636,7 @@
 		polygon.key = ids_arc.join(',');
 		return polygon;
 	}
-	var polygons = [];
+	
 	// 产生多个polygon
 	function _buildPolygons(arc){
 		var polygon = _buildOnePolygon(arc);
@@ -707,7 +686,7 @@
 	var _cache_area = (function(){
 		var _cache = {};
 		var _cache_index = 0;
-		return function(items){
+		var fn_return = function(items){
 			var len = items.length;
 			var area = getArea(items);
 			var key = len + '_' + Math.abs(area);
@@ -742,6 +721,11 @@
 			}
 			return return_val;
 		}
+		fn_return.reset = function(){
+			_cache = {};
+			_cache_index = 0;
+		}
+		return fn_return;
 	})();
 	function _cutArc(arc){
 		var points = arc.points.slice();
@@ -784,7 +768,7 @@
 		var arc_cache = {};
 	    var dis_squre = Math.pow(0.05 ,2);
 	    var percent_new_point = 0.2;
-	    return function (points, items, is_force){
+	    var fn_return = function (points, items){
 	        var len = points.length;
 	        if(len == 2){
 	            var p1 = points[0],
@@ -839,40 +823,43 @@
 	                id_e = points[len - 1].id;
 	            var key = id_s + ',' + id_e+','+len;
 	            var val_cache = arc_cache[key];
-	            if(val_cache && !is_force){
+	            if(val_cache){
 	                return val_cache;
 	            }else{
 	                var key_reserve = id_e + ',' + id_s+','+len;
 	                val_cache = arc_cache[key_reserve];
-	                if(val_cache && !is_force){
+	                if(val_cache){
 	                    val_cache.reverse();
 	                    return val_cache;
 	                }else{
 	                    var result = smoothBSpline(points, 5);
-	                    // var prev_point = result.shift();
-	                    // var result_new = [prev_point];
-	                    // for(var i = 1, j = result.length; i<j; i++){
-	                    //     var p = result[i];
-	                    //     if(Math.pow(prev_point.lng - p.lng, 2) + Math.pow(prev_point.lat - p.lat, 2) >= dis_squre){
-	                    //         result_new.push(p);
-	                    //         prev_point = p;
-	                    //     }
-	                    // }
-	                    // var first_point = result_new[0],
-	                    //     last_point = result_new[result_new.length-1];
-	                    // // if(Math.pow(first_point.lng - last_point.lng, 2) + Math.pow(first_point.lat - last_point.lat, 2) < dis_squre){
-	                    //     // result_new.pop();
-	                    // // }
+	                    var prev_point = result.shift();
+	                    var result_new = [prev_point];
+	                    for(var i = 1, j = result.length; i<j; i++){
+	                        var p = result[i];
+	                        if(Math.pow(prev_point.lng - p.lng, 2) + Math.pow(prev_point.lat - p.lat, 2) >= dis_squre){
+	                            result_new.push(p);
+	                            prev_point = p;
+	                        }
+	                    }
+	                    var first_point = result_new[0],
+	                        last_point = result_new[result_new.length-1];
+	                    if(Math.pow(first_point.lng - last_point.lng, 2) + Math.pow(first_point.lat - last_point.lat, 2) < dis_squre){
+	                        result_new.pop();
+	                    }
 
-	                    !is_force && (arc_cache[key] = result);
-	                    return result;
+	                    (arc_cache[key] = result_new);
+	                    return result_new;
 	                }
 	            }                        
 	        }
 	        return points;                    
 	    }
+	    fn_return.reset = function(){
+	    	arc_cache = {};
+	    }
+	    return fn_return;
 	})();
-	global._smooth = smooth;
 	// 对描完的边进行平滑处理
 	function _dealItems(items){
         // return [items];
@@ -924,7 +911,7 @@
         return items_return;
     }
     function _smoothPolygons(){
-    	for(var i = 0, j = polygons.length; i<j; i++){
+    	for(var i = polygons.length-1; i>=0; i--){
     		var polygon = polygons[i];
     		polygon.items = _dealItems(polygon.items);
     	}
@@ -964,7 +951,7 @@
 			}
 		}
 		polygons_new.sort(function(a, b){
-			return Math.abs(b.area) - Math.abs(a.area);
+			return Math.abs(b.area) - Math.abs(a.area) || a.id - b.id;
 		});
 		polygons_new.shift();// 去掉面积最大的
 		
@@ -1079,6 +1066,22 @@
 		data_parsing = data;
 		_parseData();
 	}
+	// 重置操作
+	function _reset(){
+		_index_arc = 0;
+		_index_polygon = 0;
+		points_endpoint = [], //所有端点
+		points_node = [];//所有结点
+		arcs = [],//存储端点连续的弧段
+		arcs_node = [];
+		point_arcs = {}; //存储点和弧段关系
+		polygons = []; //存储多边形
+
+		_cache_area.reset();
+		smooth.reset();
+	}
+
+	// global._smooth = smooth;
 	// global._dealItems = _dealItems;
 	// global.utils = utils;
 	// global._smoothSpline = smoothSpline;
@@ -1089,6 +1092,7 @@
 	// global._parsePolygons = _parsePolygons;
 	// global._addColor = _addColor;
 	global.raster2vector = function(data, color_novalue){
+		_reset();
 		_pretreatmentData(data, color_novalue);
 		_makeArcs();
 	    _makePolygons();
@@ -1098,4 +1102,4 @@
 		_smoothPolygons();
 	    return polygons;
 	}
-}(this == window? this: exports);
+}(typeof __dirname == 'undefined'? this: exports);
