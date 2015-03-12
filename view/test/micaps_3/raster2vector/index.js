@@ -87,6 +87,7 @@
     	return data;
     }
     global.DEFAULT_VAL = DEFAULT_VAL;
+    global.COLOR_TRANSPANT = COLOR_TRANSPANT;
     // global.color2rgba = color_normal2rgba;
     global.getColor = _getColor;
     global.predealData = predealData;

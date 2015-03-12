@@ -21,13 +21,14 @@ ul{
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=E8MDMS4BVFEMeAxVP3YddQ6X"></script>
     <script type="text/javascript" src="../../../../shell/libs/utils.js"></script>
     <script type="text/javascript" src="../../../../../GraphTool/core/js/libs/esl.js"></script>
-    <script type="text/javascript" src="raster2vector.js"></script>
+    <script type="text/javascript" src="../../../../shell/libs/utils/raster2vector.js"></script>
     <script type="text/javascript" src="index.js"></script>
     <script type="text/javascript">
     !function(){
     	map = new BMap.Map("allmap");
         map.centerAndZoom(new BMap.Point(116.404, 39.915), 6);
         map.centerAndZoom(new BMap.Point(103.2, 36), 5);
+        // map.centerAndZoom(new BMap.Point(86.2, 43), 8);
         map.enableScrollWheelZoom();
 
         function getCtx(width, height){
@@ -51,191 +52,103 @@ ul{
     	var url = '../../../../shell/test/micaps_3.json';
         var url = '../../../../shell/gedian.json';
         var url = '../../../../data/micaps/3/15012114.000.json';
-        var fileLocation= '../../../../../GraphTool/core/js/libs//zr'
-        // require.config({
-        //     paths:{
-        //         'zrender': fileLocation,
-        //         'zrender/shape/Base': fileLocation,
-        //         'zrender/shape/BrokenLine': fileLocation,
-        //         'zrender/shape/Polygon': fileLocation,
-        //         'zrender/Group': fileLocation,
-        //         'zrender/tool/util': fileLocation,
-        //         'zrender/tool/util/smoothBezier': fileLocation,
-        //         'zrender/tool/area': fileLocation,
-        //         'zrender/shape/Image': fileLocation,
-        //         'zrender/shape/Text': fileLocation,
-        //         'zrender/shape/Rectangle': fileLocation
-        //     }
-        // });
-        require.config({
-            packages: [
-                {
-                    name: 'zrender',
-                    location: '../../../../../../git_project/zrender/src/',
-                    main: 'zrender'
-                }
-            ]
-        });
-        require(['zrender',
-                'zrender/shape/Base',
-                'zrender/shape/Polygon',
-                'zrender/tool/util',
-                'zrender/shape/util/smoothBezier',
-                'zrender/shape/util/smoothSpline'], function(Zrender, Base, Polygon, util, smoothBezier, smoothSpline){
+        $.getJSON(url, function(data){
+            data = global.predealData(data.interpolate);
 
+            var bounds = map.getBounds(),
+                sw_point = bounds.getSouthWest(),
+                ne_point = bounds.getNorthEast(),
+                sw = map.pointToPixel(sw_point),
+                ne = map.pointToPixel(ne_point);
+            var x = sw.x,
+                y = ne.y,
+                size = map.getSize(),
+                width = size.width,
+                height = size.height;
+            
+            var time1 = new Date();
+            var polygons = raster2vector(data, global.COLOR_TRANSPANT);
+            var time2 = new Date();
+            console.log('raster2vector', time2-time1, 'ms!');
+            time1 = time2;
+            var Color = ['red','blue','green','orange','black', '#123','#f26','#ccc','#333', 'yellow', 'pink'];
+            
+            var Color = ['rgba(255, 0, 0, 0.4)', 'rgba(0, 255, 0, 0.4)', 'rgba(0, 0, 255, 0.4)'];
+            function render(){
+                var interpolate_cache = {};
+                console.log(polygons);
+                arc_cache = {};
+                for(var i = 0, j = polygons.length; i<j; i++){
+                    // if(i != 17 && i != 27){// && i != 27 i != 17 && 
+                    //     continue;
+                    // }
+                    var p = polygons[i];
+                    var items = p.items;
+                    // var points_arr = [];
+                    // var color = 'blue';
+                    // for(var i_item = 0, j_item = items.length; i_item<j_item; i_item++){
+                    //     var p_lnglat = items[i_item];
+                    //     var key = p_lnglat.lng + '_'+ p_lnglat.lat;
+                    //     var b_p = interpolate_cache[key];
+                    //     if(!b_p){
+                    //         var point_map = new BMap.Point(p_lnglat.lng, p_lnglat.lat);
+                    //         b_p = point_map;
+                    //         interpolate_cache[key] = point_map;
+                    //     }                            
 
-            $.getJSON(url, function(data){
-            	data = global.predealData(data.interpolate);
+                    //     points_arr.push(b_p);
+                    // }
+                    // var polygon = new BMap.Polygon(points_arr, {strokeColor: color, fillColor: color,fillOpacity: alpha, strokeWeight: 0.01, strokeOpacity: 0});
+                    // map.addOverlay(polygon);
 
-            	var bounds = map.getBounds(),
-                    sw_point = bounds.getSouthWest(),
-                    ne_point = bounds.getNorthEast(),
-                    sw = map.pointToPixel(sw_point),
-                    ne = map.pointToPixel(ne_point);
-                var x = sw.x,
-                    y = ne.y,
-                    size = map.getSize(),
-                    width = size.width,
-                    height = size.height;
-                
-                var ctx = getCtx(width, height);
-                
-                var arc_cache = {};
-                function smooth(points){
-                    var len = points.length;
-                    if(len >= 3){
-                        var id_s = points[0].id,
-                            id_e = points[len - 1].id;
-                        var key = id_s + '_' + id_e;
-                        var val_cache = arc_cache[key];
-                        if(val_cache){
-                            return val_cache;
-                        }else{
-                            var key_reserve = id_e + '_' + id_s;
-                            val_cache = arc_cache[key_reserve];
-                            if(val_cache){
-                                val_cache.reverse();
-                                return val_cache;
-                            }else{
-                                var result = _smoothBSpline(points, 5);
-                                arc_cache[key] = result;
-                                return result;
-                            }
-                        }                        
+                    // items = dealItems(p.items);
+                    var points_arr = [];
+                    for(var i_item = 0, j_item = items.length; i_item<j_item; i_item++){
+                        var p_lnglat = items[i_item];
+                        var key = p_lnglat.lng + '_'+ p_lnglat.lat;
+                        var b_p = interpolate_cache[key];
+                        if(!b_p){
+                            var point_map = new BMap.Point(p_lnglat.lng, p_lnglat.lat);
+                            b_p = point_map;
+                            interpolate_cache[key] = point_map;
+                        }                            
+
+                        // var marker = new BMap.Marker(b_p);
+                        // marker.i = i+'_'+i_item;
+                        // marker.addEventListener('click', function(){
+                        //     alert(this.i);
+                        // });
+                        // map.addOverlay(marker);
+                        points_arr.push(b_p);
                     }
-                    return points;                    
-                }
-                function dealItems(items){
-                    // return [items];
-                    var items_new = [];
-                    var arr_index = [];
-                    for(var i = 0, j = items.length; i<j; i++){
-                        if(items[i].type == 1){
-                            arr_index.push(i);
-                        }
-                    }
-                    if(arr_index.length <= 1){
-                        items_new.push(items);
-                    }else{
-                        var last_index = arr_index[0];
-                        if(last_index != 0){
-                            items_new.push(items.slice(0, last_index));
-                        }
-                        for(var i = 0, j = arr_index.length; i<j && i+1<j; i++){
-                            last_index = arr_index[i+1];
-                            items_new.push(items.slice(arr_index[i], last_index));
-                        }
-                        if(last_index < items.length){
-                            items_new.push(items.slice(last_index));
-                        }
-                    }
-                    var items_return = [];
-                    var num = 0;
-                    for(var i = 0, j = items_new.length; i<j; i++){
-                        num += items_new[i].length;
-                        var flag_islast = i == j-1;
-                        var p_add = null;
-                        // if(j > 1){
-                            if(i+1 < j){
-                                p_add = items_new[i+1][0];
-                            }else{
-                                p_add = items_new[0][0];;
-                            }
-                            items_new[i].push(p_add);
-                        // }
-                        // var result = _smoothSpline(items_new[i]);
-                        var result = smooth(items_new[i]);
-                        var l = result.length;
-                        if(l > 0){
-                            var p_last = result[l-1];
-                            if(p_add && p_last.lng == p_add.lng && p_last.lat == p_add.lat){
-                                result.pop();
-                            }
-                            
-                             // result.pop();
-                        }
-                        items_return = items_return.concat(result);
-                    }
-                    // console.log(items.length, '(', num ,items_new.length, ')->', items_return.length, items_return);
-                    return items_return;
-                }
-                
-
-                var canvas = Zrender.init($('#allmap .BMap_mask').get(0));
-                var polygons = raster2vector(data);
-
-                var Color = ['red','blue','green','orange','black', '#123','#f26','#ccc','#333', 'yellow', 'pink'];
-                
-                var Color = ['rgba(255, 0, 0, 0.4)', 'rgba(0, 255, 0, 0.4)', 'rgba(0, 0, 255, 0.4)'];
-                function render(){
-                    var interpolate_cache = {};
-                    // console.log(polygons);
-                    canvas.clear();
-                    arc_cache = {};
-                    for(var i = 1, j = polygons.length; i<polygons.length; i++){
-                        var p = polygons[i];
-                        var items = dealItems(p.items);
-                        var points_arr = [];
-                        for(var i_item = 0, j_item = items.length; i_item<j_item; i_item++){
-                            var p_lnglat = items[i_item];
-                            var key = p_lnglat.lng + '_'+ p_lnglat.lat;
-                            var pixel = interpolate_cache[key];
-                            if(!pixel){
-                                var point_map = new BMap.Point(p_lnglat.lng, p_lnglat.lat);
-                                pixel = map.pointToPixel(point_map);
-                                interpolate_cache[key] = pixel;
-                            }                            
-
-                            points_arr.push([pixel.x, pixel.y]);
-                        }
-                        var polygon = new Polygon({
-                            style: {
-                                pointList: points_arr,
-                                brushType: 'fill',
-                                // smooth: 0.5,
-                                // smooth: 'spline',
-                                color: p.color//Color[i%Color.length]
-                            },
-                            zlevel: i,
-                            hoverable: false
+                    var color = p.color;
+                    var alpha = 0.5;
+                    var polygon = new BMap.Polygon(points_arr, {strokeColor: color, fillColor: color,fillOpacity: alpha, strokeWeight: 0.01, strokeOpacity: 0});
+                    (function(p, index){
+                        p.i = index;
+                        p.addEventListener('click', function(){
+                            alert(index);
                         });
-                        canvas.addShape(polygon);
-                        canvas.render();
-                    }
-                    interpolate_cache = {};
+                    })(polygon, i);
+                    
+                    map.addOverlay(polygon);
                 }
-                var tt;
-                function dragendOrZoomend(){
-                    clearTimeout(tt);
-                    tt = setTimeout(function(){
-                        render();
-                    }, 30);
-                }
-                map.addEventListener("dragend", dragendOrZoomend);
-                map.addEventListener("zoomend", dragendOrZoomend);
-                dragendOrZoomend();
-            });
-        });            
+                interpolate_cache = {};
+                time2 = new Date();
+                console.log('dealData', time2-time1, 'ms!');
+                time1 = time2;
+            }
+            var tt;
+            function dragendOrZoomend(){
+                clearTimeout(tt);
+                tt = setTimeout(function(){
+                    render();
+                }, 30);
+            }
+            // map.addEventListener("dragend", dragendOrZoomend);
+            // map.addEventListener("zoomend", dragendOrZoomend);
+            dragendOrZoomend();
+        });          
     }()
     </script>
 </body>

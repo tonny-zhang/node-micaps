@@ -129,7 +129,7 @@ ul{
 		        		var point = area[i_item];
 		        		points.push(new BMap.Point(point.lng, point.lat));
 		        	}
-		        	var alpha = 1;
+		        	var alpha = 0.5;
 		        	var polygon = new BMap.Polygon(points, {strokeColor: color, fillColor: color,fillOpacity: alpha, strokeWeight: 1, strokeOpacity: alpha});
 					polygon.area = areas[i].area;
 					polygon.id = areas[i].id;
@@ -163,7 +163,7 @@ ul{
 		
 			var polygons = _parsePolygons();
 			_addColor(polygons);
-	        // _showPolygon(polygons);
+	        _showPolygon(polygons);
 			var time_2 = new Date();
 			console.log(time_2 - time_1, 'ms!');
 			// setTimeout(function(){
