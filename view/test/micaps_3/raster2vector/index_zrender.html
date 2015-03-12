@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;}
+ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+</style>
+<title>micas14类数据展示</title>
+</head>
+<body>
+    <div id="allmap">
+    </div>
+    <script type="text/javascript" src="http://tonny-zhang.github.io/source/js/jquery-1.8.2.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=E8MDMS4BVFEMeAxVP3YddQ6X"></script>
+    <script type="text/javascript" src="../../../../shell/libs/utils.js"></script>
+    <script type="text/javascript" src="../../../../../GraphTool/core/js/libs/esl.js"></script>
+    <script type="text/javascript" src="raster2vector.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+    <script type="text/javascript">
+    !function(){
+    	map = new BMap.Map("allmap");
+        map.centerAndZoom(new BMap.Point(116.404, 39.915), 6);
+        map.centerAndZoom(new BMap.Point(103.2, 36), 5);
+        map.enableScrollWheelZoom();
+
+        function getCtx(width, height){
+            var $mask = $('#allmap .BMap_mask');
+            var $canvas = $mask.find('canvas');
+            if($canvas.length == 0){
+                $canvas = $('<canvas width='+width+' height='+height+' class="layer_vector">').css({
+                    left: 0,
+                    top: 0
+                }).appendTo($mask);
+            }
+            var canvas = $canvas.get(0);
+
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0, width, height);
+            ctx.fillStyle = 'rgba(0, 0, 0,0.3)';
+            ctx.fillRect(0,0,width,height);
+            return ctx;
+        }
+
+    	var url = '../../../../shell/test/micaps_3.json';
+        var url = '../../../../shell/gedian.json';
+        var url = '../../../../data/micaps/3/15012114.000.json';
+        var fileLocation= '../../../../../GraphTool/core/js/libs//zr'
+        // require.config({
+        //     paths:{
+        //         'zrender': fileLocation,
+        //         'zrender/shape/Base': fileLocation,
+        //         'zrender/shape/BrokenLine': fileLocation,
+        //         'zrender/shape/Polygon': fileLocation,
+        //         'zrender/Group': fileLocation,
+        //         'zrender/tool/util': fileLocation,
+        //         'zrender/tool/util/smoothBezier': fileLocation,
+        //         'zrender/tool/area': fileLocation,
+        //         'zrender/shape/Image': fileLocation,
+        //         'zrender/shape/Text': fileLocation,
+        //         'zrender/shape/Rectangle': fileLocation
+        //     }
+        // });
+        require.config({
+            packages: [
+                {
+                    name: 'zrender',
+                    location: '../../../../../../git_project/zrender/src/',
+                    main: 'zrender'
+                }
+            ]
+        });
+        require(['zrender',
+                'zrender/shape/Base',
+                'zrender/shape/Polygon',
+                'zrender/tool/util',
+                'zrender/shape/util/smoothBezier',
+                'zrender/shape/util/smoothSpline'], function(Zrender, Base, Polygon, util, smoothBezier, smoothSpline){
+            $.getJSON(url, function(data){
+            	data = global.predealData(data.interpolate);
+
+            	var bounds = map.getBounds(),
+                    sw_point = bounds.getSouthWest(),
+                    ne_point = bounds.getNorthEast(),
+                    sw = map.pointToPixel(sw_point),
+                    ne = map.pointToPixel(ne_point);
+                var x = sw.x,
+                    y = ne.y,
+                    size = map.getSize(),
+                    width = size.width,
+                    height = size.height;
+                
+                var ctx = getCtx(width, height);
+                
+                function dealItems(items){
+                    // return [items];
+                    var items_new = [];
+                    var arr_index = [];
+                    for(var i = 0, j = items.length; i<j; i++){
+                        if(items[i].type == 1){
+                            arr_index.push(i);
+                        }
+                    }
+                    if(arr_index.length == 0){
+                        items_new.push(items);
+                    }else{
+                        var last_index = arr_index[0];
+                        if(last_index != 0){
+                            items_new.push(items.slice(0, last_index));
+                        }
+                        for(var i = 0, j = arr_index.length; i<j && i+1<j; i++){
+                            last_index = arr_index[i+1];
+                            items_new.push(items.slice(arr_index[i], last_index));
+                        }
+                        if(last_index != items.length-1){
+                            items_new.push(items.slice(last_index));
+                        }
+                    }
+                    return items_new;
+                }
+                function MyPolygon(options, polygon){
+                    Base.call(this, options);
+                    var items = dealItems(polygon.items);
+                    this.items = items;
+                }
+                MyPolygon.prototype = {
+                    type: 'MyPolygon',
+                    draw: function(){
+                        var points = [];
+                        var items = this.items;
+                        for(var i = 0, j = items.length; i<j; i++){
+                            var points_arr = [];
+                            var items_sub = items[i];
+                            for(var i_sub = 0, j_sub = items_sub.length; i_sub < j_sub; i_sub++){
+                                var p = items_sub[i_sub];
+                                var point_map = new BMap.Point(p.lng, p.lat);
+                                var pixel = map.pointToPixel(point_map);
+                                points_arr.push([pixel.x, pixel.y]);
+                            }
+                            points.push(points_arr);
+                        }
+                        this.pointsList = points;
+                    },
+                    buildPath: function(ctx, style){
+                        var points = this.pointsList;
+
+                        ctx.beginPath();
+                        // ctx.arc(points[0][0][0], points[0][0][1], 3, 0, Math.PI*2, 1);
+                        // ctx.arc(points[0][1][0], points[0][1][1], 4, 0, Math.PI*2, 1);
+                        // ctx.arc(points[0][2][0], points[0][2][1], 4, 0, Math.PI*2, 1);
+                        // ctx.arc(points[0][3][0], points[0][3][1], 4, 0, Math.PI*2, 1);
+                        // ctx.arc(points[0][4][0], points[0][4][1], 4, 0, Math.PI*2, 1);
+                        var lastPoint;
+                        for(var i_outer = 0, j_outer = points.length; i_outer < j_outer; i_outer++){
+                            var pointList = points[i_outer];
+                            if (style.smooth === 'spline') {
+                                if(pointList.length > 1){
+                                    pointList = smoothSpline(pointList, true);
+                                }
+                                ctx.moveTo(pointList[0][0], pointList[0][1]);
+                                for (var i = 1, l = pointList.length; i < l-1; i++) {
+                                    ctx.lineTo(pointList[i][0], pointList[i][1]);
+                                }
+                                ctx.lineTo(pointList[0][0], pointList[0][1]);
+                            }else{
+                                var controlPoints = smoothBezier(
+                                    pointList, style.smooth, true
+                                );
+                                if(i_outer == 0){
+                                    ctx.moveTo(pointList[0][0], pointList[0][1]);
+                                }else{
+                                    ctx.lineTo(pointList[0][0], pointList[0][1]);
+                                }
+                                var cp1;
+                                var cp2;
+                                var p;
+                                var len = pointList.length;
+                                if(len > 2){
+                                    // ctx.moveTo(pointList[0][0], pointList[0][1]);
+                                    // if(i_outer == 0){
+                                    //     ctx.moveTo(pointList[0][0], pointList[0][1]);
+                                    // }else{
+                                    //     ctx.lineTo(pointList[0][0], pointList[0][1]);
+                                    // }
+                                    for (var i = 0; i < len; i++) {
+                                        cp1 = controlPoints[i * 2];
+                                        cp2 = controlPoints[i * 2 + 1];
+                                        p = pointList[(i + 1) % len];
+                                        ctx.bezierCurveTo(
+                                            cp1[0], cp1[1], cp2[0], cp2[1], p[0], p[1]
+                                        );
+                                    }
+                                }else{
+                                    for (var i = 1; i < len; i++) {
+                                        var point = pointList[i];
+                                        ctx.lineTo(point[0], point[1]);
+                                    }
+                                }
+                                lastPoint = pointList[len-1];
+                            }
+                        }
+                        // if(lastPoint){
+                        //     ctx.lineTo(lastPoint[0], lastPoint[1]);
+                        // }
+                        ctx.closePath();
+                        // ctx.strokeStyle = this.color;
+                        // ctx.stroke();
+                        return;
+                    },
+                    isCover: function(){
+                        return true;
+                    }
+                }
+                util.inherits(MyPolygon, Base);
+
+                var canvas = Zrender.init($('#allmap .BMap_mask').get(0));
+                var polygons = raster2vector(data);
+                // console.log(polygons);
+
+                function render(){
+                    canvas.clear();
+                    for(var i = 0, j = polygons.length; i<j; i++){
+                        var polygon = new MyPolygon({
+                            style: {
+                                brushType: 'fill',
+                                // smooth: 0.5,
+                                smooth: 'spline',
+                                color: polygons[i].color
+                            },
+                            zlevel: i,
+                            hoverable: false
+                        }, polygons[i]);
+                        polygon.draw();
+                        canvas.addShape(polygon);
+                        canvas.render();
+                    }
+                }
+                var tt;
+                function dragendOrZoomend(){
+                    clearTimeout(tt);
+                    tt = setTimeout(function(){
+                        render();
+                    }, 30);
+                }
+                map.addEventListener("dragend", dragendOrZoomend);
+                map.addEventListener("zoomend", dragendOrZoomend);
+                dragendOrZoomend();
+            });
+        });            
+    }()
+    </script>
+</body>
+</html>

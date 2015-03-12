@@ -17,10 +17,12 @@ ul{
 <body>
     <div id="allmap">
     </div>
-    <script type="text/javascript" src="http://i.tq121.com.cn/j/jquery-1.8.2.js"></script>
+    <script type="text/javascript" src="http://tonny-zhang.github.io/source/js/jquery-1.8.2.js"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=E8MDMS4BVFEMeAxVP3YddQ6X"></script>
+    <script type="text/javascript" src="js/stroke.js"></script>
     <script type="text/javascript">
     !function(){
+        window.global = {};
         var DEFAULT_VAL = 999999;
         var REG_RGB = /rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/i;
         var REG_HTML = /#([\da-f]{2})([\da-f]{2})([\da-f]{2})/i;
@@ -64,105 +66,73 @@ ul{
             }
             return color;
         }
+        var _color_arr = [
+            '#ffffff', 
+            '#201885', 
+            '#114AD9', 
+            '#4DB4F6', 
+            /*'#D1F8F3'*/'#ff0000', 
+            '#F9DE45', 
+            '#FFA800', 
+            '#FF6D00', 
+            '#D50100'];
+
+        var _color_arr = [
+            '#ffffff', 
+            '#ffff00', 
+            '#ff00ff', 
+            '#00ffff', 
+            /*'#D1F8F3'*/'#FFA800', 
+            '#00ff00', 
+            '#663300', 
+            '#66FF00', 
+            '#CC0033'];
         function _getColor(v){
-            var color = '#ffffff';
+            var color = _color_arr[0];
             if(v <= -15){
-                color = '#201885';
+                color = _color_arr[1];
             }else if(v <= -10){
-                color = '#114AD9';
+                color = _color_arr[2];
             }else if(v <= -5){
-                color = '#4DB4F6';
+                color = _color_arr[3];
             }else if(v <= 0){
-                color = '#D1F8F3';
+                color = _color_arr[4];
             }else if(v <= 5){
-                color = '#F9DE45';
+                color = _color_arr[5];
             }else if(v <= 10){
-                color = '#FFA800';
+                color = _color_arr[6];
             }else if(v <= 15){
-                color = '#FF6D00';
+                color = _color_arr[7];
             }else{
-                color = '#D50100';
+                color = _color_arr[8];
             }
             return color;
         }
-        // var temp_color = [
-        //     'rgb(2,12,100)',
-        //     'rgb(7,30,120)',
-        //     'rgb(17,49,139)',
-        //     'rgb(27,68,159)',
-        //     'rgb(38,87,179)',
-        //     'rgb(48,106,199)',
-        //     'rgb(59,126,219)',
-        //     'rgb(78,138,221)',
-        //     'rgb(97,150,224)',
-        //     'rgb(116,163,226)',
-        //     'rgb(135,175,229)',
-        //     'rgb(155,188,232)',
-        //     'rgb(154,196,220)',
-        //     'rgb(153,205,208)',
-        //     'rgb(152,214,196)',
-        //     'rgb(151,232,173)',
-        //     'rgb(215,222,126)',
-        //     'rgb(234,219,112)',
-        //     'rgb(244,217,99)',
-        //     'rgb(250,204,79)',
-        //     'rgb(247,180,45)',
-        //     'rgb(242,155,0)',
-        //     'rgb(241,147,3)',
-        //     'rgb(240,132,10)',
-        //     'rgb(239,117,17)',
-        //     'rgb(238,102,24)',
-        //     'rgb(238,88,31)',
-        //     'rgb(231,75,26a)',
-        //     'rgb(224,63,22)',
-        //     'rgb(217,51,18)',
-        //     'rgb(208,36,14)',
-        //     'rgb(194,0,3)',
-        //     'rgb(181,1,9)',
-        //     'rgb(169,2,16)',
-        //     'rgb(138,5,25)',
-        //     'rgb(111,0,21)',
-        //     'rgb(80,0,15)'
-        // ]
-        // function _getColor(v){
-        //     if(v < -30){
-        //         v = -30;
-        //     }
-        //     var color = temp_color[Math.ceil((v - (-30))/2)];
-        //     return color;
-        // }
+
         map = new BMap.Map("allmap");
-        map.centerAndZoom(new BMap.Point(116.404, 39.915), 5);
-        // map.centerAndZoom(new BMap.Point(69.772, 46.886), 8);
+        map.centerAndZoom(new BMap.Point(116.404, 39.915), 6);
+        map.centerAndZoom(new BMap.Point(103.2, 36), 5);
         map.enableScrollWheelZoom();
-
-        // $.getJSON('../../../data/micaps/3/15012108.000.j6son', function(data){
-        //     $.each(data, function(i, v){
-        //         // var marker = new BMap.Marker(new BMap.Point(v.x, v.y));
-        //         // marker.addEventListener("click",function(){
-        //         //     console.log(v.v);
-        //         // });
-        //         // map.addOverlay(marker);
-
-        //         var point = new BMap.Point(v.x, v.y);
-        //         var v = v.v;
-        //         if(v > 0){
-        //             var color = _getColor(v);
-        //             var circle = new BMap.Circle(point,35000,{
-        //                 strokeColor: color, 
-        //                 fillColor: color,
-        //                 fillOpacity: 0.9, 
-        //                 strokeWeight: 1, 
-        //                 strokeOpacity:1
-        //             }); //创建圆
-        //             map.addOverlay(circle);
-        //         }
-                
-        //     });
-        // });
         var url = '../../../shell/test/micaps_3.json';
         var url = '../../../shell/gedian.json';
         var url = '../../../data/micaps/3/15012114.000.json';
+        function getCtx(width, height){
+            var $mask = $('#allmap .BMap_mask');
+            var $canvas = $mask.find('canvas');
+            if($canvas.length == 0){
+                $canvas = $('<canvas width='+width+' height='+height+' class="layer_vector">').css({
+                    left: 0,
+                    top: 0
+                }).appendTo($mask);
+            }
+            var canvas = $canvas.get(0);
+
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0, width, height);
+            ctx.fillStyle = 'rgba(255, 255, 255,0.7)';
+            ctx.fillRect(0,0,width,height);
+            return ctx;
+        }
         $.getJSON(url, function(data){
             var bounds = map.getBounds(),
                 sw_point = bounds.getSouthWest(),
@@ -175,16 +145,8 @@ ul{
                 width = size.width,
                 height = size.height;
 
-            var canvas = $('<canvas width='+width+' height='+height+' class="layer_vector">').css({
-                left: 0,
-                top: 0
-            }).appendTo($('#allmap .BMap_mask')).get(0);
-            var ctx = canvas.getContext('2d');
-            // ctx.fillStyle = 'rgba(255,255,255,1)';
-            // ctx.fillRect(0,0,width,height);
-            // ctx.arc(300,300, 100, 0, Math.PI*2);
-
-            // ctx.fill();
+            
+            var ctx = getCtx(width, height);
 
             var imagedata = ctx.createImageData(width, height),
                 _data = imagedata.data;
@@ -232,7 +194,7 @@ ul{
                     }
                 }
                 ctx.putImageData(imagedata, 0, 0);
-                window.test_data = imagedata;
+                global.test_data = imagedata;
                 console.log(imagedata);
             }
             
@@ -290,7 +252,7 @@ ul{
                             v_y.y = y;
                         })
                     });
-                    window.data = data;
+                    global.data = data;
                     var cache_data = [];
                     len_y = data.length;
                     $.each(data, function(v_i, v_x){
@@ -352,7 +314,41 @@ ul{
                     ctx.putImageData(imagedata, 0, 0);
                 }
             })();
+            var _draw_points = (function(){
+                
+                return function(zoom){
+                    var width_data, height_data;
+                    var interpolate_data = data.interpolate;
+                    global.interpolate_data = interpolate_data;
+                    try{
+                        width_data = interpolate_data.length;
+                        height_data = interpolate_data[0].length;
+                    }catch(e){}
+                    ctx = getCtx(width, height);
+                    if(width_data > 0 && height_data > 0){
+                        for(var i = 0; i < width_data; i++){
+                            var arr = [];
+                            for(var j = 0; j< height_data; j++){
+                                var v = interpolate_data[i][j];
+                                var point = new BMap.Point(v.x, v.y);
+                                var pixel = map.pointToPixel(point);
+                                var c = _getColor(v.v);
+                                interpolate_data[i][j].color = c;
+                                // if(c == _color_arr[4]){
+                                    var color = color_normal2rgb(c, true);
 
+                                    ctx.fillStyle = 'rgba('+color[0]+', '+color[1]+', '+color[2]+',100)';
+                                    ctx.beginPath();
+                                    ctx.arc(pixel.x, pixel.y, zoom, 0, Math.PI*2, 1);
+                                    ctx.closePath();
+                                    ctx.fill();
+                                // }
+                            }
+                        }
+
+                    }
+                }
+            })();
             var _fill_color = (function(){
                 var _cache_rgb = (function(){
                     var _cache = {};
@@ -468,30 +464,138 @@ ul{
                     }
                 }
             })();
+
+            var _is_inited = false;
+            var _stroke_tt = {};
+            var _stroke_cache = {};
+            var _test_stroke = function(){
+                var interpolate_data = data.interpolate;
+                // 对标记点进行检测
+                // Stroker.stroke(interpolate_data);
+                _is_inited || Stroker.init(interpolate_data);
+                _is_inited = true;
+                var obj_flag = Stroker._get_flag();
+                for(var i in obj_flag){
+                    var item = obj_flag[i];
+                    var pos = interpolate_data[item.x][item.y];
+                    var point = new BMap.Point(pos.x, pos.y);
+                    var pixel = map.pointToPixel(point);
+                    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                    ctx.beginPath();
+                    ctx.arc(pixel.x, pixel.y, 2, 0, Math.PI*2, 1);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+                global.flag = function(x, y){
+                    var pos = interpolate_data[x][y];
+                    var point = new BMap.Point(pos.x, pos.y);
+                    var pixel = map.pointToPixel(point);
+                    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                    ctx.beginPath();
+                    ctx.arc(pixel.x, pixel.y, 5, 0, Math.PI*2, 1);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+                global.delay = 200;
+                function _show(index, items, color, callback){
+                    clearTimeout(_stroke_tt[index]);
+                    var item = items.shift();
+                    
+                    if(item){
+                        if(item.x == 2 && item.y == 40){
+                            debugger;
+                        }
+                        ctx.strokeStyle = color;
+                        ctx.lineWidth = 1.5;
+                        var item_prev = _stroke_cache[index];
+                        if(item_prev){
+                            ctx.beginPath();
+                            var pos = interpolate_data[item_prev.x][item_prev.y];
+                            var point = new BMap.Point(pos.x, pos.y);
+                            var pixel = map.pointToPixel(point);
+                            ctx.moveTo(pixel.x, pixel.y);
+
+                            var pos = interpolate_data[item.x][item.y];
+                            var point = new BMap.Point(pos.x, pos.y);
+                            var pixel = map.pointToPixel(point);
+                            ctx.lineTo(pixel.x, pixel.y);
+                            ctx.stroke();
+                        }
+
+                        _stroke_cache[index] = item;
+                    }
+                    if(items.length > 0){
+                        _stroke_tt[index] = setTimeout(function(){
+                            _show(index, items, color, false);
+                        }, global.delay);
+                    }else{
+                        delete _stroke_cache[index];
+                        delete _stroke_tt[index];
+                        // callback && callback();
+                    }
+                }
+                arr_area = Stroker._get_erea();
+                console.log(arr_area);
+                // for(var i = 0, j = arr_area.length; i < j; i++){
+                //     ctx.fillStyle = arr_area[i].color;
+                    
+                //     _show(i, arr_area[i].items.slice(), arr_area[i].color, true);
+                // }
+                function _show_fill(color){
+                    for(var i = 0, j = 90; i < j; i++){
+                        var c = arr_area[i].color;
+                        if(color && c != color){
+                            continue;
+                        }
+                        var c_rgb = color_normal2rgb(c, true);
+                        ctx.fillStyle =  'rgba('+c_rgb[0]+', '+c_rgb[1]+', '+c_rgb[2]+', 10)';
+                        ctx.beginPath();
+                        for(var i_item = 0, items = arr_area[i].items, j_item = items.length; i_item < j_item; i_item++){
+                            var item = items[i_item];
+                            var pos = interpolate_data[item.x][item.y];
+                            var point = new BMap.Point(pos.x, pos.y);
+                            var pixel = map.pointToPixel(point);
+                            if(i_item == 0){
+                                ctx.moveTo(pixel.x, pixel.y);
+                            }else{
+                                ctx.lineTo(pixel.x, pixel.y);
+                            }
+                        }
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+                }
+                // _show_fill();
+                global._show_fill = _show_fill
+                var _stroke_index = 0,
+                    _stroke_len = arr_area.length - 1;
+                global._stroke_next = function(num){
+                    if(typeof num != 'undefined'){
+                        _stroke_index = num;
+                    }
+                    if(_stroke_index <= _stroke_len){
+                        _show(_stroke_index, arr_area[_stroke_index].items.slice(), arr_area[_stroke_index].color, true);
+                        console.log(_stroke_index);
+                        _stroke_index++;
+                    }
+                }
+            }
             var time_start = new Date();
             // _draw_data();
-            _fill_color();
+            // _fill_color();
+            var tt;
+            function dragendOrZoomend(){
+                clearTimeout(tt);
+                tt = setTimeout(function(){
+                    _draw_points(map.getZoom()-2);
+                    _test_stroke();
+                }, 30);
+            }
+            map.addEventListener("dragend", dragendOrZoomend);
+            map.addEventListener("zoomend", dragendOrZoomend);
+            dragendOrZoomend();
+            
             console.log(new Date() - time_start + ' ms!');
-            // alert('完');
-            // var max = Number.MIN_VALUE;
-            // $.each(data, function(i, v){
-            //     if(v.v > 0 && v.v != 999999){
-            //         console.log(v);
-            //         setTimeout(function(){
-            //             var color = _getColor(v.v);
-            //             var point = new BMap.Point(v.x, v.y);
-            //             var pixel = map.pointToPixel(point);
-            //             ctx.save();
-            //             ctx.fillStyle = color;
-            //             ctx.beginPath();
-            //             ctx.arc(pixel.x, pixel.y, 2, 0, Math.PI*2);
-            //             ctx.closePath();
-            //             ctx.fill();
-            //             ctx.restore();
-            //             console.log(color, v,pixel.x, pixel.y);
-            //         }, 0);
-            //     }
-            // });
         });
     }()
     </script>

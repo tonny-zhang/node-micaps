@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;}
+ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+</style>
+<title>micas14类数据展示</title>
+</head>
+<body>
+    <div id="allmap">
+    </div>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=E8MDMS4BVFEMeAxVP3YddQ6X"></script>
+    <script type="text/javascript" src="http://tonny-zhang.github.io/source/js/jquery-1.8.2.js"></script>
+    <script type="text/javascript">
+    !function(){
+        var DEFAULT_VAL = 999999;
+        var map;
+        map = new BMap.Map("allmap");
+        map.centerAndZoom(new BMap.Point(116.404, 39.915), 6);
+        map.centerAndZoom(new BMap.Point(103.2, 36), 5);
+        // map.centerAndZoom(new BMap.Point(73.5, 18.16), 8);
+        map.enableScrollWheelZoom();
+
+    	var REG_RGB = /rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/i;
+        var REG_HTML = /#([\da-f]{2})([\da-f]{2})([\da-f]{2})/i;
+        function color_normal2rgb(color_html,isReturnArray){
+            if(color_html){
+                var m = REG_HTML.exec(color_html);
+                if(m){
+                    var arr = [parseInt(m[1],16),parseInt(m[2],16),parseInt(m[3],16)];
+
+                    if(isReturnArray){
+                        return arr;
+                    }
+                    return 'rgb('+(arr.join(','))+')';
+                }else{
+                    var m = REG_RGB.exec(color_html);
+                    if(m){
+                        if(isReturnArray){
+                            m.shift();
+                            return m;
+                        }else{
+                            return color_html;
+                        }
+                    }
+                }
+            }
+        }
+    	var _color_arr = [
+            '#ffffff', 
+            '#ffff00', 
+            '#ff00ff', 
+            '#00ffff', 
+            /*'#D1F8F3'*/'#FFA800', 
+            '#00ff00', 
+            '#663300', 
+            '#66FF00', 
+            '#CC0033'];
+        function _getColor(v){
+            // if(v != DEFAULT_VAL){
+                var color = _color_arr[0];
+                if(v <= -15){
+                    color = _color_arr[1];
+                }else if(v <= -10){
+                    color = _color_arr[2];
+                }else if(v <= -5){
+                    color = _color_arr[3];
+                }else if(v <= 0){
+                    color = _color_arr[4];
+                }else if(v <= 5){
+                    color = _color_arr[5];
+                }else if(v <= 10){
+                    color = _color_arr[6];
+                }else if(v <= 15){
+                    color = _color_arr[7];
+                }else{
+                    color = _color_arr[8];
+                }
+                return color;
+            // }
+        }
+        
+    	function getCtx(width, height){
+            var $mask = $('#allmap .BMap_mask');
+            var $canvas = $mask.find('canvas');
+            if($canvas.length == 0){
+                $canvas = $('<canvas width='+width+' height='+height+' class="layer_vector">').css({
+                    left: 0,
+                    top: 0
+                }).appendTo($mask);
+            }
+            var canvas = $canvas.get(0);
+
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0, width, height);
+            // ctx.fillStyle = 'rgba(255, 255, 255,0.7)';
+            // ctx.fillRect(0,0,width,height);
+            return ctx;
+        }
+        var url = '../../../data/micaps/3/15012114.000.json';
+        $.getJSON(url, function(data){
+        	var interpolate_data = data.interpolate;
+        	var width_data = interpolate_data.length;
+			var height_data = interpolate_data[0].length;
+
+            var bounds = map.getBounds(),
+                sw_point = bounds.getSouthWest(),
+                ne_point = bounds.getNorthEast(),
+                sw = map.pointToPixel(sw_point),
+                ne = map.pointToPixel(ne_point);
+            var x = sw.x,
+                y = ne.y,
+                size = map.getSize(),
+                width = size.width,
+                height = size.height;
+
+			
+            var set = function(x, y, color, _data){
+                if(x >= 0 && x <= width && y >= 0 && y <= height){
+                    var _index = (y * width + x)*4;
+                    _data[_index] = color[0];
+                    _data[_index + 1] = color[1];
+                    _data[_index + 2] = color[2];
+                    _data[_index + 3] = color[3] || 255;
+                }
+            }    
+            function fn_render1(){
+                var ctx = getCtx(width, height);
+
+                var imagedata = ctx.createImageData(width, height),
+                    _data = imagedata.data;
+                
+                var radius = 23,
+                    radius_square = Math.pow(radius, 2);
+                for (var i = 0; i < width_data; i++) {
+                    for (var j = 0; j < height_data; j++) {
+                        var item = interpolate_data[i][j];
+                        var v = item.v;
+                        var color = _getColor(v);
+                        if(color){
+                            var c = color_normal2rgb(color, true);
+                            c.push(255);
+                            var pixel = map.pointToPixel(new BMap.Point(item.x, item.y));
+                            set(pixel.x, pixel.y, c, _data);
+                            // ctx.fillStyle = 'rgba('+c[0]+', '+c[1]+', '+c[2]+',255)';
+                            // ctx.beginPath();
+                            // ctx.arc(pixel.x, pixel.y, 2, 0, Math.PI*2, 1);
+                            // ctx.closePath();
+                            // ctx.fill();
+                        }
+                    }
+                }
+                // for(var i = 0; i < width; i++){
+                //     for(var j = 0; j < height; j++){
+                //         var x_start = Math.max(0, i - radius),
+                //             x_end = Math.min(width - 1, i + radius),
+                //             y_start = Math.max(0, j - radius),
+                //             y_end = Math.min(height - 1, j + radius);
+                //         var arr_around = [];
+                //         var flag_is_myself = false;
+                //         // 找到半径内所有原始点
+                //         for(var i_inner = x_start; i_inner < x_end; i_inner++){
+                //             for(var j_inner = y_start; j_inner < y_end; j_inner++){
+                //                 var index = (j_inner * width + i_inner)*4;
+                //                 var alpha = _data[index + 3];
+                //                 if(alpha == 255){
+                //                     var dis_square = Math.pow(i_inner - i, 2) + Math.pow(j_inner - j, 2);
+                //                     if(dis_square <= radius_square){
+                //                         if(dis_square == 0){
+                //                             flag_is_myself = true;
+                //                             break;
+                //                         }
+                //                         dis_square = 1/dis_square;
+                //                         arr_around.push({
+                //                             dis_square: dis_square, 
+                //                             r: _data[index],
+                //                             g: _data[index + 1],
+                //                             b: _data[index + 2],
+                //                             a: alpha
+                //                         });
+                //                     }
+                //                 }
+                //             }
+                //             if(flag_is_myself){
+                //                 break;
+                //             }
+                //         }
+                //         if(flag_is_myself){
+                //             continue;
+                //         }
+                //         arr_around.sort(function(a, b){
+                //             return a.dis_square - b.dis_square;
+                //         });
+                //         // var min_dis_item = arr_around.unshift();
+                //         // if(min_dis_item){
+                //         //     set(i, j, [min_dis_item.r, min_dis_item.g, min_dis_item.b, min_dis_item.a]);
+                //         // }
+                //         // arr_around = arr_around.splice(0, 4);//得到距离最近的四个点
+                //         var len = arr_around.length;
+                //         if(len > 0){
+                //             var sum_dis = 0;
+                //             for(var i_around = 0; i_around < len; i_around++){
+                //                 sum_dis += arr_around[i_around].dis_square;
+                //             }
+                //             var r = g = b = a = 0;
+                //             for(var i_around = 0; i_around < len; i_around++){
+                //                 var item_around = arr_around[i_around];
+                //                 var percent = item_around.dis_square/sum_dis;
+                //                 r += percent * item_around.r;
+                //                 g += percent * item_around.g;
+                //                 b += percent * item_around.b;
+                //                 a += percent * item_around.a;
+                //             }
+                //             if(a > 0){
+                //                 set(i, j, [r, g, b, a], _data);
+                //             }
+                //         }
+                //     }
+                // }
+                ctx.putImageData(imagedata, 0, 0);
+            }
+            function fn_render2(){
+                var time_1 = new Date();
+                var ctx = getCtx(width, height);
+
+                var imagedata = ctx.createImageData(width, height),
+                    _data = imagedata.data;
+                var len = _data.length;
+                var radius = 10 * (map.getZoom() - 4),
+                    radius_square = Math.pow(radius, 2);
+
+                // width_data = height_data = 10;
+                for (var i = 0; i < width_data; i++) {
+                    for (var j = 0; j < height_data; j++) {
+                        var item = interpolate_data[i][j];
+                        var v = item.v;
+                        var color = _getColor(v);
+                        // if(color){
+                            var c = color_normal2rgb(color, true);
+                            c.push(v == DEFAULT_VAL?0: 255);
+                            var pixel = map.pointToPixel(new BMap.Point(item.x, item.y));
+                            set(pixel.x, pixel.y, c, _data);
+                            item.pixel = pixel;
+                            item.c = c;
+                        // }
+                    }
+                }
+                var time_2 = new Date();
+                console.log(1, time_2- time_1);
+                time_1 = time_2;
+                var _cache = {};
+                for (var i = 0; i < width_data; i++) {
+                    for (var j = 0; j < height_data; j++) {
+                        var item = interpolate_data[i][j];
+                        var v = item.v;
+                        var c = item.c;
+                        var pixel = item.pixel;
+                        var x_pixel = pixel.x,
+                            y_pixel = pixel.y;
+
+                        // if(v == DEFAULT_VAL){
+                        //     continue;
+                        // }
+                        if(x_pixel >= 0 && x_pixel <= width && y_pixel >= 0 && y_pixel <= height){
+                            for(var i_start = Math.max(0, x_pixel - radius), i_end = Math.min(width, x_pixel + radius); 
+                                i_start < i_end; 
+                                i_start++){
+                               for(var j_start = Math.max(0, y_pixel - radius), j_end = Math.min(height, y_pixel + radius); 
+                                j_start < j_end; 
+                                j_start++){
+                                    var index = (j_start * width + i_start)*4;
+                                    if(_data[index + 3] == 0){
+                                        var dis = Math.pow(x_pixel - i_start, 2) + Math.pow(y_pixel - j_start, 2);
+                                        if(dis > 0 && dis < radius_square){
+                                            var key = i_start + '_' + j_start;
+                                            if(!_cache[key]){
+                                                _cache[key] = [];
+                                            }
+                                            _cache[key].push({
+                                                dis: 1/dis,
+                                                v: v,
+                                                c: c,
+                                                pixel: pixel
+                                            });
+                                        }
+                                    } 
+                               } 
+                            }
+                        }
+                    }
+                }
+                var time_2 = new Date();
+                console.log(2, time_2- time_1);
+                time_1 = time_2;
+                for(var i in _cache){
+                    var arr = i.split('_'); 
+                    var x = Number(arr[0]), y = Number(arr[1]);
+                    var arr_around = _cache[i];
+                    var len = arr_around.length; 
+                    if(len > 0){
+                        if(len >= 1){
+                            var dis_sum = 0;
+                            for(var i_around = 0; i_around < len; i_around++){
+                                dis_sum += arr_around[i_around].dis;
+                            }
+                            var r = g = b = a = 0;
+                            var val = DEFAULT_VAL;
+                            for(var i_around = 0; i_around < len; i_around++){
+                                var item = arr_around[i_around];
+                                var per = item.dis/dis_sum;
+                                var v = item.v * per;
+                                if(val == DEFAULT_VAL){
+                                    val = v;
+                                }else{
+                                    val += v;
+                                }
+                                var c = item.c;
+                                r += c[0] * per;
+                                g += c[1] * per;
+                                b += c[2] * per;
+                                a += c[3] * per;
+                            }
+                            // set(x, y, [r, g, b, a], _data);
+                            // if(val != DEFAULT_VAL){
+                                var color = _getColor(val);
+                                if(color){
+                                    color = color_normal2rgb(color, true);
+                                    color.push(255);
+                                    set(x, y, color, _data);
+                                    // console.log(x, y, len, color);
+                                }
+                            // }                
+                        }
+                    }else{
+
+                    }
+                }
+                var time_2 = new Date();
+                console.log(3, time_2- time_1);
+                time_1 = time_2;
+                ctx.putImageData(imagedata, 0, 0);
+                var time_2 = new Date();
+                console.log(4, time_2- time_1);
+                time_1 = time_2;
+            }
+            var fn_render = fn_render2;
+            fn_render();
+            var tt;
+            function dragendOrZoomend(){
+                clearTimeout(tt);
+                tt = setTimeout(function(){
+                    fn_render();
+                }, 30);
+            }
+            map.addEventListener("dragend", dragendOrZoomend);
+            map.addEventListener("zoomend", dragendOrZoomend);
+			
+        });
+        
+    }()
+    </script>
+</body>
+</html>
