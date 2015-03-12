@@ -127,7 +127,8 @@ var Digit = {
         return num;
     }
 }
-if(typeof exports == 'undefined'){
+// 用script方法引入
+if(typeof __dirname === 'undefined'){
     var exports = {};
     this.utils = exports;
 }
