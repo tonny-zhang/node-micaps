@@ -93,11 +93,11 @@ function Interpolation_IDW_Neighbor(SCoords, lnglat_arr, NumberOfNearestNeighbor
 }
 function genLngLatArr(x0, y0, x1, y1, GRID_SPACE){
 	GRID_SPACE || (GRID_SPACE = 0.5);
-	console.log(x0, y0, x1, y1, GRID_SPACE);
+	// console.log(x0, y0, x1, y1, GRID_SPACE);
 	var arr = [];
 	var x_num = Math.ceil((x1 - x0)/GRID_SPACE),
 		y_num = Math.ceil((y1 - y0)/GRID_SPACE);
-	console.log(x_num, y_num);
+	// console.log(x_num, y_num);
 	for(i = 0;i<x_num;i++){
 		var x = x0 + GRID_SPACE*i;
 		var val = [];
