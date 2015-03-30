@@ -513,7 +513,7 @@ $(function(){
 	var data_url = '../../../data/micaps/14/rr112108.048.json';
 	var data_url = '../../../data/micaps/14/14110508.000.json';
 	// var data_url = '../../../data/micaps/14/rr012608/rr012608.024.json';
-	// var data_url = '../../../data/micaps/14/rr012608/rr012608.048.json';
+	var data_url = '../../../data/micaps/14/rr012608/rr012608.048.json';
 	// var data_url = '../../../data/micaps/14/rr012608/rr012608.072.json';
 	// var data_url = '../../../data/micaps/14/14110514.000.json';
 	// var data_url = '../../../data/micaps/14/14110520.000.json';
@@ -523,6 +523,7 @@ $(function(){
 	// var data_url = '../../../data/micaps/14/haze020308.024.json';
 	// var data_url = '../../../data/micaps/14/kw15020408.024.json';
 	// var data_url = '../../../data/micaps/14/rr020908.024.json';
+	// var data_url = '../../../data/micaps/14/wt032708.024.json';
 	var ajax_data = $.getJSON(data_url),
 		ajax_constant = $.getJSON('../../../config/constant.json'),
 		ajax_color_precipitation = $.getJSON('../../../config/precipitation.json'),
