@@ -18,14 +18,34 @@ function _parse_file(lines, option){
 		default_val: DEFAULT_VALUE,
 		interpolation_all: false,
 		num_of_cols: 5,
-		val_col: 5
+		val_col: 5,
+		arithmetic: null
 	}
 	for(var i in default_option){
-		if(option[i] === undefined){
+		if(option[i] === undefined || option[i] === null){
 			option[i] = default_option[i];
 		}
 	}
+	var arithmetic = (function(){
+		var methods = {'*': 1};
 
+		var option_arithmetic = option.arithmetic;
+		var type;
+		if(option_arithmetic && (type = option_arithmetic.type) && methods[type]){
+			var val = option_arithmetic.val;
+			if(val){
+				return ({
+					'*': function(v){
+						return v*val;
+					}
+				})[type];
+			}
+		}
+		return function(val){
+			return val;
+		}
+	})();
+	var default_val = option.default_val;
 	var val_col = option.val_col - 1;
 	var numOfCols = option.num_of_cols - 3;
 	var REG_DATA = new RegExp('^\\d+\\s+[\\d.]+\\s+[\\d.]+(\\s+[-\\d.]+){'+numOfCols+'}$');
@@ -34,12 +54,15 @@ function _parse_file(lines, option){
 		line = line.trim();
 		if(REG_DATA.test(line)){
 			var arr = line.split(/\s+/);
-			data.push({
-				x: parseFloat(arr[1]),
-				y: parseFloat(arr[2]),
-				// z: parseFloat(arr[3]),
-				v: parseFloat(arr[val_col]),
-			});
+			var v = arr[val_col];
+			if(!isNaN(v) && v != default_val){
+				data.push({
+					x: parseFloat(arr[1]),
+					y: parseFloat(arr[2]),
+					// z: parseFloat(arr[3]),
+					v: arithmetic(parseFloat(v)),
+				});
+			}
 		}	
 	});
 	
@@ -56,5 +79,8 @@ function _parse_file(lines, option){
 	return {
 		interpolate: new_data
 	};
+	// return {
+	// 	interpolate: data
+	// };
 }
 exports.parse = _parse_file;

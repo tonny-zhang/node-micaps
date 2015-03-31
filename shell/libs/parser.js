@@ -84,7 +84,7 @@ function formatFile(file_path, option, callback){
 				if(m && (type = m[1])){
 					var parser;
 					try{
-						parser = require('./types/'+type+'.js');
+						parser = require('./types/'+type);
 					}catch(e){
 						callback && callback(ERROR_NOT_SUPPORT);
 						return;

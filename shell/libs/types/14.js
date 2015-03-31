@@ -327,7 +327,18 @@ function _parseArea(content_info){
 	content_info.areas.items = items_arr;
 	content_info.areas.len = items_arr.length;
 }
-
+function getArea(points){
+	var S = 0;
+	for(var i = 0, j = points.length - 1; i<j; i++){
+		var p_a = points[i],
+			p_b = points[i + 1];
+		S += p_a[0] * p_b[1] - p_b[0]*p_a[1];
+	}
+	var p_a = points[j],
+		p_b = points[0];
+	S += p_a[0] * p_b[1] - p_b[0]*p_a[1];
+	return S/2;
+}
 /*得到多边形所在矩形的面积*/
 function _get_acreage(area_items){
 	var len = area_items.length;
@@ -848,6 +859,9 @@ function _format(content_info){
 	if(content_info.line_symbols){
 		var line_symbols_items = content_info.line_symbols.items;
 		line_symbols_items.forEach(function(v){
+			if(getArea(v.items) > 0){
+				v.items.reverse();
+			}
 			delete v.len;
 		});
 		content_info.line_symbols = line_symbols_items;
