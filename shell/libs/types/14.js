@@ -233,11 +233,11 @@ function _parse_file(line_arr){
 	});
 	// content_info.areas.items = content_info.areas.items.splice(3, 1);
 	// content_info.areas.len = content_info.areas.items.length;
-	console.log(content_info.areas.len , content_info.line_symbols.len);
+	// console.log(content_info.areas.len , content_info.line_symbols.len);
 	// 当有特殊的线分割面的情况时进行处理
 	if(content_info.areas.len > 0 && content_info.line_symbols.len > 0){
 		_parseArea(content_info);
-		console.log('get '+ content_info.areas.items.length+' areas!');
+		// console.log('get '+ content_info.areas.items.length+' areas!');
 	}
 	_sort_areas(content_info.areas);
 	// 格式化数据
