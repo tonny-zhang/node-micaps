@@ -121,7 +121,8 @@ $(function(){
 				// }
 				// setTimeout(function(){
 
-					var Color = ['red','blue','green','orange','black', '#123','#f26','#ccc','#333', 'yellow', 'pink'];
+					var Color = [/*'red','blue',*/'green','orange','black', '#123','#f26','#ccc','#333', 'yellow', 'pink'];
+
 					var point_arr = [];
 					$.each(v.items,function(v_i,v_v){
 
@@ -138,10 +139,38 @@ $(function(){
 						// 	},v_i*200);
 						// }
 					});
+					function getColor(v){
+						if(v < 0){
+							return '#ffffff'
+						}else if(v >= 0 && v < 2){
+							return '#a5f58b';
+						}else if(v >= 2 && v < 4){
+							return '#65bc49';
+						}else if(v >= 4 && v < 6){
+							return '#00734c';
+						}else if(v >= 6 && v < 8){
+							return '#5bbcf5';
+						}else if(v >= 8 && v < 10){
+							return '#0065d6';
+						}else if(v >= 10 && v < 20){
+							return '#5401fe';
+						}else if(v >= 20 && v < 50){
+							return '#bc01c8';
+						}else if(v > 50){
+							return '#710103';
+						}
+					}
 					var symbols = v.symbols;
-					var color = Color[i%Color.length];
+					// if(v.code == 23){
+					// 	var color = 'red';
+					// }else if(v.code == 26){
+					// 	var color = 'blue';
+					// }else{
+					// 	var color = Color[i%Color.length];
+					// }
+					// var color = getColor();
 					// console.log(v.code, symbols);
-					// var color = getPrecipitationColor(v.code,symbols?symbols.text:0);
+					var color = getPrecipitationColor(v.code,symbols?symbols.text:0);
 					var polygon = new BMap.Polygon(point_arr, {strokeColor: color, fillColor: color,fillOpacity: 1, strokeWeight: 1, strokeOpacity:1});
 					map.addOverlay(polygon);   //增加面
 					setTimeout(_add_svg_pattern,10);
@@ -467,7 +496,7 @@ $(function(){
 				if(i > 0 && i % SPACE_NUM == 0){
 					var point_before = items[i-1],
 						point_current = v;
-					var radiu = Math.atan((point_current.y - point_before.y)/(point_current.x - point_before.x)) / Math.PI * 180 ;
+					var radiu = Math.atan((point_current.y - point_before.y)/(point_current.x - point_before.x)) / Math.PI * 180 +180;
 					if(point_current.x < point_before.x){
 						radiu += 180;
 					}
@@ -514,7 +543,7 @@ $(function(){
 	var data_url = '../../../data/micaps/14/14110508.000.json';
 	// var data_url = '../../../data/micaps/14/rr012608/rr012608.024.json';
 	var data_url = '../../../data/micaps/14/rr012608/rr012608.048.json';
-	// var data_url = '../../../data/micaps/14/rr012608/rr012608.072.json';
+	var data_url = '../../../data/micaps/14/rr012608/rr012608.072.json';
 	// var data_url = '../../../data/micaps/14/14110514.000.json';
 	// var data_url = '../../../data/micaps/14/14110520.000.json';
 	// var data_url = '../../../data/micaps/14/rrr112708.006.json';
@@ -524,6 +553,9 @@ $(function(){
 	// var data_url = '../../../data/micaps/14/kw15020408.024.json';
 	// var data_url = '../../../data/micaps/14/rr020908.024.json';
 	// var data_url = '../../../data/micaps/14/wt032708.024.json';
+	// var data_url = '../../../data/micaps/14/special_2013100620.024.json';
+	var data_url = '../../../data/micaps/14/rr033108.024.json';
+	
 	var ajax_data = $.getJSON(data_url),
 		ajax_constant = $.getJSON('../../../config/constant.json'),
 		ajax_color_precipitation = $.getJSON('../../../config/precipitation.json'),

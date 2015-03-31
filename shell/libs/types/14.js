@@ -328,43 +328,24 @@ function _parseArea(content_info){
 	content_info.areas.len = items_arr.length;
 }
 function getArea(points){
-	var S = 0;
-	for(var i = 0, j = points.length - 1; i<j; i++){
-		var p_a = points[i],
-			p_b = points[i + 1];
-		S += p_a[0] * p_b[1] - p_b[0]*p_a[1];
+	var len = points.length;
+	if(len > 0){
+		var S = 0;
+		for(var i = 0, j = len - 1; i<j; i++){
+			var p_a = points[i],
+				p_b = points[i + 1];
+			S += p_a.x * p_b.y - p_b.x*p_a.y;
+		}
+		var p_a = points[j],
+			p_b = points[0];
+		S += p_a.x * p_b.y - p_b.x*p_a.y;
+		return S/2;
 	}
-	var p_a = points[j],
-		p_b = points[0];
-	S += p_a[0] * p_b[1] - p_b[0]*p_a[1];
-	return S/2;
+	return 0;
 }
 /*得到多边形所在矩形的面积*/
 function _get_acreage(area_items){
-	var len = area_items.length;
-	if(len > 0){
-		var first_item = area_items[0];
-		var minx = maxx = first_item.x,miny = maxy = first_item.y;
-		for(var i = 1;i<len;i++){
-			var item = area_items[i],
-				x = item.x,
-				y = item.y;
-			if(minx > x){
-				minx = x;
-			}
-			if(maxx < x){
-				maxx = x;
-			}
-			if(miny > y){
-				miny = y;
-			}
-			if(maxy < y){
-				maxy = y;
-			}
-		}
-		return (maxx - minx)*(maxy - miny);
-	}
-	return 0;
+	return Math.abs(getArea(area_items));
 }
 
 /*对面数据进行排序*/
@@ -697,9 +678,21 @@ function _split_area2two(area_items, line_items, content_info, start_line_index,
 
 	// var new_areas = [];
 	areas.forEach(function(v, i){
+		var new_code_list = [];
+		code_list.forEach(function(code_v, code_i){
+			var is_in = isInsidePolygon(v, code_v.x, code_v.y);	
+			new_code_list.push({
+				type: code_v.type,
+				x: code_v.x,
+				y: code_v.y,
+				is_in: is_in,
+				is_split: true
+			});
+		});
+		// console.log(new_code_list);
 		areas[i] = {
 			area: _get_acreage(v),
-			code_list: code_list, //原始面被分割后，对分分割后的面进行code填充
+			code_list: new_code_list, //原始面被分割后，对分分割后的面进行code填充
 			len: v.length,
 			items: v,
 			type: 'add'
@@ -771,17 +764,47 @@ function _deal_code_list_after_parsearea(content_info){
 			if(!code_list){ // 当code_list不存在时不处理
 				continue;
 			}
-			var toCode;
+			var toCode = null;
 			var code_in_area = [];
 			var code_p = [];
+			var code_split = [];
 			code_list.forEach(function(code){
 				var type = code.type;
-				if(isInsidePolygon(current_items, code.x, code.y) && type != CODE_MORE){
-					code_in_area.indexOf(type) == -1 && code_in_area.push(type);
-					toCode = type;
+				var is_in_polygon = false;
+				if(type != CODE_MORE && (is_in_polygon = isInsidePolygon(current_items, code.x, code.y)) || code.is_split){
+				// if(type != CODE_MORE && (code.is_in || code.is_split || (is_in_polygon = isInsidePolygon(current_items, code.x, code.y)))){
+				// if(isInsidePolygon(current_items, code.x, code.y) && type != CODE_MORE){
+					// console.log(i, type, code.is_in ,  code.is_split , isInsidePolygon(current_items, code.x, code.y));
+					// console.log(i, type, is_in_polygon);
+					// if(code.is_split && !code.is_in){
+					// 	code_split.push(type == CODE_RAIN? CODE_SNOW: CODE_RAIN);
+					// 	// console.log(i, 'change type');
+					// }
+					// if(code.is_in || is_in_polygon){
+					// 	code_in_area.indexOf(type) == -1 && code_in_area.push(type);
+					// 	toCode = type;
+					// }
+					if(is_in_polygon){
+						code_in_area.indexOf(type) == -1 && code_in_area.push(type);
+						toCode = type;
+					}else if(code.is_split){
+						code_split.push(type == CODE_RAIN? CODE_SNOW: CODE_RAIN);
+					}
 				}
 			});
-			
+			if(!toCode && code_split.length > 0){
+				var code_obj = {};
+				code_split.forEach(function(c_v, c_i){
+					code_obj[c_v] = 1;
+				});
+				if(code_obj[CODE_RAIN]){
+					toCode = code_obj[CODE_SNOW]? CODE_RAIN_SNOW: CODE_RAIN;
+				}else{
+					if(code_obj[CODE_SNOW]){
+						toCode = CODE_SNOW;
+					}
+				}
+			}
 			current_area.code = toCode;
 			current_area.code_list = code_in_area;
 			var code_include = [];
@@ -797,16 +820,13 @@ function _deal_code_list_after_parsearea(content_info){
 			var area = areas[area_index],
 				items = area.items,
 				len_items = items.length;
-
-			for(var start_index = 0; start_index < area_len; start_index++){
-				if(start_index == area_index){
-					continue;
-				}
+			for(var start_index = area_index-1; start_index >= 0; start_index--){
 				var p_area = areas[start_index];
 				var p = polygonIsInsidePolygon(p_area.items, items, true);
 				if(p >= len_items - 6){// 由于线分割面时可能出现误差，这里先送去６个交点
 					area.code_list = p_area.code_list;
 					area.code = p_area.code;
+					// console.log('p', start_index, area_index);
 					break;
 				}
 			}

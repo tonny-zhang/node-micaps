@@ -21,16 +21,18 @@ if(args.length > 2){
 		// file_path = '../data/micaps_source/14/14110508.000';
 		// var file_path = '../data/micaps_source/3/';
 		var file_path = '../data/micaps_source/3/15012114.000';
-		// var file_path = '../data/micaps_source/14/rr012608/rr012608.072';
+		var file_path = '../data/micaps_source/14/rr012608/rr012608.024';
+		var file_path = '../data/micaps_source/14/rr012608/rr012608.048';
+		var file_path = '../data/micaps_source/14/rr012608/rr012608.072';
 		// var file_path = '../data/micaps_source/14/14110508.000';
 		// var file_path = '../data/micaps_source/14/rr020908.024';
 		// var file_path = '../data/micaps_source/3/15031208.024';
-		var file_path = '../data/micaps_source/1/15031214.000';
-		var file_path = '../data/micaps_source/8/15031220.024';
-		var file_path = '../data/micaps_source/14/special_2013100620.024';
-		var file_path = '../data/micaps_source/14/wt032708.024';//大风降温
-		var file_path = '../data/micaps_source/3/15012908.dat';//积雪深度
-		var file_path = '../data/micaps_source/14/rr033108.024';//降水预报
+		// var file_path = '../data/micaps_source/1/15031214.000';
+		// var file_path = '../data/micaps_source/8/15031220.024';
+		// var file_path = '../data/micaps_source/14/special_2013100620.024';
+		// var file_path = '../data/micaps_source/14/wt032708.024';//大风降温
+		// var file_path = '../data/micaps_source/3/15012908.dat';//积雪深度
+		// var file_path = '../data/micaps_source/14/rr033108.024';//降水预报
 		format(file_path,function(source_path){
 			return source_path.replace('micaps_source','micaps')+'.json';
 		});
