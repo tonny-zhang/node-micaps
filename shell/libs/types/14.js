@@ -879,7 +879,7 @@ function _format(content_info){
 	if(content_info.line_symbols){
 		var line_symbols_items = content_info.line_symbols.items;
 		line_symbols_items.forEach(function(v){
-			if(getArea(v.items) > 0){
+			if(getArea(v.items) < 0){
 				v.items.reverse();
 			}
 			delete v.len;
