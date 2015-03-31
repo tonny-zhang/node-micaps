@@ -129,14 +129,14 @@ $(function(){
 						var point = new BMap.Point(v_v.x,v_v.y);
 						point_arr.push(point);
 						// if(i == 20){
-						// 	setTimeout(function(){
-						// 		var marker = new BMap.Marker(point);
-						// 		marker.addEventListener("click",function(){
-						// 			var p = marker.getPosition();  //获取marker的位置
-						// 			alert(v_i+' flag = '+v_v.flag+" marker的位置是" + p.lng + "," + p.lat);    
-						// 		});
-						// 		map.addOverlay(marker);
-						// 	},v_i*200);
+							// setTimeout(function(){
+							// 	var marker = new BMap.Marker(point);
+							// 	marker.addEventListener("click",function(){
+							// 		var p = marker.getPosition();  //获取marker的位置
+							// 		alert(v_i+' flag = '+v_v.flag+" marker的位置是" + p.lng + "," + p.lat);    
+							// 	});
+							// 	map.addOverlay(marker);
+							// },v_i*200);
 						// }
 					});
 					function getColor(v){
@@ -251,15 +251,15 @@ $(function(){
 		$.each(symbols,function(i,v){
 			var type = v.type;
 			// console.log(type);
-			if(type == 3 || type == 4){return;
-				var marker = new BMap.Marker(new BMap.Point(v.x,v.y));
-				marker.addEventListener("click",function(){
-					var p = marker.getPosition();  //获取marker的位置
-					alert(v.flag+" "+" marker的位置是" + p.lng + "," + p.lat);    
-				});
-				map.addOverlay(marker);
-				return ;
-			}
+			// if(type == 3 || type == 4){
+			// 	var marker = new BMap.Marker(new BMap.Point(v.x,v.y));
+			// 	marker.addEventListener("click",function(){
+			// 		var p = marker.getPosition();  //获取marker的位置
+			// 		alert(v.flag+" "+" marker的位置是" + p.lng + "," + p.lat);    
+			// 	});
+			// 	map.addOverlay(marker);
+			// 	return ;
+			// }
 			var text = '',
 				color = '#1010FF';
 			var style = {
@@ -555,7 +555,7 @@ $(function(){
 	// var data_url = '../../../data/micaps/14/wt032708.024.json';
 	// var data_url = '../../../data/micaps/14/special_2013100620.024.json';
 	var data_url = '../../../data/micaps/14/rr033108.024.json';
-	
+	var data_url = '../../../data/micaps/14/rr033114.024.json';
 	var ajax_data = $.getJSON(data_url),
 		ajax_constant = $.getJSON('../../../config/constant.json'),
 		ajax_color_precipitation = $.getJSON('../../../config/precipitation.json'),
