@@ -233,11 +233,11 @@ function _parse_file(line_arr){
 	});
 	// content_info.areas.items = content_info.areas.items.splice(3, 1);
 	// content_info.areas.len = content_info.areas.items.length;
-	// console.log(content_info.areas.len , content_info.line_symbols.len);
+	console.log(content_info.areas.len , content_info.line_symbols.len);
 	// 当有特殊的线分割面的情况时进行处理
 	if(content_info.areas.len > 0 && content_info.line_symbols.len > 0){
 		_parseArea(content_info);
-		// console.log('get '+ content_info.areas.items.length+' areas!');
+		console.log('get '+ content_info.areas.items.length+' areas!');
 	}
 	_sort_areas(content_info.areas);
 	// 格式化数据
@@ -272,7 +272,8 @@ function _parseArea(content_info){
 		});
 	});
 	// console.log('include_relation', include_relation);
-	// include_relation[0] = [0]
+	// include_relation = {'10': [0]};
+	// console.log('include_relation', include_relation);
 	var _cache_area = {};
 	for(var i in include_relation){
 		var line_indexs = include_relation[i];
@@ -428,7 +429,6 @@ function _split_area2two(area_items, line_items, content_info, start_line_index,
 	for(var i = start_line_index; i < _items_len; i++){
 		var v_line_item = line_items[i];
 		var flag = isInsidePolygon(area_items,v_line_item.x,v_line_item.y);
-
 		if(flag){
 			if(!start_item_2){
 				start_item_2 = v_line_item;
@@ -449,8 +449,6 @@ function _split_area2two(area_items, line_items, content_info, start_line_index,
 		}
 	}
 	
-
-	// console.log(start_line_index, start_item_1 , start_item_2 , end_item_1 , end_item_2);
 	if(start_line_index == _items_len || !start_item_1 || !start_item_2 || !end_item_1 || !end_item_2){
 		return;
 	}
@@ -565,7 +563,7 @@ function _split_area2two(area_items, line_items, content_info, start_line_index,
 		}
 		if(k != end_k){
 			var _x,_y;
-			// console.log('x1',x1,'x2',x2,'y1',y1,'y2',y2,'start_k',start_k,'start_b',start_b);
+			// console.log('->x1 = ',x1,', x2= ',x2,', y1=',y1,',y2=',y2,',start_k=',start_k,',start_b=',start_b,'end_k=',end_k,'end_b=',end_b,'k=',k);
 			if(k == 0){
 				if(end_k != undefined){
 					var _x = (b - end_b)/end_k;
@@ -574,7 +572,7 @@ function _split_area2two(area_items, line_items, content_info, start_line_index,
 					var _x = end_x1,
 						_y = b;
 				}
-			}else if(start_k == 0){
+			}else if(end_k == 0){
 				if(k != undefined){
     				var _x = (end_b - b)/k;
     				var _y = end_y1;
@@ -594,7 +592,8 @@ function _split_area2two(area_items, line_items, content_info, start_line_index,
 						_y = (k*end_b - b*end_k)/(k - end_k);
 				}
 			}
-			// console.log(i,j,_x,_y,x1,x2,end_x1,end_x2,_x >= Math.min(x1,x2) && _x <= Math.max(x1,x2));
+			// if(i == 36 || i == 37)
+			// console.log(i,j,_x,x1,x2,_x >= Math.min(x1,x2) && _x <= Math.max(x1,x2));
 			if(_x >= Math.min(x1,x2) && _x <= Math.max(x1,x2) && 
 			   _x >= Math.min(end_x1,end_x2) && _x <= Math.max(end_x1,end_x2) && 
 			   _y >= Math.min(y1,y2) && _y <= Math.max(y1,y2) && 
