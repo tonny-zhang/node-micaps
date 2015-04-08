@@ -36,6 +36,7 @@ if(args.length > 2){
 		var file_path = '../data/micaps_source/14/rr033114.024';//降水预报2
 		// var file_path = '../data/micaps_source/14/wt040808.024';//大风降温20150408 
 		// var file_path = '../data/micaps_source/14/rr040808.024'; //20150408降水预报
+		var file_path = '../data/micaps_source/14/fg040808.024'; //20150408落区预报
 		format(file_path,function(source_path){
 			return source_path.replace('micaps_source','micaps')+'.json';
 		});

@@ -9,10 +9,10 @@ var util = require('util'),
 function _parse_file(line_arr){
 	var REG_TOW_NUM = /^(-?[\d.]+)\s+([\d.]+)$/,
 		REG_THREE_NUM = /^([\d.]+)\s+([\d.]+)\s+([\d.]+)$/,
-		REG_LINES = /^LINES: (\d+)/,
-		REG_LINES_SYMBOL = /^LINES_SYMBOL: (\d+)/,
-		REG_SYMBOLS = /^SYMBOLS: (\d+)/,
-		REG_CLOSED_CONTOURS = /^CLOSED_CONTOURS: (\d+)/,
+		REG_LINES = /^LINES:\s*(\d+)/,
+		REG_LINES_SYMBOL = /^LINES_SYMBOL:\s*(\d+)/,
+		REG_SYMBOLS = /^SYMBOLS:\s*(\d+)/,
+		REG_CLOSED_CONTOURS = /^CLOSED_CONTOURS:\s*(\d+)/,
 		REG_NOLABEL = /NoLabel/,
 		REG_BLANK = /\s+/;
 
