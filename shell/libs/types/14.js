@@ -235,6 +235,8 @@ function _parse_file(line_arr){
 	// content_info.areas.len = content_info.areas.items.length;
 	// console.log(content_info.areas.len , content_info.line_symbols.len);
 	// 当有特殊的线分割面的情况时进行处理
+	// console.log(content_info.areas);
+	// content_info.areas = {len: 1, items: [content_info.areas.items[0]]};
 	if(content_info.areas.len > 0 && content_info.line_symbols.len > 0){
 		_parseArea(content_info);
 		// console.log('get '+ content_info.areas.items.length+' areas!');
@@ -272,7 +274,7 @@ function _parseArea(content_info){
 		});
 	});
 	// console.log('include_relation', include_relation);
-	// include_relation = {'10': [0]};
+	// include_relation = {'0': [1]};
 	// console.log('include_relation', include_relation);
 	var _cache_area = {};
 	for(var i in include_relation){
@@ -361,7 +363,6 @@ function _sort_areas(areas){
 	// 	delete area.area;
 	// });
 }
-
 /*线分割面成多个面*/
 function _split_area(area, line_items, content_info){
 	var area_items = area.items.slice();
@@ -380,6 +381,23 @@ function _split_area(area, line_items, content_info){
 					var areas = info.areas;
 					if(areas && areas.length > 0){
 						return_areas.splice(i, 1);
+						for(var i_area = 0, j_area = return_areas.length; i_area < j_area; i_area++){
+							var test_area = return_areas[i_area];
+							var test_area_kind = test_area.kind;
+							var test_area_public_line = test_area.public_line;
+							var is_a = lineIsInsidePolygon(areas[0].items, test_area_public_line);
+							if(is_a){
+								areas[0].kind = !test_area_kind;
+								areas[1].kind = test_area_kind;
+							}else if((is_a = lineIsInsidePolygon(areas[1].items, test_area_public_line))){
+								areas[0].kind = test_area_kind;
+								areas[1].kind = !test_area_kind;
+							}
+							if(is_a){
+								break;
+							}
+						}
+						
 						return_areas = return_areas.concat(areas);
 					}
 					start_line_index = info.start_line_index;
@@ -395,6 +413,8 @@ function _split_area(area, line_items, content_info){
 			if(info){
 				var areas = info.areas;
 				if(areas && areas.length > 0){
+					areas[0].kind = true;
+					areas[1].kind = false;
 					return_areas = return_areas.concat(areas);
 					// console.log('init1', start_line_index, areas.length, return_areas.length);
 				}
@@ -404,6 +424,36 @@ function _split_area(area, line_items, content_info){
 			}
 		}
 	}
+	
+	//利用分割得到的面的共同特征对面的编码进行填充（只对没有编码强对应关系的面进行同类填充）
+	var special_area_index = [];
+	return_areas.forEach(function(v, i){
+		var code_new = [];
+		v.code_list.forEach(function(v_code){
+			var type = v_code.type;
+			if(v_code.is_split && v_code.is_in && type != CODE_MORE && code_new.indexOf(type) == -1){
+				code_new.push(type);
+			}
+		});
+		var len = code_new.length;
+		if(len == 1){
+			v.code = code_new[0];
+		}else if(len == 0){
+			special_area_index.push(i);
+		}
+	});
+	special_area_index.forEach(function(v){
+		var kind = return_areas[v].kind;
+		for(var i = 0, j = return_areas.length; i<j; i++){
+			if(i != v){
+				var test_area = return_areas[i];
+				if(test_area.kind === kind && test_area.code){
+					return_areas[v].code = test_area.code;
+					break;
+				}
+			}
+		}
+	});
 	return return_areas;
 }
 
@@ -688,8 +738,8 @@ function _split_area2two(area_items, line_items, content_info, start_line_index,
 				is_split: true
 			});
 		});
-		// console.log(new_code_list);
 		areas[i] = {
+			public_line: new_line_items,
 			area: _get_acreage(v),
 			code_list: new_code_list, //原始面被分割后，对分分割后的面进行code填充
 			len: v.length,
@@ -699,6 +749,7 @@ function _split_area2two(area_items, line_items, content_info, start_line_index,
 	});
 	
 	return {
+		public_line: new_line_items,
 		areas: areas,
 		start_line_index: start_line_index
 	};
@@ -760,7 +811,7 @@ function _deal_code_list_after_parsearea(content_info){
 			var current_area = areas[i],
 				current_items = current_area.items;
 			var code_list = current_area.code_list;
-			if(!code_list){ // 当code_list不存在时不处理
+			if(!code_list || current_area.code){ // 当code_list不存在时不处理
 				continue;
 			}
 			var toCode = null;
@@ -771,18 +822,6 @@ function _deal_code_list_after_parsearea(content_info){
 				var type = code.type;
 				var is_in_polygon = false;
 				if(type != CODE_MORE && (is_in_polygon = isInsidePolygon(current_items, code.x, code.y)) || code.is_split){
-				// if(type != CODE_MORE && (code.is_in || code.is_split || (is_in_polygon = isInsidePolygon(current_items, code.x, code.y)))){
-				// if(isInsidePolygon(current_items, code.x, code.y) && type != CODE_MORE){
-					// console.log(i, type, code.is_in ,  code.is_split , isInsidePolygon(current_items, code.x, code.y));
-					// console.log(i, type, is_in_polygon);
-					// if(code.is_split && !code.is_in){
-					// 	code_split.push(type == CODE_RAIN? CODE_SNOW: CODE_RAIN);
-					// 	// console.log(i, 'change type');
-					// }
-					// if(code.is_in || is_in_polygon){
-					// 	code_in_area.indexOf(type) == -1 && code_in_area.push(type);
-					// 	toCode = type;
-					// }
 					if(is_in_polygon){
 						code_in_area.indexOf(type) == -1 && code_in_area.push(type);
 						toCode = type;
@@ -796,6 +835,7 @@ function _deal_code_list_after_parsearea(content_info){
 				code_split.forEach(function(c_v, c_i){
 					code_obj[c_v] = 1;
 				});
+				// console.log('code_split', code_split);
 				if(code_obj[CODE_RAIN]){
 					toCode = code_obj[CODE_SNOW]? CODE_RAIN_SNOW: CODE_RAIN;
 				}else{
@@ -872,15 +912,22 @@ function _format(content_info){
 		if(_symbols){
 			delete _symbols.len;
 		}
+		delete v.kind;
+		delete v.public_line;
 		delete v.code_list;
+		delete v.area;
 	});
 	content_info.areas = areas_items;
 	if(content_info.line_symbols){
 		var line_symbols_items = content_info.line_symbols.items;
 		line_symbols_items.forEach(function(v){
-			if(getArea(v.items) < 0){
-				v.items.reverse();
-			}
+			var items = v.items;
+			var p_start = items[0],
+				p_end = items[items.length - 1];
+			// 根据起始点的位置关系判断线的画向（保证从左向右画）
+			// if(p_start.x > p_end.x && p_start.y > p_end.y){
+			// 	v.items.reverse();
+			// }
 			delete v.len;
 		});
 		content_info.line_symbols = line_symbols_items;
