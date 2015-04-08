@@ -557,6 +557,7 @@ $(function(){
 	var data_url = '../../../data/micaps/14/rr033108.024.json';
 	var data_url = '../../../data/micaps/14/rr033114.024.json';
 	// var data_url = '../../../data/micaps/14/rr040808.024.json';
+	var data_url = '../../../data/micaps/14/kw15040808.024.json';
 	var ajax_data = $.getJSON(data_url),
 		ajax_constant = $.getJSON('../../../config/constant.json'),
 		ajax_color_precipitation = $.getJSON('../../../config/precipitation.json'),

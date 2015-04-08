@@ -227,10 +227,16 @@ function _parse_file(line_arr){
 	});
 	//先初始化面积，方便排序
 	var items_area = content_info.areas.items;
+	var new_items = [];
 	items_area.forEach(function(v, i){
-		var items = v.items;
-		v.area = _get_acreage(items);
+		if(v.symbols){ //对没有标识的面进行过滤
+			var items = v.items;
+			v.area = _get_acreage(items);
+			new_items.push(v);
+		}
 	});
+	content_info.areas.len = new_items.length;
+	content_info.areas.items = new_items;
 	// content_info.areas.items = content_info.areas.items.splice(3, 1);
 	// content_info.areas.len = content_info.areas.items.length;
 	// console.log(content_info.areas.len , content_info.line_symbols.len);

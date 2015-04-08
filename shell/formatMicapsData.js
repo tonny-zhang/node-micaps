@@ -31,12 +31,14 @@ if(args.length > 2){
 		// var file_path = '../data/micaps_source/8/15031220.024';
 		// var file_path = '../data/micaps_source/14/special_2013100620.024';
 		// var file_path = '../data/micaps_source/14/wt032708.024';//大风降温
-		// var file_path = '../data/micaps_source/3/15012908.dat';//积雪深度
+		var file_path = '../data/micaps_source/3/15012908.dat';//积雪深度
 		// var file_path = '../data/micaps_source/14/rr033108.024';//降水预报
-		var file_path = '../data/micaps_source/14/rr033114.024';//降水预报2
+		// var file_path = '../data/micaps_source/14/rr033114.024';//降水预报2
 		// var file_path = '../data/micaps_source/14/wt040808.024';//大风降温20150408 
 		// var file_path = '../data/micaps_source/14/rr040808.024'; //20150408降水预报
-		var file_path = '../data/micaps_source/14/fg040808.024'; //20150408落区预报
+		// var file_path = '../data/micaps_source/14/fg040808.024'; //20150408落区预报
+		var file_path = '../data/micaps_source/3/15040302.000';//20150408最高气温
+		var file_path = '../data/micaps_source/14/kw15040808.024';//20150408空气污染
 		format(file_path,function(source_path){
 			return source_path.replace('micaps_source','micaps')+'.json';
 		});

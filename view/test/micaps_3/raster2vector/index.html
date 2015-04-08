@@ -49,7 +49,7 @@ ul{
 
     	var url = '../../../../shell/test/micaps_3.json';
         var url = '../../../../shell/gedian.json';
-        var url = '../../../../data/micaps/3/15012114.000.json';
+        var url = '../../../../data/micaps/3/15040302.000.json';
 
         $.getJSON(url, function(data){
         	data = global.predealData(data.interpolate);
@@ -158,14 +158,14 @@ ul{
 	        _showSourcePoints();
 	        // _showEndPoints();;
 	        // _showNodePoints();
-	        _makeArcs();
-	        _makePolygons();
+	  //       _makeArcs();
+	  //       _makePolygons();
 		
-			var polygons = _parsePolygons();
-			_addColor(polygons);
-	        _showPolygon(polygons);
-			var time_2 = new Date();
-			console.log(time_2 - time_1, 'ms!');
+			// var polygons = _parsePolygons();
+			// _addColor(polygons);
+	  //       _showPolygon(polygons);
+			// var time_2 = new Date();
+			// console.log(time_2 - time_1, 'ms!');
 			// setTimeout(function(){
 			// 	_addColor(polygons);
 			// 	console.log(polygons);
