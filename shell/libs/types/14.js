@@ -6,8 +6,10 @@ var util = require('util'),
 	polygonIsInsidePolygon = utils.polygonIsInsidePolygon;
 
 var PI = Math.PI;
+var _options;
 /*个部调用的解析入口主程序*/
-function _parse_file(line_arr){
+function _parse_file(line_arr, options){
+	_options = options;
 	var REG_TOW_NUM = /^(-?[\d.]+)\s+([\d.]+)$/,
 		REG_THREE_NUM = /^([\d.]+)\s+([\d.]+)\s+([\d.]+)$/,
 		REG_LINES = /^LINES:\s*(\d+)/,
@@ -281,7 +283,7 @@ function _parseArea(content_info){
 		});
 	});
 	// console.log('include_relation', include_relation);
-	// include_relation = {'3': [1]};
+	// include_relation = {'2': [3, 4, 5]};
 	// console.log('include_relation', include_relation);
 	var _cache_area = {};
 	for(var i in include_relation){
@@ -748,9 +750,11 @@ function _split_area2two(area_items, line_items, content_info, start_line_index,
 				is_split: true
 			});
 		});
-		if(new_code_list.length == 0 && is_use_line_area){
-			new_code_list = [_getCodeByLine(v, new_line_items)];
-		}
+		new_code_list.push(_getCodeByLine(v, new_line_items));
+		// console.log(new_code_list, _getCodeByLine(v, new_line_items));
+		// if(new_code_list.length == 0 && is_use_line_area){
+		// 	new_code_list = [_getCodeByLine(v, new_line_items)];
+		// }
 		areas[i] = {
 			public_line: new_line_items,
 			area: _get_acreage(v),
@@ -769,6 +773,7 @@ function _split_area2two(area_items, line_items, content_info, start_line_index,
 }
 
 /*用雨雪分割线分割面得到状态码*/
+/*这里的检验只针对简单的分割是有效的，但如果一条把面分割成多个面时，检测小面和小线关系的时候就可能会出现误差，这个结果只供特定环境下参考*/
 function _getCodeByLine(area, public_line){
 	var point_start = public_line[0],
 		point_end = public_line[public_line.length-1],
@@ -870,6 +875,7 @@ function _add_area_code(content_info){
 	}
 }
 
+
 /*处理各面的code*/
 function _deal_code_list_after_parsearea(content_info){
 	var areas = content_info.areas;
@@ -888,65 +894,68 @@ function _deal_code_list_after_parsearea(content_info){
 			var toCode = null;
 			var code_in_area = [];
 			var code_p = [];
-			var code_split = [];
+			// var code_split = [];
+			var code_add = [];
+			var is_have_more = false;
 			code_list.forEach(function(code){
 				var type = code.type;
 				var is_in_polygon = false;
 
 				// code.is_add 是当面没有状态码时用线进行分割得到
-				if(type != CODE_MORE && (code.is_add || (is_in_polygon = isInsidePolygon(current_items, code.x, code.y)) || code.is_split)){
+				if(type !== CODE_MORE && (code.is_add || (is_in_polygon = isInsidePolygon(current_items, code.x, code.y)) || code.is_split)){
 					if(is_in_polygon){
 						code_in_area.indexOf(type) == -1 && code_in_area.push(type);
 						toCode = type;
-					}else if(code.is_split){
-						code_split.push(type == CODE_RAIN? CODE_SNOW: CODE_RAIN);
+					// }else if(code.is_split){
+					// 	code_split.push(type == CODE_RAIN? CODE_SNOW: CODE_RAIN);
 					}else if(code.is_add){
-						code_split.push(type);
+						code_add.push(type);
 					}
 				}
 			});
-			if(!toCode && code_split.length > 0){
-				var code_obj = {};
-				code_split.forEach(function(c_v, c_i){
-					code_obj[c_v] = 1;
-				});
-				if(code_obj[CODE_RAIN]){
-					toCode = code_obj[CODE_SNOW]? CODE_RAIN_SNOW: CODE_RAIN;
-				}else{
-					if(code_obj[CODE_SNOW]){
-						toCode = CODE_SNOW;
+			if(!toCode){
+				var len_items = current_items.length;
+				for(var start_index = i - 1; start_index >= 0; start_index--){
+					var p_area = areas[start_index];
+					var p = polygonIsInsidePolygon(p_area.items, current_items, true);
+					if(p >= len_items - 6){// 由于线分割面时可能出现误差，这里先送去６个交点
+						var code_p = p_area.code;
+						if(code_p){
+							toCode = code_p;
+							code_list = p_area.code_list;
+						}
+						break;
 					}
+				}
+				
+				if(!toCode){
+					var code_obj = {};
+					code_add.forEach(function(c_v, c_i){
+						code_obj[c_v] = 1;
+					});
+					if(code_obj[CODE_RAIN]){
+						toCode = code_obj[CODE_SNOW]? CODE_RAIN_SNOW: CODE_RAIN;
+					}else{
+						if(code_obj[CODE_SNOW]){
+							toCode = CODE_SNOW;
+						}
+					}
+				}
+				if(!toCode){
+					toCode = CODE_RAIN;
 				}
 			}
 			current_area.code = toCode;
 			current_area.code_list = code_in_area;
 			var code_include = [];
-			if(code_in_area.length == 0){
+			if(!toCode && code_in_area.length == 0){
 				special_index.push(i);
 				continue;
 			}
 		}
 		var area_len = areas.length;
-		var symbols = content_info.symbols.items;
-		for(var i = 0, j= special_index.length; i < j; i++){
-			var area_index = special_index[i];
-			var area = areas[area_index],
-				items = area.items,
-				len_items = items.length;
-			for(var start_index = area_index-1; start_index >= 0; start_index--){
-				var p_area = areas[start_index];
-				var p = polygonIsInsidePolygon(p_area.items, items, true);
-				if(p >= len_items - 6){// 由于线分割面时可能出现误差，这里先送去６个交点
-					area.code_list = p_area.code_list;
-					area.code = p_area.code;
-					// console.log('p', start_index, area_index);
-					break;
-				}
-			}
-		}
-
-		// 对已经填充的面进行修正(这种情况暂时发现在初始分割后的子面特别小且在雨夹雪和不是雨夹雪区域内情况)
-		// 对在雨夹雪区域内的不是雨夹雪的区域code进行重围
+		// // 对已经填充的面进行修正(这种情况暂时发现在初始分割后的子面特别小且在雨夹雪和不是雨夹雪区域内情况)
+		// // 对在雨夹雪区域内的不是雨夹雪的区域code进行重围
 		for(var i = 0, j = area_len; i < j; i++){
 			var area = areas[i];
 			var area_items = area.items;
@@ -988,7 +997,7 @@ function _format(content_info){
 			delete _symbols.len;
 		}
 		delete v.kind;
-		delete v.public_line;
+		// delete v.public_line;
 		delete v.code_list;
 		delete v.area;
 	});

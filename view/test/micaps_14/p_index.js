@@ -538,27 +538,27 @@ $(function(){
 		return conf?conf.color:'blue';
 	}
 	var data_url = '../../../data/micaps/14/rr111308.024.json';
-	var data_url = '../../../data/micaps/14/rr111314.024.json';
+	var data_url = '../../../data/micaps/14/rr111314.024.json'; // 待确认
 	var data_url = '../../../data/micaps/14/rr112108.048.json';
-	var data_url = '../../../data/micaps/14/14110508.000.json';
-	// var data_url = '../../../data/micaps/14/rr012608/rr012608.024.json';
-	var data_url = '../../../data/micaps/14/rr012608/rr012608.048.json';
-	var data_url = '../../../data/micaps/14/rr012608/rr012608.072.json';
-	// var data_url = '../../../data/micaps/14/14110514.000.json';
-	// var data_url = '../../../data/micaps/14/14110520.000.json';
+	var data_url = '../../../data/micaps/14/14110508.000.json'; //形势场
+	var data_url = '../../../data/micaps/14/rr012608/rr012608.024.json'; //重点查
+	// var data_url = '../../../data/micaps/14/rr012608/rr012608.048.json'; //重点查
+	// var data_url = '../../../data/micaps/14/rr012608/rr012608.072.json'; //重点查
+	// var data_url = '../../../data/micaps/14/14110514.000.json'; //形势场
+	// var data_url = '../../../data/micaps/14/14110520.000.json'; //形势场
 	// var data_url = '../../../data/micaps/14/rrr112708.006.json';
-	// var data_url = '../../../data/micaps/14/kw14121808.024.json';
 	// var data_url = '../../../data/micaps/14/wt121808.024.json';
 	// var data_url = '../../../data/micaps/14/haze020308.024.json';
 	// var data_url = '../../../data/micaps/14/kw15020408.024.json';
+
 	// var data_url = '../../../data/micaps/14/rr020908.024.json';
 	// var data_url = '../../../data/micaps/14/wt032708.024.json';
 	// var data_url = '../../../data/micaps/14/special_2013100620.024.json';
 	// var data_url = '../../../data/micaps/14/rr033108.024.json';
-	var data_url = '../../../data/micaps/14/rr033114.024.json';
-	// // var data_url = '../../../data/micaps/14/rr040808.024.json';rr041508.024
-	// // var data_url = '../../../data/micaps/14/kw15040808.024.json';
-	var data_url = '../../../data/micaps/14/rr041508.024.json';//201504015降水数据
+	// var data_url = '../../../data/micaps/14/rr033114.024.json'; //重点查
+	// var data_url = '../../../data/micaps/14/rr040808.024.json'; 
+	// var data_url = '../../../data/micaps/14/rr041508.024.json';//201504015降水数据
+	// var data_url = '../../../data/micaps/14/rr041608.024.json';//201504015降水数据
 	var ajax_data = $.getJSON(data_url),
 		ajax_constant = $.getJSON('../../../config/constant.json'),
 		ajax_color_precipitation = $.getJSON('../../../config/precipitation.json'),

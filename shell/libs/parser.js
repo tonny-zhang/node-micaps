@@ -16,7 +16,7 @@ function formatDir(dir, format_path_fn){
 					if (stats.isDirectory()) {
 						formatDir(tmpPath,format_path_fn);
 					}else{
-						formatFile(tmpPath, function(err, data){
+						formatFile(tmpPath, tmpPath, function(err, data){
 							if(err){
 								console.log(err);
 							}else{
