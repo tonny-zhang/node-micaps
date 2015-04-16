@@ -5,6 +5,7 @@ var util = require('util'),
 	lineIsInsidePolygon = utils.lineIsInsidePolygon,
 	polygonIsInsidePolygon = utils.polygonIsInsidePolygon;
 
+var PI = Math.PI;
 /*个部调用的解析入口主程序*/
 function _parse_file(line_arr){
 	var REG_TOW_NUM = /^(-?[\d.]+)\s+([\d.]+)$/,
@@ -237,12 +238,12 @@ function _parse_file(line_arr){
 	});
 	content_info.areas.len = new_items.length;
 	content_info.areas.items = new_items;
-	// content_info.areas.items = content_info.areas.items.splice(3, 1);
+	// content_info.areas.items = content_info.areas.items.splice(5, 1);
 	// content_info.areas.len = content_info.areas.items.length;
-	// console.log(content_info.areas.len , content_info.line_symbols.len);
-	// 当有特殊的线分割面的情况时进行处理
-	// console.log(content_info.areas);
-	// content_info.areas = {len: 1, items: [content_info.areas.items[0]]};
+	// // // console.log(content_info.areas.len , content_info.line_symbols.len);
+	// // // 当有特殊的线分割面的情况时进行处理
+	// // // console.log(content_info.areas);
+	// // // content_info.areas = {len: 1, items: [content_info.areas.items[0]]};
 	if(content_info.areas.len > 0 && content_info.line_symbols.len > 0){
 		_parseArea(content_info);
 		// console.log('get '+ content_info.areas.items.length+' areas!');
@@ -280,12 +281,15 @@ function _parseArea(content_info){
 		});
 	});
 	// console.log('include_relation', include_relation);
-	// include_relation = {'0': [1]};
+	// include_relation = {'3': [1]};
 	// console.log('include_relation', include_relation);
 	var _cache_area = {};
 	for(var i in include_relation){
 		var line_indexs = include_relation[i];
 		var _area = items_area[i];
+		var code_list = _area.code_list;
+		var is_use_line_area = code_list.length == 0 || code_list.indexOf(CODE_RAIN) == -1 && code_list.indexOf(CODE_SNOW) == -1;
+		
 		var new_areas = [];
 		while(line_indexs.length > 0){
 			var c_line_index = line_indexs.shift();
@@ -297,14 +301,14 @@ function _parseArea(content_info){
 					var _items = _item_new_areas.items;
 					if(lineIsInsidePolygon(_items, line_items, true)){
 						new_areas.splice(i_new_area, 1);
-						var _areas_splited = _split_area(_item_new_areas, line_items, content_info);
+						var _areas_splited = _split_area(_item_new_areas, line_items, content_info, is_use_line_area);
 						new_areas = new_areas.concat(_areas_splited);
 						// console.log(i, 'init02', _areas_splited.length, new_areas.length, c_line_index);
 						break;
 					}
 				}
 			}else{
-				var _areas_splited = _split_area(_area, line_items, content_info);
+				var _areas_splited = _split_area(_area, line_items, content_info, is_use_line_area);
 				new_areas = new_areas.concat(_areas_splited);
 				// console.log(i, 'init01', _areas_splited.length, new_areas.length, i, c_line_index,_area.items.length, line_items.length);
 			}
@@ -370,7 +374,7 @@ function _sort_areas(areas){
 	// });
 }
 /*线分割面成多个面*/
-function _split_area(area, line_items, content_info){
+function _split_area(area, line_items, content_info, is_use_line_area){
 	var area_items = area.items.slice();
 	var code_list = area.code_list;
 	var return_areas = [];
@@ -381,7 +385,7 @@ function _split_area(area, line_items, content_info){
 		if(len_return > 0){
 			for(var i = 0; i< len_return; i++){
 				var _items = return_areas[i].items;
-				var info = _split_area2two(_items, line_items, content_info, start_line_index, code_list);
+				var info = _split_area2two(_items, line_items, content_info, start_line_index, code_list, is_use_line_area);
 
 				if(info){
 					var areas = info.areas;
@@ -415,7 +419,7 @@ function _split_area(area, line_items, content_info){
 				break;
 			}
 		}else{
-			var info = _split_area2two(area_items, line_items, content_info, start_line_index, code_list);
+			var info = _split_area2two(area_items, line_items, content_info, start_line_index, code_list, is_use_line_area);
 			if(info){
 				var areas = info.areas;
 				if(areas && areas.length > 0){
@@ -464,7 +468,7 @@ function _split_area(area, line_items, content_info){
 }
 
 /*线段把面分割成两部分*/
-function _split_area2two(area_items, line_items, content_info, start_line_index, code_list){
+function _split_area2two(area_items, line_items, content_info, start_line_index, code_list, is_use_line_area){
 	start_line_index || (start_line_index = 0); //检测线上点的开始索引
 	var areas = []; //存储分割后的面
 	var new_line_items = [];
@@ -744,6 +748,9 @@ function _split_area2two(area_items, line_items, content_info, start_line_index,
 				is_split: true
 			});
 		});
+		if(new_code_list.length == 0 && is_use_line_area){
+			new_code_list = [_getCodeByLine(v, new_line_items)];
+		}
 		areas[i] = {
 			public_line: new_line_items,
 			area: _get_acreage(v),
@@ -761,6 +768,64 @@ function _split_area2two(area_items, line_items, content_info, start_line_index,
 	};
 }
 
+/*用雨雪分割线分割面得到状态码*/
+function _getCodeByLine(area, public_line){
+	var point_start = public_line[0],
+		point_end = public_line[public_line.length-1],
+		x_start = point_start.x,
+		y_start = point_start.y,
+		x_end = point_end.x,
+		y_end = point_end.y;
+	var angle = Math.atan2(point_end.y - point_start.y, point_end.x - point_start.x);
+	if(angle < 0){
+		angle += PI;
+	}
+	area = area.filter(function(v){
+		if(public_line.indexOf(v) == -1){
+			return v;
+		}
+	});
+	var CODE_SNOW_ADD = {
+		type: CODE_SNOW,
+		is_add: 1
+	}, CODE_RAIN_ADD = {
+		type: CODE_RAIN,
+		is_add: 1
+	};
+	var len = area.length;
+	if(angle == PI/2){
+		var in_num = 0;
+		for(var i = 0; i<len; i++){
+			if(area[i].x < x_start){
+				in_num++;
+			}
+		}
+		return (in_num/len > 0.5)? CODE_SNOW_ADD: CODE_RAIN_ADD;
+	}else{
+		var k = (y_end - y_start)/(x_end - x_start);
+			b = (x_start*y_end - x_end*y_start)/(x_start - x_end);
+
+		/*(0, PI/2) 左上为雪；(PI/2, PI)左下为雪*/
+		var snow_num = 0;
+		var flag = angle >= 0 && angle < PI/2;
+		for(var i = 0; i<len; i++){
+			var item = area[i],
+				x = item.x,
+				y = item.y;
+			var v = k * x + b;
+			if(flag){
+				if(y > v){
+					snow_num++;
+				}
+			}else{
+				if(y < v){
+					snow_num++;
+				}
+			}
+		}
+		return (snow_num/len > 0.5)? CODE_SNOW_ADD: CODE_RAIN_ADD;
+	}
+}
 /*给初始状态的面添加状态码*/
 function _add_area_code(content_info){
 	var special_area_index = [];
@@ -827,12 +892,16 @@ function _deal_code_list_after_parsearea(content_info){
 			code_list.forEach(function(code){
 				var type = code.type;
 				var is_in_polygon = false;
-				if(type != CODE_MORE && (is_in_polygon = isInsidePolygon(current_items, code.x, code.y)) || code.is_split){
+
+				// code.is_add 是当面没有状态码时用线进行分割得到
+				if(type != CODE_MORE && (code.is_add || (is_in_polygon = isInsidePolygon(current_items, code.x, code.y)) || code.is_split)){
 					if(is_in_polygon){
 						code_in_area.indexOf(type) == -1 && code_in_area.push(type);
 						toCode = type;
 					}else if(code.is_split){
 						code_split.push(type == CODE_RAIN? CODE_SNOW: CODE_RAIN);
+					}else if(code.is_add){
+						code_split.push(type);
 					}
 				}
 			});
@@ -841,7 +910,6 @@ function _deal_code_list_after_parsearea(content_info){
 				code_split.forEach(function(c_v, c_i){
 					code_obj[c_v] = 1;
 				});
-				// console.log('code_split', code_split);
 				if(code_obj[CODE_RAIN]){
 					toCode = code_obj[CODE_SNOW]? CODE_RAIN_SNOW: CODE_RAIN;
 				}else{
@@ -876,6 +944,7 @@ function _deal_code_list_after_parsearea(content_info){
 				}
 			}
 		}
+
 		// 对已经填充的面进行修正(这种情况暂时发现在初始分割后的子面特别小且在雨夹雪和不是雨夹雪区域内情况)
 		// 对在雨夹雪区域内的不是雨夹雪的区域code进行重围
 		for(var i = 0, j = area_len; i < j; i++){

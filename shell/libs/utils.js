@@ -99,12 +99,13 @@ function _isInLeftTopLine(line, x, y) {
 
         if (x1 == x2) {
             if (x1 == x) {
-                return false;
-            } else if (x > x1) {
-                if (y < Math.max(y1, y2)) {
-                    return false;
-                }
-            }
+                return 0;
+            } 
+            // else if (x > x1) {
+            //     if (y < Math.max(y1, y2)) {
+            //         return false;
+            //     }
+            // }
         } else {
             if (x >= Math.min(x1, x2) && x <= Math.max(x1, x2)) {
                 var k = (y1 - y2) / (x1 - x2);

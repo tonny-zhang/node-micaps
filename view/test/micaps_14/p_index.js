@@ -554,10 +554,11 @@ $(function(){
 	// var data_url = '../../../data/micaps/14/rr020908.024.json';
 	// var data_url = '../../../data/micaps/14/wt032708.024.json';
 	// var data_url = '../../../data/micaps/14/special_2013100620.024.json';
-	var data_url = '../../../data/micaps/14/rr033108.024.json';
+	// var data_url = '../../../data/micaps/14/rr033108.024.json';
 	var data_url = '../../../data/micaps/14/rr033114.024.json';
-	// var data_url = '../../../data/micaps/14/rr040808.024.json';
-	var data_url = '../../../data/micaps/14/kw15040808.024.json';
+	// // var data_url = '../../../data/micaps/14/rr040808.024.json';rr041508.024
+	// // var data_url = '../../../data/micaps/14/kw15040808.024.json';
+	var data_url = '../../../data/micaps/14/rr041508.024.json';//201504015降水数据
 	var ajax_data = $.getJSON(data_url),
 		ajax_constant = $.getJSON('../../../config/constant.json'),
 		ajax_color_precipitation = $.getJSON('../../../config/precipitation.json'),
