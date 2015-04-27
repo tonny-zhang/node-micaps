@@ -37,7 +37,7 @@ if(args.length > 2){
 		// // var file_path = '../data/micaps_source/14/wt040808.024';//大风降温20150408 
 		// // var file_path = '../data/micaps_source/14/rr040808.024'; //20150408降水预报
 		// // var file_path = '../data/micaps_source/14/fg040808.024'; //20150408落区预报
-		// var file_path = '../data/micaps_source/3/15040302.000';//20150408最高气温
+		var file_path = '../data/micaps_source/3/15040302.000';//20150408最高气温
 		// var file_path = '../data/micaps_source/14/kw15040808.024';//20150408空气污染
 		// var file_path = '../data/micaps_source/14/rr041508.024';//201504015降水数据
 		// var file_path = '../data/micaps_source/14/rr041608.024';//201504015降水数据2

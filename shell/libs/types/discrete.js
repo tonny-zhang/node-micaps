@@ -11,8 +11,8 @@ function _parse_file(lines, option){
 	var default_option = {
 		x0: 72.5,
 		y0: 17.5,
-		x1: 139,
-		y1: 60,
+		x1: 137,
+		y1: 55,
 		grid_space: 0.5,
 		numOfNearest: 5,
 		default_val: DEFAULT_VALUE,

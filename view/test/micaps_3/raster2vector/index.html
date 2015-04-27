@@ -155,15 +155,17 @@ ul{
 	        	_showPoints(_getNodePoints(), 4, 'rgba(0, 0, 255, 0.7)');
 	        }
 	        var time_1 = new Date();
-	        _showSourcePoints();
+	        // _showSourcePoints();
 	        // _showEndPoints();;
-	        // _showNodePoints();
+	  //       _showNodePoints();
 	  //       _makeArcs();
 	  //       _makePolygons();
 		
 			// var polygons = _parsePolygons();
 			// _addColor(polygons);
-	  //       _showPolygon(polygons);
+
+            var polygons = raster2vector(data);
+	        _showPolygon(polygons);
 			// var time_2 = new Date();
 			// console.log(time_2 - time_1, 'ms!');
 			// setTimeout(function(){
