@@ -913,6 +913,11 @@ function _deal_code_list_after_parsearea(content_info){
 					}
 				}
 			});
+			// 修复在同一个面中出现多个不同的code, 如：tv042814.024.json
+			if(code_in_area.length > 1){
+				toCode = null;
+			}
+			
 			if(!toCode){
 				var len_items = current_items.length;
 				for(var start_index = i - 1; start_index >= 0; start_index--){
@@ -927,7 +932,6 @@ function _deal_code_list_after_parsearea(content_info){
 						break;
 					}
 				}
-				
 				if(!toCode){
 					var code_obj = {};
 					code_add.forEach(function(c_v, c_i){
