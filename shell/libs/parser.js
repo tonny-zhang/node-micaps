@@ -89,6 +89,10 @@ function formatFile(file_path, option, callback){
 						callback && callback(ERROR_NOT_SUPPORT);
 						return;
 					}
+					if(!option){
+						option = {};
+					}
+					option.lineExtra = line_arr.slice(0, 2);
 					var data = parser.parse(line_arr.slice(2), option);
 
 					data.type = type;

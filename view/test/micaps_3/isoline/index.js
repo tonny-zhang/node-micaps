@@ -122,31 +122,37 @@
             "order": 0
         }]
     }];
-    function getColorByCondition(val, range){
+    function getColorByCondition(val, range, _is_get_isoline_value){
         for(var i = 0,j=range.length;i<j;i++){
             var case_range = range[i];
             if(case_range.is_checked){
                 var val_range = case_range.val;
                 if(val >= val_range[0] && val < val_range[1]){
+                    if(_is_get_isoline_value){
+                        return [case_range.color, (val_range[0] + val_range[1])/2];
+                    }
                     return case_range.color;
                 }
             }
         }
+        if(_is_get_isoline_value){
+            return [COLOR_TRANSPANT];
+        }
         return COLOR_TRANSPANT;
     }
-    function getColor(val, code){
+    function getColor(val, code, _is_get_isoline_value){
         if(blendent > 1){
             for(var i = 0;i<len_blendent;i++){
                 var v = blendent[i];
                 if(code == v.val.v){
-                    return getColorByCondition(val, v.colors);
+                    return getColorByCondition(val, v.colors, _is_get_isoline_value);
                 }
             }
         }
-        return getColorByCondition(val, blendent[0].colors);
+        return getColorByCondition(val, blendent[0].colors, _is_get_isoline_value);
     }
     var COLOR_TRANSPANT = 'rgba(0,0,0,0)';
-    function _getColor(v){return getColor(v);
+    function _getColor(v, _is_get_isoline_value){return getColor(v, null, _is_get_isoline_value);
     	// if(v != DEFAULT_VAL){
 	    //     var color = _color_arr[0];
 	    //     if(v <= -15){
@@ -172,74 +178,37 @@
      //    return color;
     }
 
-    function predealData (data){
+    function predealData (data, _is_get_isoline_value){
     	var data_new = [];
     	var width = data.length,
     		height = data[0].length;
-
+// var c = {};
+        var isoline = [];
     	for(var i = 0; i<width; i++){
     		var item_arr = data[i];
     		for(var j = 0; j<height; j++){
     			var item = item_arr[j];
-    			if(i == 0 || j == 0|| i == width - 1 || j == height - 1){
-    				item.v = DEFAULT_VAL;
-    				item.c = COLOR_TRANSPANT;
-    			}else{
-    				item.c = _getColor(item.v);
-    			}
+    			// if(i == 0 || j == 0|| i == width - 1 || j == height - 1){
+    			// 	item.v = DEFAULT_VAL;
+    			// 	item.c = COLOR_TRANSPANT;
+    			// }else{
+                    var result = _getColor(item.v, true);
+                    var i_v = result[1];
+    				item.c = result[0];
+                    // c[result[0]] = 1;
+                    item.i_v = i_v;
+                    if(isoline.indexOf(i_v) == -1){
+                        isoline.push(i_v);
+                    }
+    			// }
     		}
     	}
-
+        // console.log(c);
+        if(_is_get_isoline_value){
+            return [data, isoline];
+        }
     	return data;
     }
-    
-    var _smoothData = (function(){
-        var parsingData, default_val;
-        function _getNewVal(x, y){
-            // if(x == 0 && y == 0){
-            //     debugger;
-            // }
-            var sum = 0, num = 0;
-            for(var i = x - 1; i<x+1; i++){
-                for(var j = y - 1; j < y + 1; j++){
-                    var v = null;
-                    try{
-                        v = parsingData[i][j].v;
-                    }catch(e){}
-                    if(v !== default_val){
-                        sum += v;
-                        num ++;
-                    }
-                }
-            }
-            var item = parsingData[x][y];
-            var val_new = {
-                x: item.x,
-                y: item.y,
-                v: num > 0?sum/num: default_val
-            };
-            console.log(x, y, item, val_new.v, (num > 0?sum/num: default_val)+'='+ sum+'/'+ num);
-            return val_new;
-        }
-        return function(rasterData, no_val){
-            parsingData = rasterData;
-            default_val = no_val || DEFAULT_VAL;
-            var width = parsingData.length,
-                height = parsingData[0].length;
-
-            var data_new = [];
-            for(var i = 0; i<width; i++){
-                var arr = [];
-                for(var j = 0; j<height; j++){
-                    arr.push(_getNewVal(i, j));  
-                }
-                data_new.push(arr);
-            }
-            return data_new;
-        }
-    })();
-    
-    global.smoothData = _smoothData;
     global.DEFAULT_VAL = DEFAULT_VAL;
     global.COLOR_TRANSPANT = COLOR_TRANSPANT;
     // global.color2rgba = color_normal2rgba;

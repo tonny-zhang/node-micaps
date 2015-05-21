@@ -282,15 +282,15 @@ $(function(){
 				text = '台';
 				color = 'green';
 			}
-			// else if(23 == type || 24 == type || 26 == type || 48 == type){// 处理雨雪的极值
-			// 	text = v.text;
-			// 	if(text == 0){
-			// 		return;
-			// 	}
-			// 	style.fontSize = '20px';
-			// 	style.fontShadow = '0 0 3px white';
-			// 	color = 'black';
-			// }
+			else if(23 == type || 24 == type || 26 == type || 48 == type){// 处理雨雪的极值
+				text = v.text;
+				if(text == 0){
+					return;
+				}
+				style.fontSize = '20px';
+				style.fontShadow = '0 0 3px white';
+				color = 'black';
+			}
 			else{//测试特殊点标识
 				color = 'white';
 				text = type;
@@ -557,9 +557,9 @@ $(function(){
 	// var data_url = '../../../data/micaps/14/rr033108.024.json';
 	// var data_url = '../../../data/micaps/14/rr033114.024.json'; //重点查
 	// var data_url = '../../../data/micaps/14/rr040808.024.json'; 
-	// var data_url = '../../../data/micaps/14/rr041508.024.json';//201504015降水数据
+	var data_url = '../../../data/micaps/14/rr041508.024.json';//201504015降水数据
 	// var data_url = '../../../data/micaps/14/rr041608.024.json';//201504015降水数据
-	var data_url = '../../../data/micaps/14/tv042814.024.json';//201504015降水数据
+	// var data_url = '../../../data/micaps/14/tv042814.024.json';//201504028降水数据
 	var ajax_data = $.getJSON(data_url),
 		ajax_constant = $.getJSON('../../../config/constant.json'),
 		ajax_color_precipitation = $.getJSON('../../../config/precipitation.json'),

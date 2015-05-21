@@ -42,6 +42,9 @@ if(args.length > 2){
 		// var file_path = '../data/micaps_source/14/rr041508.024';//201504015降水数据
 		// var file_path = '../data/micaps_source/14/rr041608.024';//201504015降水数据2
 		var file_path = '../data/micaps_source/14/tv042814.024';//20150428降水数据
+		var file_path = '../data/micaps_source/4/15021208.000';//4类数据
+		var file_path = '../data/micaps_source/4/zg15050520.024';
+		var file_path = '../data/micaps_source/14/kw15051908.024';
 		format(file_path, function(source_path){
 			return source_path.replace('micaps_source','micaps')+'.json';
 		});

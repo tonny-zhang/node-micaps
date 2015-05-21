@@ -20,6 +20,7 @@
 	
 	var _index_arc = 0;
 	var _index_polygon = 0;
+	var _index_arcdir = 0;
 	var points_endpoint = [], //所有端点
 		points_node = [];//所有结点
 	var arcs = [],//存储端点连续的弧段
@@ -264,6 +265,7 @@
 	function ArcDir(arc, dir){
 		this.arc = arc;
 		this.dir = dir;
+		this.id = _index_arcdir++;
 	}
 	// 多边形
 	function Polygon(){
@@ -773,38 +775,41 @@
 
 	            var p_new1, p_new2;
 	            if(x_p1 == x_p2){
+	            	if(y_p1 == y_p2){
+	            		return points;
+	            	}
 	                var p = (y_p1 - y_p2)*percent_new_point;
-	                var lng = (lat_p1 - lat_p2)*percent_new_point;
+	                var lng = (lng_p1 - lng_p2)*percent_new_point;
 	                var y_midd = y_p1 + (y_p2 - y_p1)/2;
-	                var lat_midd = lat_p1 + (lat_p2 - lat_p1)/2;
+	                var lng_midd = lng_p1 + (lng_p2 - lng_p1)/2;
 	                p_new1 = {
 	                    x: x_p1 + p,
 	                    y: y_midd,
-	                    lng: lng_p2 + lng,
-	                    lat: lat_midd
+	                    lng: lng_midd,
+	                    lat: lat_p1 + lng
 	                };
 	                p_new2 = {
 	                    x: x_p1 - p,
 	                    y: y_midd,
-	                    lng: lng_p2 - lng,
-	                    lat: lat_midd
+	                    lng: lng_midd,
+	                    lat: lat_p1 - lng
 	                };
 	            }else{
 	                var p = (x_p1 - x_p2)*percent_new_point;
-	                var lat = (lng_p1 - lng_p2)*percent_new_point;
+	                var lat = (lat_p1 - lat_p2)*percent_new_point;
 	                var x_midd = x_p1 + (x_p2 - x_p1)/2;
-	                var lng_midd = lng_p1 + (lng_p2 - lng_p1)/2;
+	                var lat_midd = lat_p1 + (lat_p2 - lat_p1)/2;
 	                p_new1 = {
 	                    x: x_midd,
 	                    y: y_p1 + p,
-	                    lng: lng_midd,
-	                    lat: lat_p2 + lat
+	                    lng: lng_p2 + lat,
+	                    lat: lat_midd
 	                };
 	                p_new2 = {
 	                    x: x_midd,
 	                    y: y_p1 - p,
-	                    lng: lng_midd,
-	                    lat: lat_p2 - lat
+	                    lng: lng_p2 - lat,
+	                    lat: lat_midd
 	                };
 	            }
 	            var p_new = utils.isInsidePolygon(items, p_new1.x, p_new1.y)? p_new2: p_new1;
@@ -814,35 +819,41 @@
 	        if(len >= 3){
 	            var id_s = points[0].id,
 	                id_e = points[len - 1].id;
-	            var key = id_s + ',' + id_e+','+len;
+	            var key_flag = len;
+	            // 对只有三个点，在同一个有四个点的面里的对立面加强缓存处理
+	            if(len == 3){
+	            	key_flag += ',' + points[1].id;
+	            }
+	            var key = id_s + ',' + id_e+','+key_flag;
 	            var val_cache = arc_cache[key];
 	            if(val_cache){
 	                return val_cache;
 	            }else{
-	                var key_reserve = id_e + ',' + id_s+','+len;
+	                var key_reserve = id_e + ',' + id_s+','+key_flag;
 	                val_cache = arc_cache[key_reserve];
 	                if(val_cache){
 	                    val_cache.reverse();
 	                    return val_cache;
 	                }else{
 	                    var result = smoothBSpline(points, 5);
-	                    var prev_point = result.shift();
-	                    var result_new = [prev_point];
-	                    for(var i = 1, j = result.length; i<j; i++){
-	                        var p = result[i];
-	                        if(Math.pow(prev_point.lng - p.lng, 2) + Math.pow(prev_point.lat - p.lat, 2) >= dis_squre){
-	                            result_new.push(p);
-	                            prev_point = p;
-	                        }
-	                    }
-	                    var first_point = result_new[0],
-	                        last_point = result_new[result_new.length-1];
-	                    if(Math.pow(first_point.lng - last_point.lng, 2) + Math.pow(first_point.lat - last_point.lat, 2) < dis_squre){
-	                        result_new.pop();
-	                    }
+	                    // var prev_point = result.shift();
+	                    // var result_new = [prev_point];
+	                    // for(var i = 1, j = result.length; i<j; i++){
+	                    //     var p = result[i];
+	                    //     if(Math.pow(prev_point.lng - p.lng, 2) + Math.pow(prev_point.lat - p.lat, 2) >= dis_squre){
+	                    //         result_new.push(p);
+	                    //         prev_point = p;
+	                    //     }
+	                    // }
+	                    // // result_new.push(result.pop());
+	                    // var first_point = result_new[0],
+	                    //     last_point = result_new[result_new.length-1];
+	                    // if(Math.pow(first_point.lng - last_point.lng, 2) + Math.pow(first_point.lat - last_point.lat, 2) < dis_squre){
+	                    //     result_new.pop();
+	                    // }
 
-	                    (arc_cache[key] = result_new);
-	                    return result_new;
+	                    (arc_cache[key] = result);
+	                    return result;
 	                }
 	            }                        
 	        }
@@ -855,6 +866,9 @@
 	})();
 	// 对描完的边进行平滑处理
 	function _dealItems(items){
+		// if(items.length == 4){
+  //   		return smoothSpline(items, true, 0.03);
+  //   	}
         // return [items];
         var items_new = [];
         var arr_index = [];
@@ -863,8 +877,9 @@
                 arr_index.push(i);
             }
         }
+
         if(arr_index.length <= 1){
-            items_new.push(items);
+        	items_new.push(items);
         }else{
             var last_index = arr_index[0];
             if(last_index != 0){
@@ -918,16 +933,44 @@
                     result.pop();
                 }
             }
+            // console.log('result', _item, result);
             items_return = items_return.concat(result);
         }
         return items_return;
     }
     function _smoothPolygons(){
+  //   	polygons.sort(function(a, b){
+		// 	return Math.abs(b.area) - Math.abs(a.area) || a.id - b.id;
+		// });
+		// polygons.forEach(function(v){
+		// 	console.log(Math.abs(v.area));
+		// });
+		// polygons = polygons.filter(function(v, i){
+		// 	if(v.area < 3){
+		// 		return v;
+		// 	}
+		// 	// if(i == polygons.length - 25){
+		// 	// 	if(i == 60){
+		// 	// 		console.log(v);
+		// 	// 	}
+		// 	// 	return v;
+		// 	// }
+		// });
+		// polygons.forEach(function(v){
+		// 	console.log(Math.abs(v.area));
+		// });
     	for(var i = polygons.length-1; i>=0; i--){
     		var polygon = polygons[i];
+    		// if(polygon.area == 0.25){
+    		// 	console.log(polygon.items)
+    		// }
     		polygon.items = _dealItems(polygon.items);
+    		// if(polygon.area == 0.25){
+    		// 	console.log(polygon.items)
+    		// }
     	}
     }
+    var cache_polygons_arc = {};
 	// 解析polygon
 	function _parsePolygons(){
 		var polygons_new = [];
@@ -935,6 +978,7 @@
 		while((polygon = polygons.shift())){
 			var items = [];
 			var arcDirs = polygon.arcDirs;
+			cache_polygons_arc[polygon.id] = arcDirs;
 			for(var i_ad = 0, j_ad = arcDirs.length; i_ad < j_ad; i_ad++){
 				var p = arcDirs[i_ad];
 				var points = p.arc.points.slice();
@@ -962,13 +1006,19 @@
 				polygons_new.push(area);
 			}
 		}
-		polygons_new.sort(function(a, b){
-			return Math.abs(b.area) - Math.abs(a.area) || a.id - b.id;
-		});
+		_sort(polygons_new);
 		polygons_new.shift();// 去掉面积最大的
 		
 		polygons = polygons_new;
 		return polygons_new;
+	}
+	function _sort(_polygons){
+		(_polygons || polygons).sort(function(a, b){
+			return Math.abs(b.area) - Math.abs(a.area) || a.id - b.id;
+		});
+		// (_polygons || polygons).forEach(function(v){
+		// 	console.log(Math.abs(v.area));
+		// });
 	}
 	// 生成多边形
 	function _makePolygons(){
@@ -1093,6 +1143,155 @@
 		smooth.reset();
 	}
 
+	function _getEqualArc(arc_dirs_a, arc_dirs_b){
+		var result = [];
+		for(var i_a = 0, j_a = arc_dirs_a.length; i_a<j_a; i_a++){
+			var arc_a = arc_dirs_a[i_a];
+			var arc_a_id = arc_a.arc.id;
+			for(var i_b = 0, j_b = arc_dirs_b.length; i_b<j_b; i_b++){
+				var arc_b = arc_dirs_b[i_b];
+				if(arc_a_id == arc_b.arc.id){
+					result.push(arc_a);
+					break;
+				}
+			}
+		}
+		return result;
+	}
+	function _getNeighborPolygon(polygon, polygons_small){
+		var result = [];
+		var id = polygon.id;
+		var arc_dirs = cache_polygons_arc[id];
+		for(var i = 0, j = polygons_small.length; i<j; i++){
+			var p_check = polygons_small[i];
+			var id_check = p_check.id;
+			if(id_check == id){
+				continue;
+			}
+			var arc_same = _getEqualArc(arc_dirs, cache_polygons_arc[id_check]);
+			if(arc_same.length > 0){
+				result.push({
+					p: p_check,
+					arc: arc_same
+				});
+				polygons_small.splice(i, 1);
+				i--;
+				j--;
+			}
+		}
+		if(result.length > 0){
+			for(var i = 0, j = result.length; i<j; i++){
+				var r = _getNeighborPolygon(result[i].p, polygons_small);
+				result = result.concat(r);
+			}
+		}
+		return result;
+	}
+	function _clipItems(items, same_points){
+		same_points = same_points.slice();
+		// var p_start = same_points.shift();
+		// var p_end = same_points.pop();
+		var items_new = [];
+		var items_tmp ;
+		var flag_change = false;
+		var add_index = -1;
+		
+		for(var i = 0, j = items.length; i<j; i++){
+			var flag_in = false;
+			var p = items[i],
+				id = p.id;
+			for(var i_c = 0, j_c = same_points.length; i_c<j_c; i_c++){
+				if(same_points[i_c].id == id){
+					flag_in = true;
+					break;
+				}
+			}
+			// if(!flag_in){
+			// 	if(p_start.id == id || p_end.id == id){console.log('in');
+			// 		flag_in = true;
+			// 	}
+			// }
+			
+			if(!flag_in){
+				if(i == 0){
+					flag_change = true;
+				}
+				items_new.push(p);
+			}else{
+				if(flag_change && !items_tmp){
+					items_tmp = items_new.splice(0);
+					// console.log(items_tmp, items_new);
+				}
+				// if(i > 0 && !items_tmp){
+				// 	items_tmp = items_new.splice(0);
+				// }
+			}
+		}
+		if(items_tmp){
+			items_new = items_new.concat(items_tmp);
+		}
+		return items_new;
+	}
+	// 对多面进行聚合处理
+	function _mergePolygon(){
+		var polygons_small = polygons.filter(function(v, i){
+			if(v.area < 3 && cache_polygons_arc[v.id]){
+				// console.log(cache_polygons_arc[v.id]);
+				return v;
+			}
+		});
+		// polygons = polygons_small.slice();
+		var polygons_new = [];
+		var polygon;
+		while((polygon = polygons_small.shift())){
+			var neighbor = _getNeighborPolygon(polygon, polygons_small);
+			if(neighbor.length > 0){
+				var c = polygon.color;
+				var arc_new = cache_polygons_arc[polygon.id];
+
+				var items_new = polygon.items.slice();
+				// if(polygon.area < -1){
+				// 	items_new.reverse();
+				// }
+				var tmp;
+				// neighbor = [neighbor[0]];
+				while((tmp = neighbor.shift())){
+					var p_tmp = tmp.p;
+					var same_arc = _getEqualArc(arc_new, cache_polygons_arc[p_tmp.id]);
+
+					for(var i_tmp = 0, j_tmp = same_arc.length; i_tmp < j_tmp; i_tmp++){
+						var points_same = same_arc[i_tmp].arc.points;
+						var p_start = points_same[0],
+							p_end = points_same[points_same.length - 1];
+						var result = _clipItems(items_new, points_same);
+						// result.unshift(p_start);
+						// result.push(p_start);
+						var result_new = _clipItems(p_tmp.items, points_same);
+						// if(p_tmp.area < -1){
+						// 	result_new.reverse();
+						// }
+						items_new = result.concat(result_new);
+					}
+					// polygons_new.push(tmp.p);
+				}
+				polygons.push({
+					items: items_new,
+					color: c,
+					area: getArea(items_new)
+				});
+
+				// polygons_new.push(polygon);
+				// for(var i = 0, j = neighbor.length; i<j; i++){
+				// 	polygons_new.push(neighbor[i].p);
+				// }
+			}else{
+
+			}
+		}
+		// console.log(polygons_new);
+		// polygons = polygons_new;
+		
+	}
 	global._smooth = smooth;
 	global._dealItems = _dealItems;
 	global.utils = utils;
@@ -1112,7 +1311,9 @@
 	    _parsePolygons();
 
 		_addColor(polygons);
+	    _mergePolygon();
 		_smoothPolygons();
+		_sort();
 	    return polygons;
 	}
 }(typeof __dirname == 'undefined'? this: exports);

@@ -26,7 +26,8 @@ ul{
     !function(){
     	map = new BMap.Map("allmap");
         map.centerAndZoom(new BMap.Point(116.404, 39.915), 6);
-        map.centerAndZoom(new BMap.Point(103.2, 36), 5);
+        map.centerAndZoom(new BMap.Point(103.2, 42), 4);
+        map.centerAndZoom(new BMap.Point(103.2, 42), 5);
         map.enableScrollWheelZoom();
 
         function getCtx(width, height){
@@ -50,10 +51,17 @@ ul{
     	var url = '../../../../shell/test/micaps_3.json';
         var url = '../../../../shell/gedian.json';
         var url = '../../../../data/micaps/3/15040302.000.json';
-
+        var url = '../../../../data/micaps/4/15021208.000.json';
+        var url = '../../../../data/micaps/4/zg15050520.024.json';
+        
         $.getJSON(url, function(data){
+            var data_smooth = global.smoothData(data.interpolate);
+            data_smooth = global.predealData(data_smooth);
         	data = global.predealData(data.interpolate);
-        	_pretreatmentData(data);
+            console.log(data);
+            console.log(data_smooth);
+            data = data_smooth;
+        	// _pretreatmentData(data, global.COLOR_TRANSPANT);
 
         	var bounds = map.getBounds(),
                 sw_point = bounds.getSouthWest(),
@@ -97,6 +105,39 @@ ul{
             	}
             	_showPoints(points, 2);
             }
+            function _showSourceVal(){
+                var w = data.length,
+                    h = data[0].length;
+                var points = [];
+                for(var i = 0; i<w; i++){
+                    for(var j = 0; j<h; j++){
+                        (function(item, delay){
+                            var v = item.v;
+                            if(v < 100 && v > 28){
+                                setTimeout(function(){
+                                    var label = new BMap.Label(item.v, {
+                                        position: new BMap.Point(item.x, item.y),
+                                        offset: new BMap.Size(-17, -10)
+                                    });  // 创建文本标注对象
+                                    label.setStyle({
+                                         color : "#000",
+                                         fontSize : "12px",
+                                         height : "12px",
+                                         lineHeight : "12px",
+                                         fontFamily:"微软雅黑",
+                                         width: '34px',
+                                         textAlign: 'center',
+                                         border: 'none',
+                                         background: 'none',
+                                         textShadow: '0 0 5px white'
+                                     });
+                                    map.addOverlay(label);
+                                }, delay);
+                            }
+                        })(data[i][j], i*10+j*10);
+                    }
+                }
+            }
             var Color = ['red','blue','green','orange','black', '#123','#f26','#ccc','#333', 'yellow', 'pink'];
             function _doClip(polygons_clip, colorOfParent, idOfParent){
             	for(var i = 0, j = polygons_clip.length; i<j; i++){
@@ -127,16 +168,32 @@ ul{
 		        	var points = [];
 		        	for(var i_item = 0, j_item = area.length; i_item < j_item; i_item++){
 		        		var point = area[i_item];
-		        		points.push(new BMap.Point(point.lng, point.lat));
+                        var p = new BMap.Point(point.lng, point.lat);
+		        		points.push(p);
+                        // if(i == 1)
+                        // (function(point, delay){
+                        //     setTimeout(function(){
+                        //         var marker = new BMap.Marker(point);
+                        //         marker.addEventListener("click",function(){
+                        //             var p = marker.getPosition();  //获取marker的位置
+                        //             alert(v_i+' flag = '+v_v.flag+" marker的位置是" + p.lng + "," + p.lat);    
+                        //         });
+                        //         map.addOverlay(marker);
+                        //     }, delay);
+                        // })(p, i_item*500 + 3000)
 		        	}
 		        	var alpha = 0.5;
+                    alpha = 1;
 		        	var polygon = new BMap.Polygon(points, {strokeColor: color, fillColor: color,fillOpacity: alpha, strokeWeight: 1, strokeOpacity: alpha});
 					polygon.area = areas[i].area;
 					polygon.id = areas[i].id;
-					(function(p, clip, delay){
+					(function(p, clip, delay, index){
 						setTimeout(function(){
+                            // if(p.area < 0.5){
+                            //     return;
+                            // }
 							p.addEventListener("click", function(){
-								alert(p.area);
+								alert(index+'  '+p.area);
 							});
 							map.addOverlay(p);
 							if(clip && clip.length > 0){
@@ -145,11 +202,17 @@ ul{
 								}, 1000)
 							}
 						}, delay);
-					})(polygon, areas[i].clip, 1*i);
+					})(polygon, areas[i].clip, i, i);
 		        }
             }
         	function _showEndPoints(){
-	        	_showPoints(_getEndPoints(), 4, 'rgba(255, 0, 0, 0.7)');
+	        	_showPoints(_getEndPoints(), 4, 'rgba(0, 0, 0, 0.7)');
+                // _getEndPoints().forEach(function(point){
+                //     var point_map = new BMap.Point(point.lng, point.lat);
+                //     var pixel = map.pointToPixel(point_map);
+                //     console.log(pixel, point.lng, point.lat);
+                // })
+                
 	        }
 	        function _showNodePoints(){
 	        	_showPoints(_getNodePoints(), 4, 'rgba(0, 0, 255, 0.7)');
@@ -157,15 +220,16 @@ ul{
 	        var time_1 = new Date();
 	        // _showSourcePoints();
 	        // _showEndPoints();;
-	  //       _showNodePoints();
+	        // _showNodePoints();
 	  //       _makeArcs();
 	  //       _makePolygons();
 		
 			// var polygons = _parsePolygons();
 			// _addColor(polygons);
 
-            var polygons = raster2vector(data);
+            var polygons = raster2vector(data, global.COLOR_TRANSPANT);
 	        _showPolygon(polygons);
+            // _showSourceVal();
 			// var time_2 = new Date();
 			// console.log(time_2 - time_1, 'ms!');
 			// setTimeout(function(){

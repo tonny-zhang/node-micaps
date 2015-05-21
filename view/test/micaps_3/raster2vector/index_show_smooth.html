@@ -21,7 +21,8 @@ ul{
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=E8MDMS4BVFEMeAxVP3YddQ6X"></script>
     <script type="text/javascript" src="../../../../shell/libs/utils.js"></script>
     <script type="text/javascript" src="../../../../../GraphTool/core/js/libs/esl.js"></script>
-    <script type="text/javascript" src="../../../../shell/libs/utils/raster2vector.js"></script>
+    <!--<script type="text/javascript" src="../../../../shell/libs/utils/raster2vector.js"></script>-->
+    <script type="text/javascript" src="raster2vector.js"></script>
     <script type="text/javascript" src="index.js"></script>
     <script type="text/javascript">
     !function(){
@@ -52,6 +53,7 @@ ul{
     	var url = '../../../../shell/test/micaps_3.json';
         var url = '../../../../shell/gedian.json';
         var url = '../../../../data/micaps/3/15040302.000.json';
+        var url = '../../../../data/micaps/4/15021208.000.json';
         $.getJSON(url, function(data){
             data = global.predealData(data.interpolate);
 
@@ -65,6 +67,25 @@ ul{
                 size = map.getSize(),
                 width = size.width,
                 height = size.height;
+            // 显示源数据里的点，方便调试
+            function _showSourcePoints(){
+                var w = data.length,
+                    h = data[0].length;
+                var points = [];
+                for(var i = 0; i<w; i++){
+                    for(var j = 0; j<h; j++){
+                        var item = data[i][j];
+                        var circle = new BMap.Circle(new BMap.Point(item.x, item.y), 10000, {
+                            strokeColor: 'black', 
+                            strokeWeight: 0.3, 
+                            strokeOpacity: 1,
+                            fillOpacity: 1,
+                            fillColor: item.c == 'rgba(0,0,0,0)'? 'rgba(200,30,0,0.3)': item.c
+                        });
+                        map.addOverlay(circle);
+                    }
+                }
+            }
             
             var time1 = new Date();
             var polygons = raster2vector(data, global.COLOR_TRANSPANT);
@@ -79,29 +100,8 @@ ul{
                 console.log(polygons);
                 arc_cache = {};
                 for(var i = 0, j = polygons.length; i<j; i++){
-                    // if(i != 17 && i != 27){// && i != 27 i != 17 && 
-                    //     continue;
-                    // }
                     var p = polygons[i];
                     var items = p.items;
-                    // var points_arr = [];
-                    // var color = 'blue';
-                    // for(var i_item = 0, j_item = items.length; i_item<j_item; i_item++){
-                    //     var p_lnglat = items[i_item];
-                    //     var key = p_lnglat.lng + '_'+ p_lnglat.lat;
-                    //     var b_p = interpolate_cache[key];
-                    //     if(!b_p){
-                    //         var point_map = new BMap.Point(p_lnglat.lng, p_lnglat.lat);
-                    //         b_p = point_map;
-                    //         interpolate_cache[key] = point_map;
-                    //     }                            
-
-                    //     points_arr.push(b_p);
-                    // }
-                    // var polygon = new BMap.Polygon(points_arr, {strokeColor: color, fillColor: color,fillOpacity: alpha, strokeWeight: 0.01, strokeOpacity: 0});
-                    // map.addOverlay(polygon);
-
-                    // items = dealItems(p.items);
                     var points_arr = [];
                     for(var i_item = 0, j_item = items.length; i_item<j_item; i_item++){
                         var p_lnglat = items[i_item];
@@ -122,17 +122,18 @@ ul{
                         points_arr.push(b_p);
                     }
                     var color = p.color;
-                    var alpha = 0.5;
+                    var alpha = 0.6;
                     var polygon = new BMap.Polygon(points_arr, {strokeColor: color, fillColor: color,fillOpacity: alpha, strokeWeight: 0.01, strokeOpacity: 0});
-                    (function(p, index){
-                        p.i = index;
-                        p.addEventListener('click', function(){
-                            alert(index);
-                        });
-                    })(polygon, i);
+                    // (function(p, index){
+                    //     p.i = index;
+                    //     p.addEventListener('click', function(){
+                    //         alert(index);
+                    //     });
+                    // })(polygon, i);
                     
                     map.addOverlay(polygon);
                 }
+                _showSourcePoints();
                 interpolate_cache = {};
                 time2 = new Date();
                 console.log('dealData', time2-time1, 'ms!');
