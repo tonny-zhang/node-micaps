@@ -560,6 +560,8 @@ $(function(){
 	var data_url = '../../../data/micaps/14/rr041508.024.json';//201504015降水数据
 	// var data_url = '../../../data/micaps/14/rr041608.024.json';//201504015降水数据
 	// var data_url = '../../../data/micaps/14/tv042814.024.json';//201504028降水数据
+	var data_url = '../../../data/micaps/14/rr052208.024.json';
+	var data_url = '../../../data/micaps/14/test.json';
 	var ajax_data = $.getJSON(data_url),
 		ajax_constant = $.getJSON('../../../config/constant.json'),
 		ajax_color_precipitation = $.getJSON('../../../config/precipitation.json'),
