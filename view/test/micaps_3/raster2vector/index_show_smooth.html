@@ -53,7 +53,8 @@ ul{
     	var url = '../../../../shell/test/micaps_3.json';
         var url = '../../../../shell/gedian.json';
         var url = '../../../../data/micaps/3/15040302.000.json';
-        var url = '../../../../data/micaps/4/15021208.000.json';
+        // var url = '../../../../data/micaps/4/15021208.000.json';
+        var url = './data/xdsd/15050718.000.json';
         $.getJSON(url, function(data){
             data = global.predealData(data.interpolate);
 
@@ -133,7 +134,7 @@ ul{
                     
                     map.addOverlay(polygon);
                 }
-                _showSourcePoints();
+                // _showSourcePoints();
                 interpolate_cache = {};
                 time2 = new Date();
                 console.log('dealData', time2-time1, 'ms!');

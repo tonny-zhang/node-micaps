@@ -16,6 +16,8 @@
 		utils = require('../utils');
 	}
 	var data_parsing,
+		data_parsing_new, //处理数据
+		color_novalue_parsing, //正在处理的数据集里默认数据的颜色
 		width_data, height_data;
 	
 	var _index_arc = 0;
@@ -356,12 +358,65 @@
 		point.lat = item_left_top.y + (item_right_bottom.y - item_left_top.y)/2;
 
 		if(len > 2 || is_peak){
+			if(len == 4){
+				point.min_color = _getMinNumColor(x, y);
+				// point.lng = item_left_top.x + (item_right_bottom.x - item_left_top.x)/5;
+				// point.lat = item_left_top.y + (item_right_bottom.y - item_left_top.y)/5;
+				// _replace_data(point);
+				// console.log(left_top == right_bottom, left_bottom == right_top, point);
+				var circle = new BMap.Circle(new BMap.Point(point.lng, point.lat), 3000, {
+                    strokeColor: 'black', 
+                    strokeWeight: 0.3, 
+                    strokeOpacity: 1,
+                    fillOpacity: 1,
+                    fillColor: point.min_color
+                });
+                setTimeout(function(){
+                	map.addOverlay(circle);
+                }, 10)
+                
+			}
 			point.type = TYPE_ENDPOINT;
 			points_endpoint.push(point);
 		}else if(len == 2){
 			point.type = TYPE_NODEPOINT;
 			points_node.push(point);
 		}
+		return point;
+	}
+	// 得到当前点周围颜色最少的颜色（找到周围极值颜色）
+	function _getMinNumColor(x, y){
+		var size = 2;
+        var cache_color = {};
+        var cache_color_round = {};
+        for(var i = x - size + 1; i<=x+size; i++){
+            for(var j = y - size + 1; j <= y + size; j++){
+                var c = null;
+                try{
+                    c = data_parsing[i][j].c;
+                }catch(e){}
+                if((i == x && (j == y || j == y+1)) || (i == x+1 && (j == y || j == y+1))){
+                	cache_color_round[c] = 1;
+                }
+                if(c && c !== color_novalue_parsing){
+                	if(!cache_color[c]){
+                		cache_color[c] = 0;
+                	}
+                	cache_color[c]++;
+                }
+            }
+        }
+        var min_num = Number.MAX_VALUE,
+        	min_color;
+        	// console.log(cache_color, cache_color_round);
+        for(var i in cache_color){
+        	var n = cache_color[i];
+        	if(n < min_num && cache_color_round[i]){
+        		min_num = n;
+        		min_color = i;
+        	}
+        }
+        return min_color;
 	}
 	// 得到端点或结点周围原始点在多边形内的颜色
 	function getPointOfSourceInPolygon(x, y, items){
@@ -387,13 +442,159 @@
 	global._getNodePoints = function(){
 		return points_node;
 	}
+	var test_num = 0;
+	function _replace_data(point){
+		var x = point.x,
+			y = point.y,
+			min_color = point.min_color;
+		var left_top = data_parsing[x][y],
+			left_bottom = data_parsing[x+1][y],
+			right_top = data_parsing[x][y+1],
+			right_bottom = data_parsing[x+1][y+1];
 
+		var replacing_points = [];
+		if(left_top.c !== min_color){
+			replacing_points.push({
+				x: x,
+				y: y,
+				p: left_top
+			});
+		}
+		if(left_bottom.c !== min_color){
+			replacing_points.push({
+				x: x+1,
+				y: y,
+				p: left_bottom
+			});
+		}
+		if(right_top.c !== min_color){
+			replacing_points.push({
+				x: x,
+				y: y+1,
+				p: right_top
+			});
+		}
+		if(right_bottom.c !== min_color){
+			replacing_points.push({
+				x: x+1,
+				y: y+1,
+				p: right_bottom
+			});
+		}
+		var min_num_same_color = Number.MAX_VALUE, 
+			min_num_same_color_pos;
+		// if(test_num++ == 0){
+			for(var i = 0, j = replacing_points.length; i<1; i++){
+				var item = replacing_points[i];
+				var point = item.p;
+				var x_p = item.x,
+					y_p = item.y;
+				var top_p = data_parsing[x_p-1][y_p],
+					left_p = data_parsing[x_p][y_p-1],
+					right_p = data_parsing[x_p][y_p+1],
+					bottom_p = data_parsing[x_p+1][y_p];	
+				var num = 0;
+				// console.log( min_color, top_p, left_p, right_p, bottom_p);
+				if(top_p.c === min_color){
+					num++;
+				}
+				if(left_p.c === min_color){
+					num++;
+				}
+				if(right_p.c === min_color){
+					num++;
+				}
+				if(bottom_p.c === min_color){
+					num++;
+				}
+				if(min_num_same_color > num){
+					min_num_same_color = num;
+					min_num_same_color_pos = item;
+				}
+
+				// var circle = new BMap.Circle(new BMap.Point(point.x, point.y), 70000, {
+	   //              strokeColor: 'black', 
+	   //              strokeWeight: 0.3, 
+	   //              strokeOpacity: 1,
+	   //              fillOpacity: 1,
+	   //              fillColor: point.c
+	   //          });
+	   //          map.addOverlay(circle);
+
+	            // var circle1 = new BMap.Circle(new BMap.Point(top_p.x, top_p.y), 70000, {
+	            //     strokeColor: 'black', 
+	            //     strokeWeight: 0.3, 
+	            //     strokeOpacity: 1,
+	            //     fillOpacity: 1,
+	            //     fillColor: top_p.c
+	            // });
+	            // map.addOverlay(circle1);
+	            // var circle2 = new BMap.Circle(new BMap.Point(left_p.x, left_p.y), 70000, {
+	            //     strokeColor: 'black', 
+	            //     strokeWeight: 0.3, 
+	            //     strokeOpacity: 1,
+	            //     fillOpacity: 1,
+	            //     fillColor: left_p.c
+	            // });
+	            // map.addOverlay(circle2);
+	            // var circle3 = new BMap.Circle(new BMap.Point(right_p.x, right_p.y), 70000, {
+	            //     strokeColor: 'black', 
+	            //     strokeWeight: 0.3, 
+	            //     strokeOpacity: 1,
+	            //     fillOpacity: 1,
+	            //     fillColor: right_p.c
+	            // });
+	            // map.addOverlay(circle3);
+	            // var circle4 = new BMap.Circle(new BMap.Point(bottom_p.x, bottom_p.y), 70000, {
+	            //     strokeColor: 'black', 
+	            //     strokeWeight: 0.3, 
+	            //     strokeOpacity: 1,
+	            //     fillOpacity: 1,
+	            //     fillColor: bottom_p.c
+	            // });
+	            // map.addOverlay(circle4);
+			}
+			data_parsing[min_num_same_color_pos.x][min_num_same_color_pos.y].c = min_color;
+			// console.log(x, y, min_color, replacing_points, min_num_same_color_pos, min_num_same_color);
+			var point1 = min_num_same_color_pos.p;
+			var circle0 = new BMap.Circle(new BMap.Point(point1.x, point1.y), 7000, {
+                strokeColor: 'black', 
+                strokeWeight: 0.3, 
+                strokeOpacity: 1,
+                fillOpacity: 1,
+                fillColor: 'point1.c'
+            });
+            map.addOverlay(circle0);
+		// }
+	}
 	// 解析数据，确定端点及结点
+	var num_loop = 0;
 	function _parseData(){
-		for(var i = 0; i< width_data-1; i++){
-			for(var j = 0; j< height_data-1; j++){
-				var is_peak = (i == 0 && (j == 0 || j == height_data-2)) || (i == width_data - 2 && (j == 0 || j == height_data-2));
-				make_point(i, j, is_peak);
+		while(1){
+			var is_break_while = true;
+			for(var i = 0; i< width_data-1; i++){
+				var is_break = false;
+				for(var j = 0; j< height_data-1; j++){
+					var is_peak = (i == 0 && (j == 0 || j == height_data-2)) || (i == width_data - 2 && (j == 0 || j == height_data-2));
+					var p = make_point(i, j, is_peak);
+					// if(p.min_color && num_loop++ < 2){console.log(num_loop);
+					// 	_replace_data(p);
+					// 	points_endpoint = [];
+					// 	points_node = [];
+					// 	i = 0;
+					// 	j = 0;
+					// 	is_break = true;
+					// 	break;
+					// 	// return _parseData();
+					// }
+				}
+				if(is_break){
+					is_break_while = false;
+					break;
+				}
+			}
+			if(is_break_while){
+				break;
 			}
 		}
 	}
@@ -867,8 +1068,8 @@
 	// 对描完的边进行平滑处理
 	function _dealItems(items){
 		// if(items.length == 4){
-  //   		return smoothSpline(items, true, 0.03);
-  //   	}
+		// 	return smoothSpline(items, true, 0.03);
+		// }
         // return [items];
         var items_new = [];
         var arr_index = [];
@@ -939,7 +1140,7 @@
         return items_return;
     }
     function _smoothPolygons(){
-  //   	polygons.sort(function(a, b){
+		// polygons.sort(function(a, b){
 		// 	return Math.abs(b.area) - Math.abs(a.area) || a.id - b.id;
 		// });
 		// polygons.forEach(function(v){
@@ -1118,14 +1319,19 @@
 
     	for(var i = 0; i<width_data; i++){
     		var item_arr = data[i];
+    		var arr = [];
     		for(var j = 0; j<height_data; j++){
     			var item = item_arr[j];
     			if(i == 0 || j == 0|| i == width_data - 1 || j == height_data - 1){
     				item.c = color_novalue;
     			}
+    			arr.push(item);
     		}
+    		data_new.push(arr);
     	}
+    	data_parsing_new = data_new;
 		data_parsing = data;
+		color_novalue_parsing = color_novalue;
 		_parseData();
 	}
 	// 重置操作
@@ -1311,7 +1517,7 @@
 	    _parsePolygons();
 
 		_addColor(polygons);
-	    _mergePolygon();
+	    // _mergePolygon();
 		_smoothPolygons();
 		_sort();
 	    return polygons;

@@ -122,6 +122,89 @@
             "order": 0
         }]
     }];
+    var blendent = [{
+            "val": {
+                "n": "雨",
+                "v": 26
+            },
+            "color_start": "#0000ff",
+            "color_end": "#ff0000",
+            "is_stripe": false,
+            "number_min": "0",
+            "number_max": "100",
+            "number_level": "2",
+            "colors": [{
+                "is_checked": true,
+                "color": "#ff6000",
+                "color_text": "#000000",
+                "val": [-9999, 9.9],
+                "text": "0-10%",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#FFEA7D",
+                "color_text": "#000000",
+                "val": [9.9, 19.9],
+                "text": "10-20%",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#FDF2B4",
+                "color_text": "#000000",
+                "val": [19.9, 29.9],
+                "text": "20-30%",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#C9F9F3",
+                "color_text": "#000000",
+                "val": [29.9, 39.9],
+                "text": "30-40%",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#5FE4EF",
+                "color_text": "#000000",
+                "val": [39.9, 49.9],
+                "text": "40-50%",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#60BBE5",
+                "color_text": "#ffffff",
+                "val": [49.9, 59.9],
+                "text": "50-60%",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#0088E8",
+                "color_text": "#ffffff",
+                "val": [59.9, 69.9],
+                "text": "60-70%",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#0056ED",
+                "color_text": "#ffffff",
+                "val": [69.9, 79.9],
+                "text": "70-80%",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#2C29CB",
+                "color_text": "#ffffff",
+                "val": [79.9, 89.9],
+                "text": "80-90%",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#22217C",
+                "color_text": "#ffffff",
+                "val": [89.9, 99999],
+                "text": "90-100%",
+                "order": 0
+            }]
+        }];
     function getColorByCondition(val, range){
         for(var i = 0,j=range.length;i<j;i++){
             var case_range = range[i];
