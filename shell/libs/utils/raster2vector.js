@@ -326,7 +326,7 @@
 		return S/2;
 	}
 	// 处理所有点,得到端点和结点
-	function make_point(x, y){
+	function make_point(x, y, is_peak){
 		var item_left_top = data_parsing[x][y];
 		var item_right_bottom = data_parsing[x+1][y+1];
 		var left_top = item_left_top.c;
@@ -349,9 +349,11 @@
 		}
 		var len = dir_arr.length;
 		var point = new Point(x, y, dir_arr);
+		point._dir_arr = dir_arr.slice();
 		point.lng = item_left_top.x + (item_right_bottom.x - item_left_top.x)/2;
 		point.lat = item_left_top.y + (item_right_bottom.y - item_left_top.y)/2;
-		if(len > 2){
+
+		if(len > 2 || is_peak){
 			point.type = TYPE_ENDPOINT;
 			points_endpoint.push(point);
 		}else if(len == 2){
@@ -386,10 +388,10 @@
 
 	// 解析数据，确定端点及结点
 	function _parseData(){
-		var top_arr = [];
 		for(var i = 0; i< width_data-1; i++){
 			for(var j = 0; j< height_data-1; j++){
-				make_point(i, j);
+				var is_peak = (i == 0 && (j == 0 || j == height_data-2)) || (i == width_data - 2 && (j == 0 || j == height_data-2));
+				make_point(i, j, is_peak);
 			}
 		}
 	}
@@ -750,26 +752,17 @@
 		}
 		arc.points = points_new;
 	}
-	// 对多边形上在一条直线上的结点进行裁剪
-	function _cutPolygon(items){
-		var items_new = [];
-		var item;
-		var dir_x, dir_y;
-		while((item = items.shift())){
-			var x = item.x, y = item.y;
-			var next_item;
-			while((next_item = items.shift())){
-				dir_x = next_item.x - x;
-				dir_y = next_item.y - y;
-			}
-		}
-	}
 	var smooth = (function(){
 		var arc_cache = {};
 	    var dis_squre = Math.pow(0.05 ,2);
 	    var percent_new_point = 0.2;
-	    var fn_return = function (points, items){
+	    var fn_return = function (points, items, is_peak){
+	    	// 对边缘直线进行处理
+	    	if(is_peak){
+	    		return points;
+	    	}
 	        var len = points.length;
+	        //对只有两个点的直线添加外侧点再进行插值
 	        if(len == 2){
 	            var p1 = points[0],
 	                p2 = points[1];
@@ -821,32 +814,42 @@
 	        if(len >= 3){
 	            var id_s = points[0].id,
 	                id_e = points[len - 1].id;
-	            var key = id_s + ',' + id_e+','+len;
+
+	            var ids = points.map(function(v){
+	            	return v.id;
+	            });
+	            var key = ids.join(',');
 	            var val_cache = arc_cache[key];
 	            if(val_cache){
 	                return val_cache;
 	            }else{
-	                var key_reserve = id_e + ',' + id_s+','+len;
-	                val_cache = arc_cache[key_reserve];
+	                ids.reverse();
+	                var key_reverse = ids.join(',');
+	                val_cache = arc_cache[key_reverse];
 	                if(val_cache){
 	                    val_cache.reverse();
 	                    return val_cache;
 	                }else{
 	                    var result = smoothBSpline(points, 5);
-	                    var prev_point = result.shift();
-	                    var result_new = [prev_point];
-	                    for(var i = 1, j = result.length; i<j; i++){
-	                        var p = result[i];
-	                        if(Math.pow(prev_point.lng - p.lng, 2) + Math.pow(prev_point.lat - p.lat, 2) >= dis_squre){
-	                            result_new.push(p);
-	                            prev_point = p;
-	                        }
+	                    var result_new = [];
+	                    if(result.length < 10){ //尽量保留小细节，减少计算
+	                    	result_new = result; 
+	                    }else{
+		                    var prev_point = result.shift();
+		                    result_new = [prev_point];
+		                    for(var i = 1, j = result.length; i<j; i++){
+		                        var p = result[i];
+		                        if(Math.pow(prev_point.lng - p.lng, 2) + Math.pow(prev_point.lat - p.lat, 2) >= dis_squre){
+		                            result_new.push(p);
+		                            prev_point = p;
+		                        }
+		                    }
 	                    }
-	                    var first_point = result_new[0],
-	                        last_point = result_new[result_new.length-1];
-	                    if(Math.pow(first_point.lng - last_point.lng, 2) + Math.pow(first_point.lat - last_point.lat, 2) < dis_squre){
-	                        result_new.pop();
-	                    }
+	                    // var first_point = result_new[0],
+	                    //     last_point = result_new[result_new.length-1];
+	                    // if(Math.pow(first_point.lng - last_point.lng, 2) + Math.pow(first_point.lat - last_point.lat, 2) < dis_squre){
+	                    //     result_new.pop();
+	                    // }
 
 	                    (arc_cache[key] = result_new);
 	                    return result_new;
@@ -862,7 +865,7 @@
 	})();
 	// 对描完的边进行平滑处理
 	function _dealItems(items){
-        // return [items];
+        // return items;
         var items_new = [];
         var arr_index = [];
         for(var i = 0, j = items.length; i<j; i++){
@@ -886,9 +889,7 @@
             }
         }
         var items_return = [];
-        var num = 0;
         for(var i = 0, j = items_new.length; i<j; i++){
-            num += items_new[i].length;
             var flag_islast = i == j-1;
             var p_add = null;
             if(i+1 < j){
@@ -896,16 +897,37 @@
             }else{
                 p_add = items_new[0][0];;
             }
-            items_new[i].push(p_add);
             // var result = _smoothSpline(items_new[i]);
-            var result = smooth(items_new[i], items);
-            var l = result.length;
-            if(l > 0){
-                var p_last = result[l-1];
-                if(p_add && p_last.lng == p_add.lng && p_last.lat == p_add.lat){
-                    result.pop();
-                }
+            items_new[i].push(p_add);
+            var _item = items_new[i];
+            var _first_item = _item[0];
+            
+            var x_s = _first_item.x,
+            	y_s = _first_item.y;
+            var isequal_x = x_s == 0 || x_s == width_data-2,
+            	isequal_y = y_s == 0 || y_s == height_data-2;
+
+            // 对边缘的直线进行过滤
+            var is_peak = true;
+            for(var i_test = 1, j_test = _item.length; i_test<j_test; i_test++){
+            	var item_test = _item[i_test],
+            		x_test = item_test.x,
+            		y_test = item_test.y;
+
+            	var flag = (x_s == x_test && isequal_x) || (y_s == y_test && isequal_y);
+            	if(!flag){
+            		is_peak = false;
+            		break;
+            	}
             }
+            var result = smooth(_item, items, is_peak);
+            // var l = result.length;
+            // if(l > 0){
+            //     var p_last = result[l-1];
+            //     if(p_add && p_last.lng == p_add.lng && p_last.lat == p_add.lat){
+            //         result.pop();
+            //     }
+            // }
             items_return = items_return.concat(result);
         }
         return items_return;
@@ -937,7 +959,7 @@
 				}catch(e){}
 				items = items.concat(points);
 			}
-			items.pop();
+			// items.pop(); //防止此操作造成的空隙问题
 			var area = _cache_area(items);
 			if(area !== null){
 				polygons_new.push(area);
@@ -1081,16 +1103,17 @@
 		smooth.reset();
 	}
 
-	// global._smooth = smooth;
-	// global._dealItems = _dealItems;
-	// global.utils = utils;
-	// global._smoothSpline = smoothSpline;
-	// global._smoothBSpline = smoothBSpline;
-	// global._pretreatmentData = _pretreatmentData;
-	// global._makeArcs = _makeArcs;
-	// global._makePolygons = _makePolygons;
-	// global._parsePolygons = _parsePolygons;
-	// global._addColor = _addColor;
+	global._smooth = smooth;
+	global._dealItems = _dealItems;
+	global.utils = utils;
+	global._smoothSpline = smoothSpline;
+	global._smoothBSpline = smoothBSpline;
+	global._pretreatmentData = _pretreatmentData;
+	global._makeArcs = _makeArcs;
+	global._makePolygons = _makePolygons;
+	global._parsePolygons = _parsePolygons;
+	global._addColor = _addColor;
+	global._smoothPolygons = _smoothPolygons;
 	global.raster2vector = function(data, color_novalue){
 		_reset();
 		_pretreatmentData(data, color_novalue);

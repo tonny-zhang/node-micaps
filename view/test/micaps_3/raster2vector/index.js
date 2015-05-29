@@ -205,6 +205,97 @@
                 "order": 0
             }]
         }];
+    //24小时变温实况
+    var blendent = [{
+            "val": {
+                "n": "温度",
+                "v": "102"
+            },
+            "color_start": "#0000ff",
+            "color_end": "#ff0000",
+            "is_stripe": false,
+            "number_min": "-8",
+            "number_max": "8",
+            "number_level": "9",
+            "colors": [{
+                "is_checked": true,
+                "color": "#360b81",
+                "color_text": "#ffffff",
+                "val": [-9999, -8],
+                "text": "<-8℃",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#523fb5",
+                "color_text": "#ffffff",
+                "val": [-8, -6],
+                "text": "-8~-6",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#5776d3",
+                "color_text": "#000000",
+                "val": [-6, -4],
+                "text": "-6~-4",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#75abd1",
+                "color_text": "#000000",
+                "val": [-4, -2],
+                "text": "-4~-2",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#a9f6ee",
+                "color_text": "#000000",
+                "val": [-2, -1],
+                "text": "-2~-1",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#ecfdc7",
+                "color_text": "#000000",
+                "val": [-1, 1],
+                "text": "-1~1",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#edcf75",
+                "color_text": "#000000",
+                "val": [1, 2],
+                "text": "1~2",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#f49006",
+                "color_text": "#000000",
+                "val": [2, 4],
+                "text": "2~4",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#f15d07",
+                "color_text": "#000000",
+                "val": [4, 6],
+                "text": "4~6",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#e2000b",
+                "color_text": "#ffffff",
+                "val": [6, 8],
+                "text": "6~8",
+                "order": 0
+            }, {
+                "is_checked": true,
+                "color": "#bc012c",
+                "color_text": "#ffffff",
+                "val": [8, 99999],
+                "text": "≥8℃",
+                "order": 0
+            }]
+        }];
     function getColorByCondition(val, range){
         for(var i = 0,j=range.length;i<j;i++){
             var case_range = range[i];
@@ -255,7 +346,7 @@
      //    return color;
     }
 
-    function predealData (data){
+    function predealData (data, is_no_deal_border){
     	var data_new = [];
     	var width = data.length,
     		height = data[0].length;
@@ -264,7 +355,7 @@
     		var item_arr = data[i];
     		for(var j = 0; j<height; j++){
     			var item = item_arr[j];
-    			if(i == 0 || j == 0|| i == width - 1 || j == height - 1){
+    			if(!is_no_deal_border && (i == 0 || j == 0|| i == width - 1 || j == height - 1)){
     				item.v = DEFAULT_VAL;
     				item.c = COLOR_TRANSPANT;
     			}else{

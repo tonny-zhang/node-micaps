@@ -253,6 +253,8 @@ function _parse_file(line_arr, options){
 	_sort_areas(content_info.areas);
 	// 格式化数据
 	_format(content_info);
+	/*这里基于数据层的clip操作会影响整个数据的读取时间，暂时去掉*/
+	// _doclip(content_info, _options);
 	return content_info;
 }
 
@@ -1004,6 +1006,8 @@ function _format(content_info){
 		// delete v.public_line;
 		delete v.code_list;
 		delete v.area;
+		delete v.public_line;
+		delete v.type;
 	});
 	content_info.areas = areas_items;
 	if(content_info.line_symbols){
@@ -1027,5 +1031,43 @@ function _format(content_info){
 	});
 	content_info.lines = line_items;
 	content_info.symbols = content_info.symbols.items;
+}
+function _doclip(content_info, option){
+	if(option){
+		var clip_china = option.clip_china;
+		if(clip_china){
+			var time_start = new Date();
+			var GeoClipper = require('../utils/geoclipper');
+			new GeoClipper(null, null, function(){
+				var geoClipper = this;
+				var areas_new = [];
+				content_info.areas.forEach(function(area){
+					var result = geoClipper.doClip(area.items);
+					// console.log(result);
+					var scale = result.scale || 1;
+					var paths = result.paths;
+					for(var i = 0, j = paths.length; i<j; i++){
+						var area_new = {};
+						for(var attr in area){
+							area_new[attr] = area[attr];
+						}
+						var path = paths[i];
+						var items_new = [];
+						for(var i_p = 0, j_p = path.length; i_p < j_p; i_p++){
+							var item = path[i_p];
+							items_new.push({
+								x: item.X / scale,
+								y: item.Y /scale
+							});
+						}
+						area_new.items = items_new;
+						areas_new.push(area_new);
+					}
+				});
+				content_info.areas = areas_new;
+			});
+			console.log(new Date() - time_start);
+		}
+	}
 }
 exports.parse = _parse_file;

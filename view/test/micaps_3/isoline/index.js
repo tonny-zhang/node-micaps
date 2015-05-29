@@ -209,10 +209,28 @@
         }
     	return data;
     }
+    function predealDataClipper (data, _is_get_isoline_value){
+        var data_new = [];
+        var width = data.length,
+            height = data[0].length;
+        for(var i = 0; i<width; i++){
+            var item_arr = data[i];
+            for(var j = 0; j<height; j++){
+                var item = item_arr[j];
+                item.c = _getColor(item.v);
+            }
+        }
+        // console.log(c);
+        if(_is_get_isoline_value){
+            return [data, isoline];
+        }
+        return data;
+    }
     global.DEFAULT_VAL = DEFAULT_VAL;
     global.COLOR_TRANSPANT = COLOR_TRANSPANT;
     // global.color2rgba = color_normal2rgba;
     global.getColor = _getColor;
     global.predealData = predealData;
+    global.predealDataClipper = predealDataClipper;
 	g.global = global;
 }(this);

@@ -55,9 +55,10 @@ ul{
         var url = '../../../../data/micaps/3/15040302.000.json';
         // var url = '../../../../data/micaps/4/15021208.000.json';
         var url = './data/xdsd/15050718.000.json';
+        var url = '../../../../data/micaps/3/15050708.000.json';
         $.getJSON(url, function(data){
-            data = global.predealData(data.interpolate);
-
+            data = global.predealData(data.interpolate, true);
+            
             var bounds = map.getBounds(),
                 sw_point = bounds.getSouthWest(),
                 ne_point = bounds.getNorthEast(),
@@ -87,9 +88,10 @@ ul{
                     }
                 }
             }
-            
+            console.log(data);
             var time1 = new Date();
             var polygons = raster2vector(data, global.COLOR_TRANSPANT);
+            window.polygons = polygons;
             var time2 = new Date();
             console.log('raster2vector', time2-time1, 'ms!');
             time1 = time2;

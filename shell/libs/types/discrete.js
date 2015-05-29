@@ -66,7 +66,6 @@ function _parse_file(lines, option){
 		}	
 	});
 	
-	
 	var lnglat_arr = idw.genLngLatArr(option.x0, option.y0, option.x1, option.y1, option.grid_space);
 	var new_data = idw.interpolate(data, lnglat_arr, option.numOfNearest, option.default_val, option.interpolation_all);
 	// 对格点上的数据值进行格式化，减小文件体积
