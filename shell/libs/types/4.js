@@ -40,8 +40,16 @@ exports.parse = function(lines, options){
 				data.push(items);
 			}	
 		}
+		// 重组保证和其它类型的格式及顺序一致
+		var data_new = [];
+		for(var i = 0, j = data.length; i<j; i++){
+			var items = data[i];
+			for(var i_1 = 0, j_1 = items.length; i_1<j_1; i_1++){
+				(data_new[i_1] || (data_new[i_1] = [])).unshift(items[i_1]);
+			}
+		}
 		return {
-			interpolate: data
+			interpolate: data_new
 		};
 	}
 }

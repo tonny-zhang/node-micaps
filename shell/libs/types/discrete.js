@@ -1,7 +1,7 @@
 var idw = require('../interpolate/idw');
 var digit_util = require('../utils').Digit;
 
-var DEFAULT_VALUE = 999999;
+var DEFAULT_VALUE = 99999;
 var DEFAULT_COLOR = 'rgba(0,0,0,0)';
 var REG_DATA_NUM = /^\d+\s+(\d+)$/;
 var REG_DATA = /^(\d+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+(-?[\d.]+)$/;
@@ -13,10 +13,10 @@ function _parse_file(lines, option){
 		y0: 17.5,
 		x1: 137,
 		y1: 55,
-		grid_space: 0.5,
+		grid_space: 0.6,
 		numOfNearest: 5,
 		default_val: DEFAULT_VALUE,
-		interpolation_all: false,
+		interpolation_all: 1,
 		num_of_cols: 5,
 		val_col: 5,
 		arithmetic: null

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;}
+ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+</style>
+<title>micas3类数据插值结果展示</title>
+</head>
+<body>
+    <div id="allmap">
+    </div>
+    <script type="text/javascript" src="http://i.tq121.com.cn/j/jquery-1.8.2.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=E8MDMS4BVFEMeAxVP3YddQ6X"></script>
+    <script type="text/javascript">
+    map = new BMap.Map("allmap");
+    map.addEventListener('click', function(e){
+    	console.log(e.point);
+    });
+    var mapType = new BMap.MapTypeControl({mapTypes: [BMAP_NORMAL_MAP,BMAP_HYBRID_MAP], anchor: BMAP_ANCHOR_BOTTOM_RIGHT});
+	map.addControl(mapType);
+    map.centerAndZoom(new BMap.Point(116.404, 39.915), 6);
+    // map.centerAndZoom(new BMap.Point(69.772, 46.886), 8);
+    map.enableScrollWheelZoom();
+    var dealItems = (function(){
+	  var MIN_DIS = Math.pow(0.1, 2);
+	  return function(items){return items;
+	    var startPoint = items[0];
+	    var items_new = [startPoint];
+	    for(var i = 1, j = items.length; i<j; i++){
+	      var item = items[i];
+	      if(Math.pow(startPoint.lng - item.lng, 2) + Math.pow(startPoint.lat - item.lat, 2) > MIN_DIS){
+	      	// console.log(i, Math.pow(startPoint.lng - item.lng, 2) + Math.pow(startPoint.lat - item.lat, 2));
+	        items_new.push(item);
+	        startPoint = item;
+	      }
+	    }
+	    console.log(items.length+'=>'+items_new.length);
+	    return items_new;//smoothBSpline(items_new, 5);
+	  }
+	})();
+	function getArea(points){
+	  var S = 0;
+	  for(var i = 0, j = points.length - 1; i<j; i++){
+	    var p_a = points[i],
+	      p_b = points[i + 1];
+	    S += p_a.lng * p_b.lat - p_b.lng*p_a.lat;
+	  }
+	  var p_a = points[j],
+	    p_b = points[0];
+	  S += p_a.lng * p_b.lat - p_b.lng*p_a.lat;
+	  return S/2;
+	}
+	var around = [110.811222,  34.656237, 121.076913,  27.703676];
+	around = [85.938076, 60.103183, 105.292033, 53.282797];
+	around = [136.107505, 60.423105, 142, 57];
+	around = [80.009548, 54.173295, 92.630093, 46.26538,];
+	var url_val = './data/v.json';
+	$.getJSON(url_val, function(data){
+		$.each(data.interpolate, function(i, v){
+			// if(i != 100){
+			// 	return;
+			// }
+			$.each(v, function(i_inner, v_inner){
+				var val = v_inner.v;
+				if(val == 999999){
+					val = -14;
+					return;
+				}
+				// if(!(v_inner.x >= around[0] && v_inner.x <= around[2] && v_inner.y >= around[3] && v_inner.y <= around[1])){
+				// 	return;
+				// }
+				// if(val != 999999){
+					setTimeout(function(){
+						// if(val < 36){
+						// 	return;
+						// }
+						var label = new BMap.Label(val, {
+							position: new BMap.Point(v_inner.x, v_inner.y),
+							offset: new BMap.Size(-17, -10)
+						});  // 创建文本标注对象
+						label.setStyle({
+							 color : "#000",
+							 fontSize : "16px",
+							 height : "20px",
+							 lineHeight : "20px",
+							 fontFamily:"微软雅黑",
+							 width: '34px',
+							 textAlign: 'center',
+							 border: 'none',
+							 background: 'none',
+							 fontWeight: 'bold',
+							 textShadow: '0 0 5px white'
+						 });
+						map.addOverlay(label);
+					// }, 100*i+i_inner)
+					}, 1)
+				// }
+			});
+		});
+	});
+
+    var url = './data/2.json';
+    $.getJSON(url, function(data){
+    	$.each(data, function(i, v){
+    		v.index = i;
+    	});
+  		// data.sort(function(a, b){
+		// 	var c = a.level - b.level;
+		// 	if(c == 0){
+		// 		return b.area - a.area;
+		// 	}
+		// 	return c;
+		// });
+		// data.reverse();
+		console.log(data);
+		// var d_item = data.shift();
+		// var d_area = getArea(d_item.items);
+		// console.log(d_item.items.length, d_area);
+
+    	$.each(data, function(i, v){
+    		// console.log(i, v.level);
+    		// if(!(i == 6 || i == 7)){
+    		// 	console.log(v);
+    		// 	return;
+    		// }
+    		var point_arr = [];
+    		var color = v.color;
+    		// var area = getArea(v.items);
+    		var p_start = v.items[0],
+    			p_second = v.items[1],
+    			p_end = v.items[v.items.length-1];
+
+
+    		// if((Math.abs(p_start.lng - p_end.lng)<=0.25 && Math.abs(p_start.lat - p_end.lat)<=0.25)){
+    		// 	console.log('test',Math.abs(p_start.lng - p_end.lng), Math.abs(p_start.lat == p_end.lat));
+    		// 	return;
+    		// }
+    		console.log(i, 'test1',Math.abs(p_start.lng - p_end.lng), Math.abs(p_start.lat - p_end.lat));
+    		// if(p_start.lng == p_end.lng && p_start.lat == p_end.lat){
+    		// 	return;
+    		// }
+    		// console.log(color, v.level, p_start, p_end);
+    		// console.log(v.items.length > 100 , Math.pow(p_start.lng - p_end.lng, 2) + Math.pow(p_start.lat - p_end.lat, 2));
+    		// if(Math.pow(p_start.lng - p_end.lng, 2) + Math.pow(p_start.lat - p_end.lat, 2) >= 2500){
+    		// 	return;
+    		// }
+    		// var flag = p_start.lng == p_end.lng && p_start.lat == p_end.lat;
+    		// console.log(flag);
+    		// if(flag){
+    		// 	return;
+    		// }
+    		$.each(v.items, function(i_v, v_v){
+
+	            var point = new BMap.Point(v_v.lng, v_v.lat);
+	            point_arr.push(point);
+	     //        if(i == 9){// 7, 4
+	     //    		setTimeout(function(){
+	     //    			var marker = new BMap.Marker(point);
+						// // marker.addEventListener("click",function(){
+						// // 	var p = marker.getPosition();  //获取marker的位置
+						// // 	alert(v_i+' flag = '+v_v.flag+" marker的位置是" + p.lng + "," + p.lat);    
+						// // });
+						// map.addOverlay(marker);
+	     //    		}, 50*i_v);
+	     //    	}
+	        });
+	        var polygon = new BMap.Polygon(point_arr, {
+	    		strokeColor: color, 
+	    		fillColor: color,
+	    		fillOpacity: 0.8, 
+	    		strokeWeight: 1, 
+	    		strokeOpacity:1
+	    	});
+	    	var polygon = new BMap.Polyline(point_arr, {
+	    		strokeColor: getRandomColor(), 
+	    		fillColor: color,
+	    		fillOpacity: 0.8, 
+	    		strokeWeight: 3, 
+	    		strokeOpacity:1
+	    	});
+	    	polygon.addEventListener("click",function(){
+	    		console.log('level = '+v.level+', i = '+i+', p_start.lng = '+p_start.lng+',p_end.lng = '+ p_end.lng+', p_start.lat = '+ p_start.lat+', p_end.lat = '+ p_end.lat);
+	    	});
+	    	setTimeout(function(){
+	        	map.addOverlay(polygon);
+	        }, 0)
+    	});
+    });
+	function getRandom(min, max){
+		return Math.floor(Math.random() * (max - min)) + min;
+	}
+	function getRandomColor(){
+		return 'rgba('+getRandom(0, 255)+', '+getRandom(0, 255)+', '+getRandom(0, 255)+', 1)';
+	}
+	var url = './data/list.json';
+	// $.getJSON(url, function(data){
+	// 	$.each(data, function(i, v){
+	// 		var point_arr = [];
+	// 		$.each(v, function(ii, vv){
+	// 			var point = new BMap.Point(vv.x, vv.y);
+	//             point_arr.push(point);
+	// 		});
+	// 		setTimeout(function(){
+	// 			var polyline = new BMap.Polyline(point_arr, {
+	// 	    		strokeColor: getRandomColor(), 
+	// 	    		strokeWeight: 2, 
+	// 	    		strokeOpacity:1
+	// 	    	});
+		    	
+	// 	        map.addOverlay(polyline);
+	//         }, i*100);
+	// 	});
+	// });
+    </script>
+</body>
+</html>

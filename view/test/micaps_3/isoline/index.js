@@ -122,6 +122,82 @@
             "order": 0
         }]
     }];
+    var blendent1 = [{
+        "val": {
+            "n": "雨",
+            "v": 26
+        },
+        "color_start": "#0000ff",
+        "color_end": "#ff0000",
+        "is_stripe": false,
+        "number_min": "0",
+        "number_max": "50",
+        "number_level": "7",
+        "colors": [{
+            "is_checked": false,
+            "color": "#ffffff",
+            "color_text": "#000000",
+            "val": [-9999, 0],
+            "text": "无降水",
+            "order": 0
+        }, {
+            "is_checked": true,
+            "color": "#a5f58b",
+            "color_text": "#000000",
+            "val": [0, 2],
+            "text": "1-2",
+            "order": 0
+        }, {
+            "is_checked": true,
+            "color": "#65bc49",
+            "color_text": "#000000",
+            "val": [2, 4],
+            "text": "2-4",
+            "order": 0
+        }, {
+            "is_checked": true,
+            "color": "#00734c",
+            "color_text": "#000000",
+            "val": [4, 6],
+            "text": "4-6",
+            "order": 0
+        }, {
+            "is_checked": true,
+            "color": "#5bbcf5",
+            "color_text": "#000000",
+            "val": [6, 8],
+            "text": "6-8",
+            "order": 0
+        }, {
+            "is_checked": true,
+            "color": "#0065d6",
+            "color_text": "#ffffff",
+            "val": [8, 10],
+            "text": "8-10",
+            "order": 0
+        }, {
+            "is_checked": true,
+            "color": "#5401fe",
+            "color_text": "#ffffff",
+            "val": [10, 20],
+            "text": "10-20",
+            "order": 0
+        }, {
+            "is_checked": true,
+            "color": "#bc01c8",
+            "color_text": "#ffffff",
+            "val": [20, 50],
+            "text": "20-50",
+            "order": 0
+        }, {
+            "is_checked": true,
+            "color": "#710103",
+            "color_text": "#ffffff",
+            "val": [50, 99999],
+            "text": "≥50毫米",
+            "order": 0
+        }]
+    }];
     function getColorByCondition(val, range, _is_get_isoline_value){
         for(var i = 0,j=range.length;i<j;i++){
             var case_range = range[i];
