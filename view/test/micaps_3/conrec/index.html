@@ -109,13 +109,13 @@ ul{
                             setTimeout(function(){
                                 showLabel(val, x, y);
                             }, delay);
-                        })(val_add, i*10, i, j);
+                        })(val_add, i, i, j);
                     }
                     _new_interpolate_data.push(arr);  
                 }
                 // console.log(_new_interpolate_data, blendent);
                 var data = conrec(_new_interpolate_data, blendent, COLOR_TRANSPANT);
-                // console.log(polygons);
+                console.log(data);
                 var relation = data.r,
                     list = data.list;
                 $.each(relation, function(i, v){
@@ -139,6 +139,9 @@ ul{
     function showLabel(v, x, y){
         var val = v.v;
         if(/^9{4,}/.test(val)){
+            return;
+        }
+        if(val < 10){
             return;
         }
         var label = new BMap.Label(val, {

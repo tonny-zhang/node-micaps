@@ -726,11 +726,11 @@
     
     var data_new = [];
     var len = rasterData.length;
-    var num_min = Number.POSITIVE_INFINITY, 
-      num_max = Number.NEGATIVE_INFINITY,
-      num_total = 0,
+    var num_total = 0,
       num_counter = 0;
-
+    var num_min = Number.POSITIVE_INFINITY, 
+      num_max = Number.NEGATIVE_INFINITY;
+    var val_cache = {};
     var val_replace_default = zArr[0] - 1;
     for(var i = 0; i<len; i++){
       var items = rasterData[i];
@@ -745,8 +745,14 @@
             val = val_replace_default;
           }else{
             val = items[i_1].level * 2;
+            if(!val_cache[val]){
+              val_cache[val] = 1;
+            }else{
+              val_cache[val]++;
+            }
             num_total += val;
             num_counter++;
+
             if(val > num_max){
               num_max = val;
             }
@@ -760,9 +766,27 @@
       }
       data_new.push(arr);
     }
-    var num_average = num_total/num_counter;
-    /*平均值靠近大值时说明是大值面包含小值面，这时把添加的默认值进行替换*/
-    if(num_max - num_average < num_average - num_min){
+    var val_arr = [];
+    for(var i in val_cache){
+      val_arr.push({
+        v: Number(i),
+        n: val_cache[i]
+      });
+    }
+    // val_arr.sort(function(a, b){
+    //   var c = a.n - b.n;
+    //   if(c === 0){
+    //     return a.v - b.v;
+    //   }
+    //   return c;
+    // });
+    var len = val_arr.length;
+    var val_arr_max = val_arr[len-1];
+    val_arr.sort(function(a, b){
+      return a.v - b.v;
+    });
+    // 当最多点数靠近大值时把添加的默认值进行替换
+    if(val_arr_max.v > (val_arr[0].v+val_arr[len-1].v)/2 && val_arr_max.n/num_counter > Math.floor(len/2)/len){
       var val_replace_default_old = val_replace_default,
         val_replace_default = zArr[zArr.length - 1] + 1;
       for(var i = 0, j = data_new.length; i<j; i++){
@@ -858,6 +882,7 @@
           if(!items_check.is_island){
             (relation_cache[index_start] || (relation_cache[index_start] = [])).push(index);
           }
+          break;
         }
       }
     }
