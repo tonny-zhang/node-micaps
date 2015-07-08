@@ -796,7 +796,7 @@
       checked = false;
     for(var i = 0, j = level_arr.length; i<j; i++){
       var v = level_arr[i].v;
-      if(!checked && max_level < v){
+      if(!checked && max_level <= v){
         checked = true;
         if(i > j/2){
           is_reverse = true;
