@@ -735,8 +735,9 @@
     var data_new = [];
     var len = rasterData.length;
     /*确定默认值的替代值*/
-    var level_cache = {},
-      level_around_cache = {};
+    // var level_cache = {},
+    var level_around_cache = {};
+    /*对不是默认值的点查看周围是否有默认点，以此来最后判定离默认点最近的值，最后判定是否要把图例进行反转*/
     function initDefaultLevel(x, y){
       for(var i = x-1,j = x+1; i<j; i++){
         for(var i_y = y-1,j_y = y+1; i_y<j_y; i_y++){
@@ -744,13 +745,14 @@
           try{
             val = rasterData[i][i_y];
           }catch(e){}
-          if(val !== null && val.v !== DEFAULT_VALUE){
-            var level = val.level;
+          if(val !== null && val.v === DEFAULT_VALUE){
+            var level = rasterData[x][y].level;
             if(level_around_cache[level]){
               level_around_cache[level]++;
             }else{
               level_around_cache[level] = 1;
             }
+            return true;
           }
         }
       }
@@ -761,15 +763,8 @@
           if(!(i == 0 || i == len-1 || i_1 == 0 || i_1 == j_1 - 1)){
             var item = items[i_1];
             var v_current = item.v;
-            if(v_current == DEFAULT_VALUE){
+            if(v_current !== DEFAULT_VALUE){
               initDefaultLevel(i, i_1);
-            }else{
-              var level = item.level;
-              if(level_cache[level]){
-                level_cache[level]++;
-              }else{
-                level_cache[level] = 1;
-              }
             }
           }
       }
@@ -782,23 +777,15 @@
         max_level = i;
       }
     }
-    var level_arr = [];
-    for(var i in level_cache){
-      level_arr.push({
-        v: Number(i),
-        n: level_cache[i]
-      });
-    }
-    level_arr.sort(function(a, b){
-      return a.v - b.v;
-    });
     var is_reverse = false,
       checked = false;
-    for(var i = 0, j = level_arr.length; i<j; i++){
-      var v = level_arr[i].v;
+
+    max_level *= 2; //得到最后个数最多的操作值
+    for(var i = 0, j = zArr.length; i<j; i++){
+      var v = zArr[i];
       if(!checked && max_level <= v){
         checked = true;
-        if(i > j/2){
+        if(i >= j/2){
           is_reverse = true;
         }
       }
@@ -813,6 +800,7 @@
         return is_reverse? zArr_cache[val]: val;
       }
     })();
+    // console.log('is_reverse = '+is_reverse, zArr, max_level, level_around_cache);
     for(var i = 0; i<len; i++){
       var items = rasterData[i];
       var arr = [];
@@ -828,12 +816,12 @@
             val = getVal(items[i_1].level * 2);
           }
         }
+        
         items[i_1].val_new = val;
         arr.push(val);
       }
       data_new.push(arr);
     }
-    
     var c = new Conrec();
     c.contour(data_new, 0, xArr.length-1, 0, yArr.length-1, xArr, yArr, zArr.length, zArr);
     var list = c.contourList();
@@ -841,10 +829,10 @@
     list.map(function(v){
         v.area = Math.abs(getArea(v));
         var color_conf =  colors[Number(v.k)+1];
-        if(color_conf && color_conf.is_checked){
-          v.color = color_conf.color;
+        // if(color_conf && color_conf.is_checked){
+        //   v.color = color_conf.color;
           list_new.push(v);
-        }
+        // }
     });
     list_new.sort(function(a, b){
       return b.area - a.area;

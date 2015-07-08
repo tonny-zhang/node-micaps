@@ -75,7 +75,6 @@ ul{
             }
             return getColorByCondition(val, blendent[0].colors);
         }
-        console.log(getColor(0));
         $.getJSON('./data/1.json', function(data){
             var interpolate = data.interpolate;
             if(interpolate){
@@ -132,18 +131,17 @@ ul{
 
                     showPolygon(items_polygon, color, items_clip, i);
                 });  
-                // for(var i = 0; i < _interpolate_width; i++){
-                //     var arr = [];
-                //     for(var j = 0; j< _interpolate_height; j++){
-                //         var v = _new_interpolate_data[i][j];
-                //         (function(val, delay, x, y){
-                //             setTimeout(function(){
-                //                 showLabel(val, x, y);
-                //             }, delay);
-                //         })(v, i, i, j);
-                //     }
-                // }  
-                // showPolygons(items_polygon, items_clip);
+                for(var i = 0; i < _interpolate_width; i++){
+                    var arr = [];
+                    for(var j = 0; j< _interpolate_height; j++){
+                        var v = _new_interpolate_data[i][j];
+                        (function(val, delay, x, y){
+                            setTimeout(function(){
+                                showLabel(val, x, y);
+                            }, delay);
+                        })(v, i, i, j);
+                    }
+                }  
             }
         });
     });
@@ -152,11 +150,15 @@ ul{
         if(/^9{4,}/.test(val)){
             return;
         }
+        // if(!(val >= 30 && val <= 50 || val < 10)){
+        //     return;
+        // }
         // if(val < 10){
         //     return;
         // }
         // var val = v.v;
-        var val = v.level * 2;
+        // var val = v.level * 2;
+        // var val = v.val_new;
         var label = new BMap.Label(val, {
             position: new BMap.Point(v.x, v.y),
             offset: new BMap.Size(-17, -10)

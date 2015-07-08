@@ -48,6 +48,7 @@ if(args.length > 2){
 		// var file_path = '../data/micaps_source/14/rr052208.024';
 		var file_path = '../data/micaps_source/3/15050708.000';//逐6小时降水实况 
 		var file_path = '../data/micaps_source/4/15070220.000';//2m温度
+		var file_path = '../data/micaps_source/4/15070720.000';//格点温度
 		format(file_path, function(source_path){
 			return source_path.replace('micaps_source','micaps')+'.json';
 		});
