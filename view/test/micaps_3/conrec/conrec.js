@@ -677,9 +677,13 @@
     }
   })();
   var dealItems = (function(){
-    var MIN_DIS = Math.pow(0.2, 2);
+    var MIN_DIS = Math.pow(0.15, 2);
 
     return function(items){
+      // 不对面积特别小且点比较少的数据进行处理
+      // if(items.length < 20 ){
+      //   return items;
+      // }
       var startPoint = items[0];
       var items_new = [startPoint];
       for(var i = 1, j = items.length; i<j; i++){
@@ -697,18 +701,22 @@
     polygonIsInsidePolygon = _utils.polygonIsInsidePolygon;
 
   var DEFAULT_VALUE = 999999;
-  var ILLEGAL_DISTANCE = Math.pow(50, 2);
-  var VAL_SPLIT = 0.5;
   /*
    * 解决的问题如下：
-   * 1. 对默认值进行替换成zArr顶点的较小或较大值
-   * 2. 用Conrec类对数据进行等值线的初始化
-   * 3. 用格点数据对面进行判断是否是孤岛并进行颜色初始化
-   * 4. 找到孤岛面的父级面，建立索引包含关系
-   * 5. 生成返回数据
+   * 1. 找到离默认值最近且个数最多的颜色或等级
+   * 2. 确定图例区间和表达的意思是不是相反（值越大面越小）
+   * 3. 用Conrec类对数据进行等值线的初始化
+   * 4. 用格点数据对面进行判断是否是孤岛并进行颜色初始化
+   * 5. 找到孤岛面的父级面，建立索引包含关系
+   * 6. 生成返回数据
   */
   function conrec(rasterData, blendent, default_color){
     var zArr = [];
+    /*
+    * 1. 设k为点所在区间的索引值
+    * 2. 用 2*k 做为点所代表的值
+    * 3. 用 2*k+1 做分割线
+    */
     var colors = blendent[0].colors;
     colors.map(function(v, i){
       zArr.push(i*2+1);
@@ -722,16 +730,89 @@
     });
     sortEsc(xArr);
     sortEsc(yArr);
-    sortEsc(zArr);
+    // sortEsc(zArr);
     
     var data_new = [];
     var len = rasterData.length;
-    var num_total = 0,
-      num_counter = 0;
-    var num_min = Number.POSITIVE_INFINITY, 
-      num_max = Number.NEGATIVE_INFINITY;
-    var val_cache = {};
-    var val_replace_default = zArr[0] - 1;
+    /*确定默认值的替代值*/
+    var level_cache = {},
+      level_around_cache = {};
+    function initDefaultLevel(x, y){
+      for(var i = x-1,j = x+1; i<j; i++){
+        for(var i_y = y-1,j_y = y+1; i_y<j_y; i_y++){
+          var val = null;
+          try{
+            val = rasterData[i][i_y];
+          }catch(e){}
+          if(val !== null && val.v !== DEFAULT_VALUE){
+            var level = val.level;
+            if(level_around_cache[level]){
+              level_around_cache[level]++;
+            }else{
+              level_around_cache[level] = 1;
+            }
+          }
+        }
+      }
+    }
+    for(var i = 0; i<len; i++){
+      var items = rasterData[i];
+      for(var i_1 = 0, j_1 = items.length; i_1<j_1; i_1++){
+          if(!(i == 0 || i == len-1 || i_1 == 0 || i_1 == j_1 - 1)){
+            var item = items[i_1];
+            var v_current = item.v;
+            if(v_current == DEFAULT_VALUE){
+              initDefaultLevel(i, i_1);
+            }else{
+              var level = item.level;
+              if(level_cache[level]){
+                level_cache[level]++;
+              }else{
+                level_cache[level] = 1;
+              }
+            }
+          }
+      }
+    }
+    var max_level = 0, max_num = 0;
+    for(var i in level_around_cache){
+      var n = level_around_cache[i];
+      if(n > max_num){
+        max_num = n;
+        max_level = i;
+      }
+    }
+    var level_arr = [];
+    for(var i in level_cache){
+      level_arr.push({
+        v: Number(i),
+        n: level_cache[i]
+      });
+    }
+    level_arr.sort(function(a, b){
+      return a.v - b.v;
+    });
+    var is_reverse = false,
+      checked = false;
+    for(var i = 0, j = level_arr.length; i<j; i++){
+      var v = level_arr[i].v;
+      if(!checked && max_level < v){
+        checked = true;
+        if(i > j/2){
+          is_reverse = true;
+        }
+      }
+    }
+    // 初始化要进行Conrec操作的点数据
+    var getVal = (function(){
+      var zArr_cache = {};
+      for(var i = 0, j = zArr.length; i<j; i++){
+        zArr_cache[zArr[i] - 1] = zArr[j - i - 1] - 1;
+      }
+      return function(val){
+        return is_reverse? zArr_cache[val]: val;
+      }
+    })();
     for(var i = 0; i<len; i++){
       var items = rasterData[i];
       var arr = [];
@@ -742,61 +823,17 @@
         }else{
           var v_current = items[i_1].v;
           if(v_current == DEFAULT_VALUE){
-            val = val_replace_default;
+            val = 0;
           }else{
-            val = items[i_1].level * 2;
-            if(!val_cache[val]){
-              val_cache[val] = 1;
-            }else{
-              val_cache[val]++;
-            }
-            num_total += val;
-            num_counter++;
-
-            if(val > num_max){
-              num_max = val;
-            }
-            if(val < num_min){
-              num_min = val;
-            }
+            val = getVal(items[i_1].level * 2);
           }
         }
-        
+        items[i_1].val_new = val;
         arr.push(val);
       }
       data_new.push(arr);
     }
-    var val_arr = [];
-    for(var i in val_cache){
-      val_arr.push({
-        v: Number(i),
-        n: val_cache[i]
-      });
-    }
-    // val_arr.sort(function(a, b){
-    //   var c = a.n - b.n;
-    //   if(c === 0){
-    //     return a.v - b.v;
-    //   }
-    //   return c;
-    // });
-    var len = val_arr.length;
-    var val_arr_max = val_arr[len-1];
-    val_arr.sort(function(a, b){
-      return a.v - b.v;
-    });
-    // 当最多点数靠近大值时把添加的默认值进行替换
-    if(val_arr_max.v > (val_arr[0].v+val_arr[len-1].v)/2 && val_arr_max.n/num_counter > Math.floor(len/2)/len){
-      var val_replace_default_old = val_replace_default,
-        val_replace_default = zArr[zArr.length - 1] + 1;
-      for(var i = 0, j = data_new.length; i<j; i++){
-        for(var i_1 = 0, items = data_new[i], j_1 = items.length; i_1<j_1; i_1++){
-          if(items[i_1] == val_replace_default_old){
-            items[i_1] = val_replace_default;
-          }
-        }
-      }
-    }
+    
     var c = new Conrec();
     c.contour(data_new, 0, xArr.length-1, 0, yArr.length-1, xArr, yArr, zArr.length, zArr);
     var list = c.contourList();
@@ -813,12 +850,10 @@
       return b.area - a.area;
     });
 
-    var num_total = 0;
     // 进行孤岛和所属关系判断
     function isIsland(polygon){
       var c_cache = {};
       var color_current = polygon.color;
-      // var k = parseInt(polygon.k) + 1;//polygon.level + VAL_SPLIT;
       var is_island = false;
       var num_in = 0, num_different_color = 0;
       for(var i = 1; i<len-1; i++){
@@ -828,9 +863,6 @@
           if(!val.isin){ //点只会在一个面中（从小到大依次判断）
             if(isInsidePolygon(polygon, val.x, val.y)){
               val.isin = true;
-              // num_in++;
-              // polygon.p = val;
-              // polygon.c_1 = val.c;
               var c_val = val.c;
               if(!c_cache[c_val]){
                 c_cache[c_val] = [];
@@ -848,14 +880,7 @@
           toColor = i;
         }
       }
-      // console.log(c_cache, color_current);
       polygon.toColor = toColor;
-      // polygon.num_in = num_in;
-      // polygon.num_different_color = num_different_color;
-      // num_total += num_in;
-      // if(num_in == 0 || (toColor != color_current))
-      // console.log(polygon.i, 'num_in = '+num_in+', toColor = '+toColor+', color_current = '+color_current, c_cache);
-      // return num_in == 0 || (toColor != color_current);
 
       /*这里用没有数值填色的默认颜色进行区分是否是孤岛*/
       return toColor == default_color;
