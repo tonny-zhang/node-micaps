@@ -542,7 +542,7 @@ $(function(){
 	var data_url = '../../../data/micaps/14/rr112108.048.json';
 	var data_url = '../../../data/micaps/14/14110508.000.json'; //形势场
 	var data_url = '../../../data/micaps/14/rr012608/rr012608.024.json'; //重点查
-	// var data_url = '../../../data/micaps/14/rr012608/rr012608.048.json'; //重点查
+	var data_url = '../../../data/micaps/14/rr012608/rr012608.048.json'; //重点查
 	// var data_url = '../../../data/micaps/14/rr012608/rr012608.072.json'; //重点查
 	// var data_url = '../../../data/micaps/14/14110514.000.json'; //形势场
 	// var data_url = '../../../data/micaps/14/14110520.000.json'; //形势场
@@ -557,11 +557,19 @@ $(function(){
 	// var data_url = '../../../data/micaps/14/rr033108.024.json';
 	// var data_url = '../../../data/micaps/14/rr033114.024.json'; //重点查
 	// var data_url = '../../../data/micaps/14/rr040808.024.json'; 
-	var data_url = '../../../data/micaps/14/rr041508.024.json';//201504015降水数据
-	// var data_url = '../../../data/micaps/14/rr041608.024.json';//201504015降水数据
-	// var data_url = '../../../data/micaps/14/tv042814.024.json';//201504028降水数据
-	var data_url = '../../../data/micaps/14/rr052208.024.json';
-	var data_url = '../../../data/micaps/14/test.json';
+	// var data_url = '../../../data/micaps/14/rr041508.024.json';//201504015降水数据
+	// // var data_url = '../../../data/micaps/14/rr041608.024.json';//201504015降水数据
+	// // var data_url = '../../../data/micaps/14/tv042814.024.json';//201504028降水数据
+	// var data_url = '../../../data/micaps/14/rr052208.024.json';
+	// var data_url = '../../../data/micaps/14/test.json';
+	// var data_url = '../../../data/micaps/14/15071008.024.json';
+	// // var data_url = '../../../data/micaps/14/15071014.024.json';
+	// var data_url = '../../../data/micaps/14/15071020.024.json';
+	var data_url = 'http://10.14.85.116/projects/typhoon_web/data.php?type=m';
+	var data_url = '../../../data/micaps/14/rr083108.024.json';
+	var data_url = 'http://10.14.85.116/result.json';
+	// var data_url = '../../../data/micaps/14/sudiluo_20150807.dat.json'
+	var data_url = '../../../data/micaps/14/kw15092208.072.json';
 	var ajax_data = $.getJSON(data_url),
 		ajax_constant = $.getJSON('../../../config/constant.json'),
 		ajax_color_precipitation = $.getJSON('../../../config/precipitation.json'),

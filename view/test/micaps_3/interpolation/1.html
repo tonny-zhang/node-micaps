@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;}
+ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+#result{
+    display: none;
+    width: 96%;
+    height: 96%;
+    margin: 2%;
+    overflow: auto;
+    white-space:nowrap; 
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 101;
+    background-color: #fff;
+}
+#result span{
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+}
+#result div:nth-child(2n) span:nth-child(2n+1),
+#result div span:nth-child(2n){
+    background-color: #eee;
+}
+#location_info{
+    position: fixed; 
+    z-index: 101;
+    top: 10px;
+    left: 50%;
+    width: 400px;
+    margin-left: -200px;
+    height: 30px;
+    line-height: 30px;
+}
+</style>
+<title>插值结果及源数据对比</title>
+</head>
+<body>
+    <div id="result"></div>
+    <div id="location_info"></div>
+    <div id="allmap">
+    </div>
+    <script type="text/javascript" src="http://i.tq121.com.cn/j/jquery-1.8.2.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=E8MDMS4BVFEMeAxVP3YddQ6X"></script>
+    <script type="text/javascript">
+    map = new BMap.Map("allmap");
+    map.centerAndZoom(new BMap.Point(116.404, 39.915), 5);
+    map.enableScrollWheelZoom();
+
+    function addText(text, x, y, style){
+        var label = new BMap.Label(text, {
+            position: new BMap.Point(x,y),
+            offset: new BMap.Size(-17, -10)
+        });  // 创建文本标注对象
+        label.setStyle($.extend({
+             color : "#000",
+             fontSize : "16px",
+             height : "20px",
+             lineHeight : "20px",
+             fontFamily:"微软雅黑",
+             width: '34px',
+             textAlign: 'center',
+             border: 'none',
+             background: 'none',
+             fontWeight: 'bold',
+             textShadow: '0 0 5px white'
+        }, style));
+        // marker.addEventListener("click",function(){
+        //  var p = marker.getPosition();  //获取marker的位置
+        //  alert(v_i+' flag = '+v_v.flag+" marker的位置是" + p.lng + "," + p.lat);    
+        // });
+        map.addOverlay(label);
+    }
+    function addPolygon(items, color, i){
+        var point_arr = [];
+        $.each(items,function(v_i,v_v){
+            var point = new BMap.Point(v_v.x,v_v.y);
+            point_arr.push(point);
+        });
+        var polygon = new BMap.Polygon(point_arr, {strokeColor: color, fillColor: color,fillOpacity: 1, strokeWeight: 1, strokeOpacity:0.5});
+        polygon.addEventListener("click",function(){
+         
+         alert(i);    
+        });
+        map.addOverlay(polygon);   //增加面
+    }
+    $.getJSON('./ab115c5ab09b026e990a226645d66b49a8de2ee7', function(data){
+        var list = data.list;
+        var relation = data.r;
+        for(var i = 0, j = relation.length; i<j; i++){
+            if(i<=4){
+                console.log(list[relation[i][0]]);
+            }
+            var val = relation[i];
+            addPolygon(list[val[0]], val[1], i);
+        }
+    });
+    $.getJSON('./28e2da197bf566eb24c555d8189df8956562fc0e', function(data){
+        var data_source = data.data;
+        for(var i = 0, j = data_source.length; i<j; i++){
+            var item = data_source[i];
+            !function(_item){
+                setTimeout(function(){
+                    addText(_item.v, _item.x, _item.y);
+                }, i*10);
+            }(item);
+        }
+        // var data_interpolation = data.interpolate;
+        // for(var i = 0, j = data_interpolation.length/5; i<j; i++){
+        //     for(var i_x = 0, item = data_interpolation[i], j_x = item.length/5; i_x < j_x; i_x++){
+        //         !function(_item){
+        //             setTimeout(function(){
+        //                 addText(_item.v, _item.x, _item.y, {
+        //                     color: '#f00'
+        //                 });
+        //             }, i*10 + i_x* 10);
+        //         }(item[i_x]);
+        //     }
+        // }
+    });
+    </script>
+</body>
+</html>

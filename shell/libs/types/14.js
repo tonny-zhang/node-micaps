@@ -5,6 +5,7 @@ var util = require('util'),
 	lineIsInsidePolygon = utils.lineIsInsidePolygon,
 	polygonIsInsidePolygon = utils.polygonIsInsidePolygon;
 
+var illegal_index_area = [];
 var PI = Math.PI;
 var _options;
 /*个部调用的解析入口主程序*/
@@ -117,17 +118,25 @@ function _parse_file(line_arr, options){
 				// console.log('===',points_arr.length);
 				return;
 			}
+			var flag_illegal = false;
 			for(var i = 0,j = points_arr.length;i<j;i+=3){
+				var x = points_arr[i],
+					y = points_arr[i+1],
+					z = points_arr[i+2];
+				if(isNaN(x) || isNaN(y) || isNaN(z)){
+					flag_illegal = true; //对不合法数据进行标识
+				}
 				var point = {
-					x: Number(points_arr[i]),
-					y: Number(points_arr[i+1]),
-					z: Number(points_arr[i+2])
+					x: Number(x),
+					y: Number(y),
+					z: Number(z)
 				};
 				items.push(point);
 			}
 			if(flag == FLAG_READLINE_POINTS){
 				// console.log('3. LINES_POINT()');
-				var line = lines.items[lines.items.length-1];
+				var index = lines.items.length-1;
+				var line = lines.items[index];
 				// console.log(lines.items);
 				line.point.items = line.point.items.concat(items);
 				// console.log('3. ->',items.length,line.point.items.length);
@@ -151,7 +160,11 @@ function _parse_file(line_arr, options){
 				}
 			}else if(flag == FLAG_AREA_POINTS){
 				// console.log('11. AREA_POINT()');
-				var area = areas.items[areas.items.length-1];
+				var _index_area = areas.items.length-1;
+				var area = areas.items[_index_area];
+				if(flag_illegal){
+					illegal_index_area.push(_index_area); // 对不合法的面数据进行过滤
+				}
 				area.items = area.items.concat(items);
 				if(area.items.length == area.len){
 					flag = FLAG_AREA_LABEL_INFO;
@@ -232,9 +245,11 @@ function _parse_file(line_arr, options){
 	var items_area = content_info.areas.items;
 	var new_items = [];
 	items_area.forEach(function(v, i){
-		if(v.symbols){ //对没有标识的面进行过滤
+		if(v.symbols && illegal_index_area.indexOf(i) == -1){ //对没有标识的面进行过滤
 			var items = v.items;
-			v.area = _get_acreage(items);
+			var area = _get_acreage(items);
+			v.flag = area > 0;
+			v.area = Math.abs(area);
 			new_items.push(v);
 		}
 	});
@@ -362,7 +377,7 @@ function getArea(points){
 }
 /*得到多边形所在矩形的面积*/
 function _get_acreage(area_items){
-	return Math.abs(getArea(area_items));
+	return getArea(area_items);
 }
 
 /*对面数据进行排序*/
@@ -757,9 +772,11 @@ function _split_area2two(area_items, line_items, content_info, start_line_index,
 		// if(new_code_list.length == 0 && is_use_line_area){
 		// 	new_code_list = [_getCodeByLine(v, new_line_items)];
 		// }
+		var area = _get_acreage(v);
 		areas[i] = {
 			public_line: new_line_items,
-			area: _get_acreage(v),
+			flag: area > 0,
+			area: Math.abs(area),
 			code_list: new_code_list, //原始面被分割后，对分分割后的面进行code填充
 			len: v.length,
 			items: v,
@@ -996,13 +1013,18 @@ function _format(content_info){
 	var areas = content_info.areas;
 	_deal_code_list_after_parsearea(content_info);
 	var areas_items = areas.items;
-	areas_items.forEach(function(v){
+	areas_items.forEach(function(v, i){
 		delete v.len;
 		var _symbols = v.symbols;
 		if(_symbols){
 			delete _symbols.len;
 		}
 		delete v.kind;
+		if(v.flag){
+			v.items.reverse();
+		}
+		delete v.flag;
+		// console.log(i, v.flag, v.area);
 		// delete v.public_line;
 		delete v.code_list;
 		delete v.area;

@@ -120,7 +120,7 @@ function formatFile(file_path, option, callback){
 					callback && callback(ERROR_NO_TYPE);
 				}
 			}else{
-				callback && callback(ERROR_NO_DATA);
+				callback && callback(null, {});
 			}
 		}
 	});
